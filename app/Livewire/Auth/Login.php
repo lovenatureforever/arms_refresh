@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Livewire\Auth;
+
+use App\Models\User;
+use Livewire\Component;
+use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Auth;
+
+class Login extends Component
+{
+    public $email;
+    public $password;
+    public $remember;
+
+    public function mount()
+    {
+        $this->email = "admin@auditapp.com";
+        $this->password = "password";
+    }
+
+    #[Layout('layouts.auth')]
+    public function render()
+    {
+        return view('livewire.auth.login');
+    }
+
+    public function login()
+    {
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            session()->regenerate();
+
+            return redirect()->intended('home');
+        } else {
+            session()->flash('error', 'Email and Password mismatch');
+        }
+    }
+}
