@@ -37,7 +37,7 @@
             </li>
 
             <li class="menu-title">Management</li>
-
+{{--
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('index.company') }}">
                     <span class="menu-icon"><i class="mgc_building_5_line"></i></span>
@@ -65,7 +65,7 @@
                     <span class="menu-text">Audit Firm Info</span>
                 </a>
             </li>
-
+ --}}
             {{-- <li class="menu-item">
                 <a class="menu-link" href="{{ route('data.migration') }}">
                     <span class="menu-icon"><i class="mgc_copy_line"></i></span>

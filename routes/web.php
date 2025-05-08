@@ -1,14 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Livewire\Auth\Login;
-use App\Livewire\Dashboard\AdminDashboard;
-use App\Livewire\Dashboard\Dashboard;
-use App\Livewire\Dashboard\MainDashboard;
-use App\Livewire\Dashboard\SuperAdminDashboard;
-use App\Livewire\Tenant\CreateTenant;
-use App\Livewire\Tenant\IndexTenant;
-use App\Livewire\Tenant\ShowTenant;
+use App\Livewire\Shared\Auth\Login;
+use App\Livewire\Central\Dashboard;
+use App\Livewire\Central\Tenants\CreateTenant;
+use App\Livewire\Central\Tenants\IndexTenant;
+use App\Livewire\Central\Tenants\ShowTenant;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +28,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', MainDashboard::class)->name('home');
+    Route::get('/home', Dashboard::class)->name('home');
     Route::prefix('superadmin')->group(function () {
 
         Route::prefix('tenants')->group(function () {

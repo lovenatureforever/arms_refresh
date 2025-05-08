@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Livewire\Dashboard;
+namespace App\Livewire\Central;
 
-use App\Models\Tenant;
+use App\Models\Central\Tenant;
 use Livewire\Component;
 
-class MainDashboard extends Component
+class Dashboard extends Component
 {
     public $totalTenant;
     public $newFiveTenant;
@@ -18,6 +18,6 @@ class MainDashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.main-dashboard');
+        return view('livewire.central.dashboard');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Tenant;
+namespace App\Livewire\Central\Tenants;
 
-use App\Models\Tenant;
+use App\Models\Central\Tenant;
 use Livewire\Component;
 
 class ShowTenant extends Component
@@ -28,7 +28,17 @@ class ShowTenant extends Component
     {
         $this->tenant = Tenant::find($id);
 
-        $this->domainName = $this->tenant->domains[0]->domain;
+        $host = $this->tenant->domains[0]->domain;
+        $parts = explode('.', $host);
+
+        // if (count($parts) >= 3) {
+        //     $subdomain = $parts[0]; // "test"
+        //     $mainDomain = implode('.', array_slice($parts, 1));
+        // } else {
+        //     $subdomain = null;
+        //     $mainDomain = $host;
+        // }
+        $this->domainName = $parts[0];
         $this->firmName = $this->tenant->firmName;
         $this->firmTitle = $this->tenant->firmTitle;
         $this->firmNo = $this->tenant->firmNo;
@@ -44,7 +54,7 @@ class ShowTenant extends Component
 
     public function render()
     {
-        return view('livewire.tenant.show-tenant');
+        return view('livewire.central.tenants.show-tenant');
     }
 
     public function update()

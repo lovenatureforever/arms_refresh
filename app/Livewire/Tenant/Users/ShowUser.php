@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\User;
+namespace App\Livewire\Tenant\Users;
 
 use Exception;
 use App\Models\User;
@@ -43,7 +43,7 @@ class ShowUser extends Component
     {
         $roles = Role::all();
 
-        return view('livewire.user.show-user', [
+        return view('livewire.tenant.users.show-user', [
             'roles' => $roles
         ]);
     }

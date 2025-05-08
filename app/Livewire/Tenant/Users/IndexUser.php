@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\User;
+namespace App\Livewire\Tenant\Users;
 
 use Exception;
 use App\Models\User;
@@ -16,7 +16,7 @@ class IndexUser extends Component
     {
         $users = User::paginate(10);
 
-        return view('livewire.user.index-user', [
+        return view('livewire.tenant.users.index-user', [
             'users' => $users
         ]);
     }

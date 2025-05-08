@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Auth;
+namespace App\Livewire\Shared\Auth;
 
 use App\Models\User;
 use Livewire\Component;
@@ -22,7 +22,7 @@ class Login extends Component
     #[Layout('layouts.auth')]
     public function render()
     {
-        return view('livewire.auth.login');
+        return view('livewire.shared.auth.login');
     }
 
     public function login()

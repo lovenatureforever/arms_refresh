@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Livewire\Tenant;
+namespace App\Livewire\Central\Tenants;
 
 use Exception;
 use App\Models\User;
-use App\Models\Tenant;
-use App\Models\Tenants\AuditFirmAddress;
+use App\Models\Central\Tenant;
+use App\Models\Tenant\AuditFirmAddress;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 use Livewire\Attributes\Locked;
@@ -49,7 +49,7 @@ class CreateTenant extends Component
 
     public function render()
     {
-        return view('livewire.tenant.create-tenant');
+        return view('livewire.central.tenants.create-tenant');
     }
 
     public function create()

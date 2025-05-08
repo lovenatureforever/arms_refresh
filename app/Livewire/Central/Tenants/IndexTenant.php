@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Livewire\Tenant;
+namespace App\Livewire\Central\Tenants;
 
 use Exception;
-use App\Models\Tenant;
+use App\Models\Central\Tenant;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
@@ -16,7 +16,7 @@ class IndexTenant extends Component
     {
         $tenants = Tenant::paginate(10);
 
-        return view('livewire.tenant.index-tenant', [
+        return view('livewire.central.tenants.index-tenant', [
             'tenants' => $tenants
         ]);
     }
