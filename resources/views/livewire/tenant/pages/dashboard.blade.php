@@ -12,7 +12,7 @@
 
             <div class="p-6">
                 {{-- @livewire('shared.datatable.company-list-datatable') --}}
-                @livewire('shared.components.company-list')
+                @livewire('tenant.components.company-list')
             </div>
         </div>
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant\Users;
+namespace App\Livewire\Tenant\Pages\Users;
 
 use App\Models\User;
 use Exception;
@@ -15,10 +15,9 @@ class CreateUser extends Component
     #[Validate('required|email|unique:users,email')]
     public $email;
 
-    #[Validate('required|min:3')]
+    #[Validate('required|min:3|confirmed')]
     public $password;
 
-    #[Validate('required|min:3')]
     public $password_confirmation;
 
     #[Validate('required|min:3')]
@@ -34,13 +33,13 @@ class CreateUser extends Component
     public $role = [];
 
     #[Validate('required')]
-    public $accountStatus;
+    public $isActive;
 
     public function render()
     {
         $roles = Role::all();
 
-        return view('livewire.tenant.users.create-user', [
+        return view('livewire.tenant.pages.users.create-user', [
             'roles' => $roles
         ]);
     }
@@ -58,7 +57,7 @@ class CreateUser extends Component
                 'password' => Hash::make($this->password),
                 'username' => $this->username,
                 'phone_number' => $this->phoneNumber,
-                'account_status' => $this->accountStatus
+                'is_active' => $this->isActive
             ]);
 
             foreach ($this->role as $userRole) {

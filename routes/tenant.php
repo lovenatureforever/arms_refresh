@@ -8,8 +8,11 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Stancl\Tenancy\Middleware\ScopeSessions;
 
 use App\Livewire\Shared\Auth\Login;
-use App\Livewire\Tenant\Dashboard;
+use App\Livewire\Tenant\Pages\Dashboard;
 use App\Http\Controllers\AuthController;
+use App\Livewire\Tenant\Pages\Users\IndexUser;
+use App\Livewire\Tenant\Pages\Users\CreateUser;
+use App\Livewire\Tenant\Pages\Users\ShowUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,5 +40,11 @@ Route::middleware([
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/home', Dashboard::class)->name('home');
+        // Route::prefix('users')->group(function () {
+        Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+            Route::get('/', IndexUser::class)->name('index');
+            Route::get('/create', CreateUser::class)->name('create');
+            Route::get('/{id}', ShowUser::class)->name('show');
+        });
     });
 });

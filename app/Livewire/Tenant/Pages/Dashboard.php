@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant;
+namespace App\Livewire\Tenant\Pages;
 
 use App\Models\User;
 use Livewire\Component;
@@ -18,6 +18,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.tenant.dashboard');
+        return view('livewire.tenant.pages.dashboard');
     }
 }

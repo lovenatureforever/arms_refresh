@@ -4,7 +4,7 @@
             <div class="flex items-center justify-between">
                 <h4 class="card-title">Create User</h4>
                 <div class="flex items-center gap-2">
-                    <a class="btn bg-warning text-white" type="button" href="{{ route('index.user') }}">Cancel</a>
+                    <a class="btn bg-warning text-white" type="button" href="{{ route('users.index') }}">Cancel</a>
                 </div>
             </div>
         </div>
@@ -17,7 +17,6 @@
             @endif
 
             <form wire:submit="create">
-                <p class="my-4 text-xl text-slate-700 underline dark:text-slate-400">User Detail</p>
 
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
@@ -61,10 +60,11 @@
                             <div class="pristine-error text-help" role="alert">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="role">Internal Role</label>
-                        <div class="grid grid-cols-3 gap-3">
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="mt-9">
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="role">Internal Role</label>
+                        <div class="flex flex-row flex-wrap gap-5">
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'internal'))
                                     <div wire:key="{{ $role->id }}">
@@ -76,9 +76,9 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="role">Outsider Role</label>
-                        <div class="grid grid-cols-3 gap-3">
+                    <div class="mt-9">
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="role">Outsider Role</label>
+                        <div class="flex flex-row flex-wrap gap-5">
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'outsider'))
                                     <div wire:key="{{ $role->id }}">
@@ -90,9 +90,9 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="role">ISQM Role</label>
-                        <div class="grid grid-cols-3 gap-3">
+                    <div class="mt-9">
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="role">ISQM Role</label>
+                        <div class="flex flex-row flex-wrap gap-5">
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'isqm'))
                                     <div wire:key="{{ $role->id }}">
@@ -104,22 +104,22 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="accountStatus">Account Status</label>
-                        <div class="grid grid-cols-3 gap-3">
+                    <div class="mt-9">
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="isActive">Account Status</label>
+                        <div class="flex flex-row flex-wrap gap-5">
                             <div>
-                                <input class="form-radio text-success" id="active" type="radio" value="1" wire:model="accountStatus">
+                                <input class="form-radio text-success" id="active" type="radio" value="1" wire:model="isActive">
                                 <label class="ms-1.5" for="active">Active</label>
                             </div>
                             <div>
-                                <input class="form-radio text-danger" id="deactive" type="radio" value="0" wire:model="accountStatus">
+                                <input class="form-radio text-danger" id="deactive" type="radio" value="0" wire:model="isActive">
                                 <label class="ms-1.5" for="deactive">Deactive</label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div>
+                <div class="mt-9">
                     <button class="btn mt-6 bg-primary text-white" type="submit" wire:loading.attr="disabled">
                         <div class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-[3px] border-current border-t-transparent text-white" role="status" aria-label="loading" wire:loading>
                             <span class="sr-only">Loading...</span>

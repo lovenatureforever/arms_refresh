@@ -26,7 +26,7 @@
     <!--- Menu -->
     <div class="srcollbar" data-simplebar>
         <ul class="menu" data-fc-type="accordion">
-            <li class="menu-title">Menu</li>
+            {{-- <li class="menu-title">Menu</li> --}}
 
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('home') }}">
@@ -35,7 +35,7 @@
                 </a>
             </li>
 
-            <li class="menu-title">Management</li>
+            {{-- <li class="menu-title">Management</li> --}}
 
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('index.tenant') }}">

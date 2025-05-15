@@ -4,7 +4,7 @@
             <div class="flex items-center justify-between">
                 <h4 class="card-title">View / Update User</h4>
                 <div class="flex items-center gap-2">
-                    <a class="btn bg-warning text-white" type="button" href="{{ route('index.user') }}">Cancel</a>
+                    <a class="btn bg-warning text-white" type="button" href="{{ route('users.index') }}">Cancel</a>
                 </div>
             </div>
         </div>
@@ -80,14 +80,14 @@
                     </div>
 
                     <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="accountStatus">Account Status</label>
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="isActive">Account Status</label>
                         <div class="grid grid-cols-3 gap-3">
                             <div>
-                                <input class="form-radio text-success" id="active" type="radio" value="1" wire:model="accountStatus">
+                                <input class="form-radio text-success" id="active" type="radio" value="1" wire:model="isActive">
                                 <label class="ms-1.5" for="active">Active</label>
                             </div>
                             <div>
-                                <input class="form-radio text-danger" id="deactive" type="radio" value="0" wire:model="accountStatus">
+                                <input class="form-radio text-danger" id="deactive" type="radio" value="0" wire:model="isActive">
                                 <label class="ms-1.5" for="deactive">Deactive</label>
                             </div>
                         </div>

@@ -27,7 +27,7 @@
     <!--- Menu -->
     <div class="srcollbar" data-simplebar>
         <ul class="menu" data-fc-type="accordion">
-            <li class="menu-title">Menu</li>
+            {{-- <li class="menu-title">Menu</li> --}}
 
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('home') }}">
@@ -36,22 +36,25 @@
                 </a>
             </li>
 
-            <li class="menu-title">Management</li>
-{{--
+            {{-- <li class="menu-title">Management</li> --}}
+
+            {{--
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('index.company') }}">
                     <span class="menu-icon"><i class="mgc_building_5_line"></i></span>
                     <span class="menu-text">Company Access</span>
                 </a>
             </li>
+            --}}
 
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('index.user') }}">
+                <a class="menu-link" href="{{ route('users.index') }}">
                     <span class="menu-icon"><i class="mgc_group_line"></i></span>
                     <span class="menu-text">Users</span>
                 </a>
             </li>
 
+            {{--
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('index.audit.partner') }}">
                     <span class="menu-icon"><i class="mgc_user_follow_line"></i></span>
@@ -65,20 +68,24 @@
                     <span class="menu-text">Audit Firm Info</span>
                 </a>
             </li>
- --}}
-            {{-- <li class="menu-item">
+            --}}
+            {{--
+            <li class="menu-item">
                 <a class="menu-link" href="{{ route('data.migration') }}">
                     <span class="menu-icon"><i class="mgc_copy_line"></i></span>
                     <span class="menu-text">Data Migration</span>
                 </a>
-            </li> --}}
+            </li>
+            --}}
 
-            <!-- <li class="menu-item">
+            <!--
+            <li class="menu-item">
                 <a class="menu-link" href="#">
                     <span class="menu-icon"><i class="mgc_group_line"></i></span>
                     <span class="menu-text">General Setup</span>
                 </a>
-            </li> -->
+            </li>
+            -->
 
         </ul>
 

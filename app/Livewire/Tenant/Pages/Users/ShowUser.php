@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant\Users;
+namespace App\Livewire\Tenant\Pages\Users;
 
 use Exception;
 use App\Models\User;
@@ -23,7 +23,7 @@ class ShowUser extends Component
 
     #[Validate('required')]
     public $role = [];
-    public $accountStatus;
+    public $isActive;
 
     public $user;
 
@@ -35,7 +35,7 @@ class ShowUser extends Component
         $this->name = $this->user->name;
         $this->username = $this->user->username;
         $this->phoneNumber = $this->user->phone_number;
-        $this->accountStatus = $this->user->account_status;
+        $this->isActive = $this->user->is_active;
         $this->role = $this->user->roles->pluck('name');
     }
 
@@ -43,7 +43,7 @@ class ShowUser extends Component
     {
         $roles = Role::all();
 
-        return view('livewire.tenant.users.show-user', [
+        return view('livewire.tenant.pages.users.show-user', [
             'roles' => $roles
         ]);
     }
@@ -58,7 +58,7 @@ class ShowUser extends Component
             $this->user->name = $this->name;
             $this->user->username = $this->username;
             $this->user->phone_number = $this->phoneNumber;
-            $this->user->account_status = $this->accountStatus;
+            $this->user->is_active = $this->isActive;
             $this->user->save();
 
             $this->user->syncRoles($this->role);

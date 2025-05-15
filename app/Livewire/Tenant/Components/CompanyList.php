@@ -1,5 +1,5 @@
 <?php
-namespace App\Livewire\Shared\Components;
+namespace App\Livewire\Tenant\Components;
 
 use Exception;
 use App\Models\Tenant\Company;
@@ -15,7 +15,7 @@ class CompanyList extends Component
         // $companies = Company::paginate(10);
         $companies = Company::all();
 
-        return view('livewire.shared.components.company-list', [
+        return view('livewire.tenant.components.company-list', [
             'companies' => $companies
         ]);
     }

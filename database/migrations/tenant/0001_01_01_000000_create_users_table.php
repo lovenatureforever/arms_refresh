@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->boolean('account_status')->default(1);
+            $table->boolean('is_active')->default(1);
             $table->boolean('is_audit_partner')->default(0);
             $table->softDeletes();
 

@@ -14,7 +14,7 @@
     @vite(['resources/scss/app.scss', 'resources/scss/icons.scss'])
     @vite(['resources/js/head.js', 'resources/js/config.js'])
     @livewireStyles
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     {{-- <x-livewire-alert::scripts /> --}}
@@ -61,6 +61,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cleave.js"></script>
     @livewireScripts
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 

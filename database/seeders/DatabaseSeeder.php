@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('password'),
-                'account_status' => 1,
+                'is_active' => 1,
             ]
         )->assignRole('superadmin');
     }

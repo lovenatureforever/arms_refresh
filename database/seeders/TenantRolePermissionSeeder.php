@@ -22,7 +22,7 @@ class TenantRolePermissionSeeder extends Seeder
             'outsider_client',
             'isqm_approver',
             'isqm_reviewer',
-            'isql_preparer'
+            'isqm_preparer'
         ];
 
         foreach ($roles as $role) {
