@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('issuance_term_freetext')->nullable();
             $table->string('issuance_purpose')->nullable();
             $table->decimal('fully_paid_shares')->default(0);
-            $table->decimal('fully_paid_amount', 8, 2);
+            $table->decimal('fully_paid_amount', 8, 2)->default(0);
             $table->decimal('partially_paid_shares')->default(0);
             $table->decimal('partially_paid_amount', 8, 2)->default(0);
 

@@ -31,8 +31,8 @@ class CompanyShareCapitalChange extends Model
         // 'is_year_start' => 'boolean',
     ];
 
-    public const SHARETYPE_ORDINARY = 'ordinary';
-    public const SHARETYPE_PREFERENCE = 'preference';
+    public const SHARETYPE_ORDINARY = 'Ordinary shares';
+    public const SHARETYPE_PREFERENCE = 'Preference shares';
     public static $sharetypes = [
         self::SHARETYPE_ORDINARY,
         self::SHARETYPE_PREFERENCE

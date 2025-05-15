@@ -71,7 +71,7 @@ class CreateTenant extends Component
 
             $tenant->domains()->create(
                 [
-                    'domain' => $this->domainName . config('app.domain')
+                    'domain' => $this->domainName . '.' . config('app.domain')
                 ]
             );
 
@@ -89,12 +89,12 @@ class CreateTenant extends Component
                 ]);
 
                 AuditFirmAddress::create([
-                    'firm_branch' => 'HQ',
-                    'firm_address1' => $this->address1,
-                    'firm_address2' => $this->address2,
-                    'firm_postcode' => $this->zip,
-                    'firm_city' => $this->city,
-                    'firm_state' => $this->state
+                    'branch' => 'HQ',
+                    'address_line1' => $this->address1,
+                    'address_line2' => $this->address2,
+                    'postcode' => $this->zip,
+                    'town' => $this->city,
+                    'state' => $this->state
                 ]);
             });
 

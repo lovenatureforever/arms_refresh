@@ -11,11 +11,14 @@ class AuditFirmAddress extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'firm_branch',
-        'firm_address1',
-        'firm_address2',
-        'firm_postcode',
-        'firm_city',
-        'firm_state'
+        'branch',
+        'country',
+        'address_line1',
+        'address_line2',
+        'address_line3',
+        'postcode',
+        'town',
+        'state',
+        'mbrs_state',
     ];
 }

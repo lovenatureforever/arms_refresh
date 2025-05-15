@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('audit_firm_addresses', function (Blueprint $table) {
+        Schema::create('company_director_changes', function (Blueprint $table) {
             $table->id();
-            // $table->uuid('tenant_id');
-            $table->string('branch')->nullable();
+            $table->foreignId('company_director_id')->constrained('company_directors')->cascadeOnDelete();
+            // $table->boolean('is_year_start')->default(false);
+            $table->string('change_nature')->nullable();
+            $table->string('id_type')->nullable();
+            $table->string('id_no')->nullable();
             $table->string('country')->nullable();
             $table->string('address_line1')->nullable();
             $table->string('address_line2')->nullable();
@@ -22,7 +25,8 @@ return new class extends Migration
             $table->string('postcode')->nullable();
             $table->string('town')->nullable();
             $table->string('state')->nullable();
-            $table->string('mbrs_state')->nullable();
+            $table->date('effective_date')->nullable();
+            $table->string('remarks')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('audit_firm_addresses');
+        Schema::dropIfExists('company_director_changes');
     }
 };

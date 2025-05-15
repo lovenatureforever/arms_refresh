@@ -76,6 +76,77 @@ class Company extends Model
         return $this->hasMany(CompanyBizAddressChange::class);
     }
 
+    /**
+     * The company share capital changes.
+     */
+    public function sharecapitalChanges()
+    {
+        return $this->hasMany(CompanyShareCapitalChange::class);
+    }
+
+    /**
+     * The company directors
+     */
+    public function directors()
+    {
+        return $this->hasMany(CompanyDirector::class);
+    }
+
+    /**
+     * The company director changes.
+     */
+    public function directorChanges()
+    {
+        return $this->hasManyThrough(CompanyDirectorChange::class, CompanyDirector::class);
+    }
+
+    /**
+     * The company shareholders.
+     */
+    public function shareholders()
+    {
+        return $this->hasMany(CompanyShareholder::class);
+    }
+
+    /**
+     * The company shareholder changes.
+     */
+    public function shareholderChanges()
+    {
+        return $this->hasManyThrough(CompanyShareholderChange::class, CompanyShareholder::class);
+    }
+
+    /**
+     * The company secretaries.
+     */
+    public function secretaries()
+    {
+        return $this->hasMany(CompanySecretary::class);
+    }
+    /**
+     * The company secretary changes.
+     */
+    public function secretaryChanges()
+    {
+        return $this->hasManyThrough(CompanySecretaryChange::class, CompanySecretary::class);
+    }
+
+    /**
+     * The company charge changes.
+     */
+    public function chargeChanges()
+    {
+        return $this->hasMany(CompanyChargeChange::class);
+    }
+
+    /**
+     * The company dividend changes.
+     */
+    public function dividendChanges()
+    {
+        return $this->hasMany(CompanyDividendChange::class);
+    }
+
     /* public function getLatestDetailBefore($date)
     {
         if (!$date) {

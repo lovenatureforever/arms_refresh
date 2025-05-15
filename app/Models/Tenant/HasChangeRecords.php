@@ -27,6 +27,26 @@ trait HasChangeRecords
         {
             $relation = 'bizAddressChanges';
         }
+        elseif ($name == 'sharecapitalAtStart' || $name == 'sharecapitalChangesCurrentYear')
+        {
+            $relation = 'sharecapitalChanges';
+        }
+        elseif ($name == 'directorChangesCurrentYear')
+        {
+            $relation = 'directorChanges';
+        }
+        elseif ($name == 'shareholderChangesCurrentYear')
+        {
+            $relation = 'shareholderChanges';
+        }
+        elseif ($name == 'secretaryChangesCurrentYear')
+        {
+            $relation = 'secretaryChanges';
+        }
+        // elseif ($name == 'chargeChangesCurrentYear')
+        // {
+        //     $relation = 'chargeChanges';
+        // }
         else
         {
             throw new BadMethodCallException("Method {$name} does not exist.");
