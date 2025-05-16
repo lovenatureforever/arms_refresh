@@ -6,23 +6,32 @@ use Exception;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
+use Livewire\Attributes\Locked;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class ShowUser extends Component
 {
+    #[Locked]
+    public $id;
+
+    #[Validate('required|email')]
     public $email;
 
     #[Validate('required|min:3')]
     public $name;
 
+    #[Validate('required|min:3')]
     public $username;
 
-    #[Validate('required|min:3')]
+    #[Validate('required|min:10')]
     public $phoneNumber;
 
-    #[Validate('required')]
-    public $role = [];
+    public $internal_roles = [];
+
+    public $isqm_roles = [];
+
+    public $outsider_role;
     public $isActive;
 
     public $user;
@@ -36,7 +45,12 @@ class ShowUser extends Component
         $this->username = $this->user->username;
         $this->phoneNumber = $this->user->phone_number;
         $this->isActive = $this->user->is_active;
-        $this->role = $this->user->roles->pluck('name');
+        $this->internal_roles = $this->user->roles()->where('name', 'like', 'internal%')->pluck('name')->toArray();
+        $this->isqm_roles = $this->user->roles()->where('name', 'like', 'isqm%')->pluck('name')->toArray();
+        $this->outsider_role = $this->user->roles()->where('name', 'like', 'outsider%')->pluck('name')->first();
+        info('internal roles: ', [$this->internal_roles]);
+        info('isqm roles: ', [$this->isqm_roles]);
+        info('outsider role: ', [$this->outsider_role]);
     }
 
     public function render()
@@ -48,9 +62,24 @@ class ShowUser extends Component
         ]);
     }
 
+    public function updatedInternalRoles($value)
+    {
+        // Log::info('roles: ', $this->internal_roles);
+        if (count($this->internal_roles) > 0) {
+            $this->outsider_role = null;
+        }
+
+    }
+
+    public function updatedOutsiderRole($value)
+    {
+        if ($value) {
+            $this->internal_roles = [];
+        }
+    }
+
     public function update()
     {
-        DB::beginTransaction();
         try {
             $this->validate();
 
@@ -61,15 +90,15 @@ class ShowUser extends Component
             $this->user->is_active = $this->isActive;
             $this->user->save();
 
-            $this->user->syncRoles($this->role);
-
+            $roles = array_merge($this->internal_roles, $this->isqm_roles);
+            if ($this->outsider_role) {
+                $roles[] = $this->outsider_role;
+            }
+            $this->user->syncRoles($roles);
             $this->redirect(IndexUser::class);
-
-            DB::commit();
         } catch (Exception $e) {
             info($e->getMessage());
             session()->flash('error', $e->getMessage());
-            DB::rollBack();
         }
     }
 }

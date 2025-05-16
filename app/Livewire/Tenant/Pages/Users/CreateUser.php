@@ -5,6 +5,7 @@ namespace App\Livewire\Tenant\Pages\Users;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Validate;
@@ -29,11 +30,14 @@ class CreateUser extends Component
     #[Validate('required|min:10')]
     public $phoneNumber;
 
-    #[Validate('required|array|min:1')]
-    public $role = [];
+    public $internal_roles = [];
+
+    public $isqm_roles = [];
+
+    public $outsider_role;
 
     #[Validate('required')]
-    public $isActive;
+    public $isActive = '1';
 
     public function render()
     {
@@ -44,13 +48,26 @@ class CreateUser extends Component
         ]);
     }
 
+    public function updatedInternalRoles($value)
+    {
+        // Log::info('roles: ', $this->internal_roles);
+        if (count($this->internal_roles) > 0) {
+            $this->outsider_role = null;
+        }
+
+    }
+
+    public function updatedOutsiderRole($value)
+    {
+        if ($value) {
+            $this->internal_roles = [];
+        }
+    }
+
     public function create()
     {
-        info($this->role);
-        DB::beginTransaction();
         try {
             $this->validate();
-
             $user = User::create([
                 'name' => $this->name,
                 'email' => $this->email,
@@ -59,19 +76,15 @@ class CreateUser extends Component
                 'phone_number' => $this->phoneNumber,
                 'is_active' => $this->isActive
             ]);
-
-            foreach ($this->role as $userRole) {
-                $user->assignRole($userRole);
+            $roles = array_merge($this->internal_roles, $this->isqm_roles);
+            if ($this->outsider_role) {
+                $roles[] = $this->outsider_role;
             }
-
-            DB::commit();
-
+            $user->syncRoles($roles);
             $this->redirect(IndexUser::class);
         } catch (Exception $e) {
             info($e->getMessage());
-
             session()->flash('error', $e->getMessage());
-            DB::rollBack();
         }
     }
 }

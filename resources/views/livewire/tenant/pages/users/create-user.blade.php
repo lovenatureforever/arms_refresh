@@ -20,9 +20,11 @@
 
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="username">Username</label>
-                        <input class="form-input" id="username" type="text" wire:model="username" placeholder="Username">
-
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="name">Full Name</label>
+                        <input class="form-input" id="name" type="text" wire:model="name" placeholder="Name">
+                        @error('name')
+                            <div class="pristine-error text-help" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div>
                         <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="email">Email</label>
@@ -32,11 +34,9 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="name">Name</label>
-                        <input class="form-input" id="name" type="text" wire:model="name" placeholder="Name">
-                        @error('name')
-                            <div class="pristine-error text-help" role="alert">{{ $message }}</div>
-                        @enderror
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="username">Username</label>
+                        <input class="form-input" id="username" type="text" wire:model="username" placeholder="Username">
+
                     </div>
                     <div>
                         <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="phoneNumber">Phone Number</label>
@@ -68,8 +68,8 @@
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'internal'))
                                     <div wire:key="{{ $role->id }}">
-                                        <input class="text-blue form-checkbox rounded" id="{{ $role->name }}" type="checkbox" value="{{ $role->name }}" wire:model="role">
-                                        <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::ucfirst(Str::substr($role->name, '9')) }}</label>
+                                        <input class="text-blue form-checkbox rounded" id="{{ $role->name }}" type="checkbox" value="{{ $role->name }}" wire:model.live="internal_roles">
+                                        <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::substr(\App\Models\User::USER_ROLES[$role->name], 9) }}</label>
                                     </div>
                                 @endif
                             @endforeach
@@ -82,8 +82,8 @@
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'outsider'))
                                     <div wire:key="{{ $role->id }}">
-                                        <input class="text-blue form-checkbox rounded" id="{{ $role->name }}" type="checkbox" value="{{ $role->name }}" wire:model="role">
-                                        <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::ucfirst(Str::substr($role->name, '9')) }}</label>
+                                        <input class="text-blue form-radio rounded" id="{{ $role->name }}" name="outsider_role" type="radio" value="{{ $role->name }}" wire:model.live="outsider_role">
+                                        <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::substr(\App\Models\User::USER_ROLES[$role->name], 9) }}</label>
                                     </div>
                                 @endif
                             @endforeach
@@ -96,8 +96,8 @@
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'isqm'))
                                     <div wire:key="{{ $role->id }}">
-                                        <input class="text-blue form-checkbox rounded" id="{{ $role->name }}" type="checkbox" value="{{ $role->name }}" wire:model="role">
-                                        <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::ucfirst(Str::substr($role->name, '5')) }}</label>
+                                        <input class="text-blue form-checkbox rounded" id="{{ $role->name }}" type="checkbox" value="{{ $role->name }}" wire:model="isqm_roles">
+                                        <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::substr(\App\Models\User::USER_ROLES[$role->name], 5) }}</label>
                                     </div>
                                 @endif
                             @endforeach

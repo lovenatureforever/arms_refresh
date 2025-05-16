@@ -23,6 +23,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'phone_number',
         'is_active',
         'is_audit_partner',
         'credit'
