@@ -38,14 +38,19 @@
 
             {{-- <li class="menu-title">Management</li> --}}
 
-            {{--
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('index.company') }}">
+                <a class="menu-link" href="{{ route('auditpartners.index') }}">
+                    <span class="menu-icon"><i class="mgc_user_follow_line"></i></span>
+                    <span class="menu-text">Audit Partner</span>
+                </a>
+            </li>
+
+            {{-- <li class="menu-item">
+                <a class="menu-link" href="{{ route('companies.index') }}">
                     <span class="menu-icon"><i class="mgc_building_5_line"></i></span>
                     <span class="menu-text">Company Access</span>
                 </a>
-            </li>
-            --}}
+            </li> --}}
 
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('users.index') }}">
@@ -55,12 +60,6 @@
             </li>
 
             {{--
-            <li class="menu-item">
-                <a class="menu-link" href="{{ route('index.audit.partner') }}">
-                    <span class="menu-icon"><i class="mgc_user_follow_line"></i></span>
-                    <span class="menu-text">Audit Partner</span>
-                </a>
-            </li>
 
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('index.audit.firm') }}">

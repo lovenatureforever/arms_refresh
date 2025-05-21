@@ -82,7 +82,7 @@
                             @foreach ($roles as $role)
                                 @if (Str::contains($role, 'outsider'))
                                     <div wire:key="{{ $role->id }}">
-                                        <input class="text-blue form-radio rounded" id="{{ $role->name }}" name="outsider_role" type="radio" value="{{ $role->name }}" wire:model.live="outsider_role">
+                                        <input class="text-blue form-radio rounded" id="{{ $role->name }}" name="outsider_roles" type="radio" value="{{ $role->name }}" wire:model.live="outsider_roles">
                                         <label class="ms-1.5" name="role" for="{{ $role->name }}">{{ Str::substr(\App\Models\User::USER_ROLES[$role->name], 9) }}</label>
                                     </div>
                                 @endif

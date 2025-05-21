@@ -13,6 +13,9 @@ use App\Http\Controllers\AuthController;
 use App\Livewire\Tenant\Pages\Users\IndexUser;
 use App\Livewire\Tenant\Pages\Users\CreateUser;
 use App\Livewire\Tenant\Pages\Users\ShowUser;
+use App\Livewire\Tenant\Pages\AuditPartners\IndexAuditPartner;
+use App\Livewire\Tenant\Pages\AuditPartners\CreateAuditPartner;
+use App\Livewire\Tenant\Pages\AuditPartners\ShowAuditPartner;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,5 +49,19 @@ Route::middleware([
             Route::get('/create', CreateUser::class)->name('create');
             Route::get('/{id}', ShowUser::class)->name('show');
         });
+
+        Route::group(['prefix' => 'audit-partners', 'as' => 'auditpartners.'], function () {
+            Route::get('/', IndexAuditPartner::class)->name('index');
+            Route::get('/create', CreateAuditPartner::class)->name('create');
+            Route::get('/{id}', ShowAuditPartner::class)->name('show');
+        });
+
+        // Route::prefix('companies')->group(function () {
+        //     Route::get('/', IndexCompany::class)->name('index.company');
+        //     Route::get('/create', CreateCompany::class)->name('create.company');
+        //     Route::get('/{id}', ShowCompany::class)->name('show.company');
+
+        //     Route::get('/corporate-info/{id}', CorporateInfo::class)->name('corporate.info.index');
+        // });
     });
 });

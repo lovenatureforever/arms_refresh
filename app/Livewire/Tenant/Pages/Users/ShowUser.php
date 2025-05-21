@@ -48,9 +48,7 @@ class ShowUser extends Component
         $this->internal_roles = $this->user->roles()->where('name', 'like', 'internal%')->pluck('name')->toArray();
         $this->isqm_roles = $this->user->roles()->where('name', 'like', 'isqm%')->pluck('name')->toArray();
         $this->outsider_role = $this->user->roles()->where('name', 'like', 'outsider%')->pluck('name')->first();
-        info('internal roles: ', [$this->internal_roles]);
-        info('isqm roles: ', [$this->isqm_roles]);
-        info('outsider role: ', [$this->outsider_role]);
+
     }
 
     public function render()

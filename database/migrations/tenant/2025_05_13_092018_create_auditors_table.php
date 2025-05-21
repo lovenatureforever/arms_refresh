@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('auditors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->boolean('is_active')->default(true);
             $table->string('title')->nullable();
-            $table->unsignedBigInteger('selected_license_id')->nullable();
+            // $table->unsignedBigInteger('selected_license_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

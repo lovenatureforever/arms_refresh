@@ -34,7 +34,7 @@ class CreateUser extends Component
 
     public $isqm_roles = [];
 
-    public $outsider_role;
+    public $outsider_roles = [];
 
     #[Validate('required')]
     public $isActive = '1';
@@ -52,7 +52,7 @@ class CreateUser extends Component
     {
         // Log::info('roles: ', $this->internal_roles);
         if (count($this->internal_roles) > 0) {
-            $this->outsider_role = null;
+            $this->outsider_roles = null;
         }
 
     }
@@ -77,8 +77,8 @@ class CreateUser extends Component
                 'is_active' => $this->isActive
             ]);
             $roles = array_merge($this->internal_roles, $this->isqm_roles);
-            if ($this->outsider_role) {
-                $roles[] = $this->outsider_role;
+            if ($this->outsider_roles) {
+                $roles[] = $this->outsider_roles;
             }
             $user->syncRoles($roles);
             $this->redirect(IndexUser::class);

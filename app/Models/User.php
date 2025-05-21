@@ -3,11 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Tenant\Auditor;
 
 class User extends Authenticatable
 {
@@ -49,8 +51,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_audit_partner' => 'boolean',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function scopeIsAuditPartner(Builder $query): void
+    {
+        $query->where('is_audit_partner', 1);
+    }
+
+    public function auditor(): void
+    {
+        $this->hasOne(Auditor::class);
     }
 
     public const ROLE_INTERNAL_ADMIN = 'internal_admin';

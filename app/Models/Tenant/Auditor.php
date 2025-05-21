@@ -4,6 +4,7 @@ namespace App\Models\Tenant;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\User;
 
 class Auditor extends Model
 {
@@ -11,13 +12,8 @@ class Auditor extends Model
 
     protected $fillable = [
         'user_id',
-        'selected_license_id',
-        'is_active',
+        // 'selected_license_id',
         'title',
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
     ];
 
     public function licenses()
@@ -25,8 +21,13 @@ class Auditor extends Model
         return $this->hasMany(AuditorLicense::class);
     }
 
-    public function selectedLicense()
+    public function getSelectedLicenseAttribute()
     {
-        return $this->belongsTo(AuditorLicense::class, 'selected_license_id');
+        return $this->licenses()->latest('effective_date')->first();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
