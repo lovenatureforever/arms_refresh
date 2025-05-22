@@ -59,15 +59,12 @@
                 </a>
             </li>
 
-            {{--
-
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('index.audit.firm') }}">
+                <a class="menu-link" href="{{ route('auditfirm.show') }}">
                     <span class="menu-icon"><i class="mgc_certificate_2_line"></i></span>
                     <span class="menu-text">Audit Firm Info</span>
                 </a>
             </li>
-            --}}
             {{--
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('data.migration') }}">

@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-6">
-                    <div class="mt-9">
+                    {{-- <div class="mt-9">
                         <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="role">Internal Role</label>
                         <div class="flex flex-row flex-wrap gap-5">
                             @foreach ($roles as $role)
@@ -73,6 +73,23 @@
                                     </div>
                                 @endif
                             @endforeach
+                        </div>
+                    </div> --}}
+                    <div class="mt-9">
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="role">Internal Role</label>
+                        <div class="flex flex-row flex-wrap gap-5">
+                            <div wire:key="1">
+                                <input class="text-blue form-checkbox rounded" id="internal_admin" type="checkbox" value="internal_admin" wire:model.live="internal_roles">
+                                <label class="ms-1.5" name="role" for="internal_admin">Admin</label>
+                            </div>
+                            <div wire:key="2">
+                                <input class="text-blue form-checkbox rounded" id="internal_reviewer" type="checkbox" value="internal_reviewer" wire:model.live="internal_roles">
+                                <label class="ms-1.5" name="role" for="internal_reviewer">Reviewer</label>
+                            </div>
+                            <div wire:key="3">
+                                <input class="text-blue form-checkbox rounded" id="internal_executor" type="checkbox" value="internal_executor" wire:model.live="internal_roles">
+                                <label class="ms-1.5" name="role" for="internal_executor">Executor</label>
+                            </div>
                         </div>
                     </div>
 

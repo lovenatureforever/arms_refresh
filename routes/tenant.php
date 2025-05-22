@@ -16,6 +16,7 @@ use App\Livewire\Tenant\Pages\Users\ShowUser;
 use App\Livewire\Tenant\Pages\AuditPartners\IndexAuditPartner;
 use App\Livewire\Tenant\Pages\AuditPartners\CreateAuditPartner;
 use App\Livewire\Tenant\Pages\AuditPartners\ShowAuditPartner;
+use App\Livewire\Tenant\Pages\AuditFirm\ShowAuditFirm;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,8 @@ Route::middleware([
             Route::get('/create', CreateAuditPartner::class)->name('create');
             Route::get('/{id}', ShowAuditPartner::class)->name('show');
         });
+
+        Route::get('/audit-firm', ShowAuditFirm::class)->name('auditfirm.show');
 
         // Route::prefix('companies')->group(function () {
         //     Route::get('/', IndexCompany::class)->name('index.company');

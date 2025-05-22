@@ -14,7 +14,7 @@ class IndexUser extends Component
 
     public function render()
     {
-        $users = User::paginate(10);
+        $users = User::where('is_audit_partner', false)->paginate(10);
 
         return view('livewire.tenant.pages.users.index-user', [
             'users' => $users
