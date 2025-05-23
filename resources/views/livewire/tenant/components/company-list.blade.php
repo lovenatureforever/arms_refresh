@@ -12,7 +12,7 @@
             @forelse ($companies as $company)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                        <a href="">
+                        <a href="{{ route('companies.show', $company->id) }}" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
                             {{ $company->name }}
                         </a>
                     </td>

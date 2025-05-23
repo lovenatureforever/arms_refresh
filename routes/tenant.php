@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -18,6 +19,7 @@ use App\Livewire\Tenant\Pages\AuditPartner\CreateAuditPartner;
 use App\Livewire\Tenant\Pages\AuditPartner\ShowAuditPartner;
 use App\Livewire\Tenant\Pages\AuditFirm\ShowAuditFirm;
 use App\Livewire\Tenant\Pages\Company\CreateCompany;
+use App\Livewire\Tenant\Pages\Company\ShowCompany;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -62,9 +64,17 @@ Route::middleware([
         Route::group(['prefix' => 'companies', 'as' => 'companies.'], function () {
             // Route::get('/', IndexCompany::class)->name('index');
             Route::get('/create', CreateCompany::class)->name('create');
-            // Route::get('/{id}', ShowCompany::class)->name('show');
+            Route::get('/{id}', ShowCompany::class)->name('show');
 
             // Route::get('/{id}', CorporateInfo::class)->name('corporate');
+        });
+
+        Route::group(['prefix' => 'companies/{id}/corporate-info', 'as' => 'corporate.'], function () {
+            // Redirect '/companies/{id}/corporate-info/' to '/companies/{id}/corporate-info/year-end'
+            Route::redirect('/', 'year-end')->name('index');
+
+            // Serve the YearEnd Livewire component
+            Route::get('/year-end', YearEnd::class)->name('yearend');
         });
     });
 });
