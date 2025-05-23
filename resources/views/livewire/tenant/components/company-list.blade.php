@@ -11,10 +11,16 @@
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @forelse ($companies as $company)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $company->name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                        <a href="">
+                            {{ $company->name }}
+                        </a>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $company->registration_no }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $company->year }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $company->status }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $company->current_year }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                        <div class="inline-flex items-center gap-1.5 py-1 px-3 rounded text-xs font-medium {{ $company->is_active ? 'bg-success/90' : 'bg-dark/80' }} text-white">{{ $company->is_active ? 'Active' : 'Inactive' }}</div>
+                    </td>
                 </tr>
             @empty
                 <tr>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant\Pages\AuditPartners;
+namespace App\Livewire\Tenant\Pages\AuditPartner;
 
 use Exception;
 use App\Models\User;
@@ -62,7 +62,7 @@ class CreateAuditPartner extends Component
     {
         $roles = Role::all();
 
-        return view('livewire.tenant.pages.audit-partners.create-audit-partner', [
+        return view('livewire.tenant.pages.audit-partner.create-audit-partner', [
             'roles' => $roles,
         ]);
     }

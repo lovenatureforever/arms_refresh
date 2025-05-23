@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant\Pages\Users;
+namespace App\Livewire\Tenant\Pages\User;
 
 use App\Models\User;
 use Exception;
@@ -43,7 +43,7 @@ class CreateUser extends Component
     {
         $roles = Role::all();
 
-        return view('livewire.tenant.pages.users.create-user', [
+        return view('livewire.tenant.pages.user.create-user', [
             'roles' => $roles
         ]);
     }

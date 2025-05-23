@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant\Pages\Users;
+namespace App\Livewire\Tenant\Pages\User;
 
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use App\Models\User;
@@ -16,7 +16,7 @@ class IndexUser extends Component
     {
         $users = User::where('is_audit_partner', false)->paginate(10);
 
-        return view('livewire.tenant.pages.users.index-user', [
+        return view('livewire.tenant.pages.user.index-user', [
             'users' => $users
         ]);
     }

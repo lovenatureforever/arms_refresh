@@ -5,7 +5,7 @@
                 <div class="flex items-center justify-between">
                     <h4 class="card-title">Company List</h4>
                     <div class="flex items-center gap-2">
-                        <a class="btn bg-primary text-white" type="button" {{-- href="{{ route('create.company') }}" --}}>Create</a>
+                        <a class="btn bg-primary text-white" type="button" href="{{ route('companies.create') }}">Create</a>
                     </div>
                 </div>
             </div>

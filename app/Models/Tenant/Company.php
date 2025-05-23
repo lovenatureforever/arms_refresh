@@ -147,6 +147,11 @@ class Company extends Model
         return $this->hasMany(CompanyDividendChange::class);
     }
 
+    public function getNameAttribute()
+    {
+        return $this->detailAtLast()->name ?? null;
+    }
+
     /* public function getLatestDetailBefore($date)
     {
         if (!$date) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tenant\Pages\AuditPartners;
+namespace App\Livewire\Tenant\Pages\AuditPartner;
 
 use Exception;
 use App\Models\User;
@@ -15,7 +15,7 @@ class IndexAuditPartner extends Component
     {
         $auditors = Auditor::with('user', 'licenses')->paginate(10);
 
-        return view('livewire.tenant.pages.audit-partners.index-audit-partner', [
+        return view('livewire.tenant.pages.audit-partner.index-audit-partner', [
             'auditors' => $auditors
         ]);
     }

@@ -10,14 +10,14 @@ use Stancl\Tenancy\Middleware\ScopeSessions;
 use App\Livewire\Shared\Auth\Login;
 use App\Livewire\Tenant\Pages\Dashboard;
 use App\Http\Controllers\AuthController;
-use App\Livewire\Tenant\Pages\Users\IndexUser;
-use App\Livewire\Tenant\Pages\Users\CreateUser;
-use App\Livewire\Tenant\Pages\Users\ShowUser;
-use App\Livewire\Tenant\Pages\AuditPartners\IndexAuditPartner;
-use App\Livewire\Tenant\Pages\AuditPartners\CreateAuditPartner;
-use App\Livewire\Tenant\Pages\AuditPartners\ShowAuditPartner;
+use App\Livewire\Tenant\Pages\User\IndexUser;
+use App\Livewire\Tenant\Pages\User\CreateUser;
+use App\Livewire\Tenant\Pages\User\ShowUser;
+use App\Livewire\Tenant\Pages\AuditPartner\IndexAuditPartner;
+use App\Livewire\Tenant\Pages\AuditPartner\CreateAuditPartner;
+use App\Livewire\Tenant\Pages\AuditPartner\ShowAuditPartner;
 use App\Livewire\Tenant\Pages\AuditFirm\ShowAuditFirm;
-
+use App\Livewire\Tenant\Pages\Company\CreateCompany;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -59,12 +59,12 @@ Route::middleware([
 
         Route::get('/audit-firm', ShowAuditFirm::class)->name('auditfirm.show');
 
-        // Route::prefix('companies')->group(function () {
-        //     Route::get('/', IndexCompany::class)->name('index.company');
-        //     Route::get('/create', CreateCompany::class)->name('create.company');
-        //     Route::get('/{id}', ShowCompany::class)->name('show.company');
+        Route::group(['prefix' => 'companies', 'as' => 'companies.'], function () {
+            // Route::get('/', IndexCompany::class)->name('index');
+            Route::get('/create', CreateCompany::class)->name('create');
+            // Route::get('/{id}', ShowCompany::class)->name('show');
 
-        //     Route::get('/corporate-info/{id}', CorporateInfo::class)->name('corporate.info.index');
-        // });
+            // Route::get('/{id}', CorporateInfo::class)->name('corporate');
+        });
     });
 });
