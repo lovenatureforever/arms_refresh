@@ -147,6 +147,14 @@ class Company extends Model
         return $this->hasMany(CompanyDividendChange::class);
     }
 
+    /**
+     * The company report settings.
+     */
+    public function reportSetting()
+    {
+        return $this->hasOne(CompanyReportSetting::class);
+    }
+
     public function getNameAttribute()
     {
         return $this->detailAtLast()->name ?? null;

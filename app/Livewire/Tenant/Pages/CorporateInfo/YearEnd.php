@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 
 class YearEnd extends Component
 {
@@ -17,6 +18,12 @@ class YearEnd extends Component
 
     #[Locked]
     public $company;
+
+    #[Locked]
+    public $companyDetailAtStart;
+
+    #[Locked]
+    public $companyDetailAtLast;
 
     public $lastIsFirstYear;
     public $lastYearFrom;
@@ -35,37 +42,32 @@ class YearEnd extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $company = Company::find($id);
+        $this->company = Company::with('detailChanges')->find($id);
+        $this->companyDetailAtStart = $this->company->detailAtStart();
+        if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
+            $this->companyDetailAtLast = $this->company->detailAtLast($this->company->reportSetting->report_date);
+        } else {
+            $this->companyDetailAtLast = $this->company->detailAtLast();
+        }
 
-        $this->currentIsFirstYear = $company->current_is_first_year;
-        $this->currentYearFrom = $company->current_year_from->format('Y-m-d');
-        $this->currentYearTo = $company->current_year_to->format('Y-m-d');
-        $this->currentYear = $company->current_year;
-        $this->currentYearType = $company->current_year_type;
-        $this->currentReportHeaderFormat = $company->current_report_header_format;
+        $this->currentIsFirstYear = $this->company->current_is_first_year;
+        $this->currentYearFrom = $this->company->current_year_from->format('Y-m-d');
+        $this->currentYearTo = $this->company->current_year_to->format('Y-m-d');
+        $this->currentYear = $this->company->current_year;
+        $this->currentYearType = $this->company->current_year_type;
+        $this->currentReportHeaderFormat = $this->company->current_report_header_format;
         if (!$this->currentIsFirstYear) {
-            $this->lastIsFirstYear = $company->last_is_first_year;
-            $this->lastYearFrom = $company->last_year_from->format('Y-m-d');
-            $this->lastYearTo = $company->last_year_to->format('Y-m-d');
-            $this->lastYear = $company->last_year;
-            $this->lastYearType = $company->last_year_type;
-            $this->lastReportHeaderFormat = $company->last_report_header_format;
+            $this->lastIsFirstYear = $this->company->last_is_first_year;
+            $this->lastYearFrom = $this->company->last_year_from->format('Y-m-d');
+            $this->lastYearTo = $this->company->last_year_to->format('Y-m-d');
+            $this->lastYear = $this->company->last_year;
+            $this->lastYearType = $this->company->last_year_type;
+            $this->lastReportHeaderFormat = $this->company->last_report_header_format;
         }
     }
 
     public function render()
     {
-        // $director_report_date = CompanyReportSetting::where('company_id', $this->companyId)->where('report_type', 'director_report')->first()->report_date;
-        // $companyLast = CompanyDetailChange::where('company_id', $this->companyId)
-        //     ->when($director_report_date, function ($query, $date) {
-        //         $query->where('effective_date', '<', $date)->latest('effective_date');
-        //     }, function ($query) {
-        //         $query->latest();
-        //     })
-        //     ->first();
-        // $companyFirst = CompanyDetailChange::where('company_id', $this->companyId)->orderBy('created_at')->first();
-        // $companyLast = $companyLast ?? $companyFirst;
-
         return view('livewire.tenant.pages.corporate-info.year-end', []);
     }
 
@@ -73,17 +75,29 @@ class YearEnd extends Component
     {
         DB::beginTransaction();
         try {
-            $company = Company::find($this->companyId);
-            $company->update([
-
+            $this->company->update([
+                'current_is_first_year' => $this->currentIsFirstYear,
+                'current_year_type' => $this->currentYearType,
+                'current_report_header_format' => $this->currentReportHeaderFormat,
+                'current_year' => $this->currentYear,
+                'current_year_from' => $this->currentYearFrom,
+                'current_year_to' => $this->currentYearTo,
+                'last_is_first_year' => $this->lastIsFirstYear,
+                'last_year_type' => $this->lastYearType,
+                'last_report_header_format' => $this->lastReportHeaderFormat,
+                'last_year' => $this->lastYear,
+                'last_year_from' => $this->lastYearFrom,
+                'last_year_to' => $this->lastYearTo,
             ]);
             DB::commit();
 
-            session()->flash('success', 'Year End Info Updated');
+            // session()->flash('success', 'Year End Info Updated');
+            LivewireAlert::withOptions(["position" => "top-end", "icon" => "success", "title" => "Year End Info Updated successfully.", "showConfirmButton" => false, "timer" => 1500])->show();
         } catch (Exception $e) {
             info($e->getMessage());
             DB::rollBack();
-            session()->flash('error', 'System Error. Please Try Again');
+            // session()->flash('error', 'System Error. Please Try Again');
+            LivewireAlert::withOptions(["position" => "top-end", "icon" => "error", "title" => "YSystem Error. Please Try Again.", "showConfirmButton" => false, "timer" => 1500])->show();
         }
     }
 

@@ -122,10 +122,10 @@
                                                     <td class="p-4"><input class="form-input w-36" id="financialYear" type="year" wire:dirty.class="border-yellow-500" wire:model="lastYear" {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
                                                     <td class="p-4">
                                                         <select class="form-select w-36" id="yearPeriod" wire:model.live="lastYearType" wire:dirty.class="border-yellow-500" {{ $lastIsFirstYear || $currentIsFirstYear ? 'disabled' : '' }}>
-                                                            <option>Select</option>
+                                                            <option value="">Select</option>
                                                             <option value="partial year">Partial Year</option>
                                                             <option value="full year">Full Year</option>
-                                                            <option value="first year">First Year</option>
+                                                            <option value="first year" disabled>First Year</option>
                                                         </select>
                                                     </td>
                                                     <td class="p-4">
@@ -146,10 +146,10 @@
                                                     <td class="p-4"><input class="form-input w-36" id="currentFinancialYear" type="year" wire:model="currentYear" wire:dirty.class="border-yellow-500"></td>
                                                     <td class="p-4">
                                                         <select class="form-select w-36" id="currentYearPeriod" wire:model.live="currentYearType" wire:dirty.class="border-yellow-500" {{ $currentIsFirstYear ? 'disabled' : '' }}>
-                                                            <option>Select</option>
+                                                            <option value="">Select</option>
                                                             <option value="partial year">Partial Year</option>
                                                             <option value="full year">Full Year</option>
-                                                            <option value="first year">First Year</option>
+                                                            <option value="first year" disabled>First Year</option>
                                                         </select>
                                                     </td>
                                                     <td class="p-4">
@@ -167,13 +167,13 @@
                                 </div>
                                 <h1 class="text-2xl">Result Summary - as at current report date</h1>
                                 <div class="flex flex-col justify-center w-full">
-                                    {{-- @if ($companyLast)
-                                        <p><span class="text-xl">{{ $companyLast->company_name }}</span></p>
-                                        @if ($companyLast->id != $companyFirst->id)
-                                            <p>(formerly known as <b>{{ $companyFirst->name }}</b>)</p>
+                                    @if ($companyDetailAtLast)
+                                        <p><span class="text-xl">{{ $companyDetailAtLast->name }}</span></p>
+                                        @if ($companyDetailAtLast->id != $companyDetailAtStart->id)
+                                            <p>(formerly known as <b>{{ $companyDetailAtStart->name }}</b>)</p>
                                         @endif
-                                        <p>(incorporated in <span class="font-bold">{{ $companyLast->domicile }}</span>)</p>
-                                    @endif --}}
+                                        <p>(incorporated in <span class="font-bold">{{ $companyDetailAtLast->domicile }}</span>)</p>
+                                    @endif
 
                                     <p><b>REPORTS AND FINANCIAL STATEMENTS</b></p>
                                     <p><b>FOR THE FINANCIAL YEAR END {{ Str::upper(Carbon\Carbon::parse($currentYearTo)->format('d F Y')) }}</b></p>
