@@ -27,7 +27,7 @@ trait HasChangeRecords
         {
             $relation = 'bizAddressChanges';
         }
-        elseif ($name == 'sharecapitalAtStart' || $name == 'sharecapitalChangesCurrentYear')
+        elseif ($name == 'sharecapitalChangesCurrentYear')
         {
             $relation = 'sharecapitalChanges';
         }
@@ -75,7 +75,7 @@ trait HasChangeRecords
 
     public function __call($name, $arguments)
     {
-        if (Str::startsWith($name, ['detail', 'business', 'address', 'bizAddress']))
+        if (Str::startsWith($name, ['detail', 'business', 'address', 'bizAddress', 'sharecapital']))
         {
             return $this->handleChangeRecordMethods($name, $arguments);
         }

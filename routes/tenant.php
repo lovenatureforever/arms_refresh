@@ -7,6 +7,7 @@ use App\Livewire\Tenant\Pages\CorporateInfo\BusinessNature;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyAddress;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
+use App\Livewire\Tenant\Pages\CorporateInfo\ShareCapital;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -83,7 +84,7 @@ Route::middleware([
             Route::get('/business-nature', BusinessNature::class)->name('businessnature');
             Route::get('/company-address', CompanyAddress::class)->name('companyaddress');
             Route::get('/business-address', BusinessAddress::class)->name('businessaddress');
-            Route::get('/share-capital', YearEnd::class)->name('sharecapital');
+            Route::get('/share-capital', ShareCapital::class)->name('sharecapital');
             Route::get('/directors', YearEnd::class)->name('directors');
             Route::get('/shareholders', YearEnd::class)->name('shareholders');
             Route::get('/secretaries', YearEnd::class)->name('secretaries');

@@ -160,6 +160,16 @@ class Company extends Model
         return $this->detailAtLast()->name ?? null;
     }
 
+    public function ordinaryShareCapitalAtStart()
+    {
+        return $this->sharecapitalChanges()->where('effective_date', '<=', $this->current_year_from)->where('share_type', 'Ordinary shares')->latest('effective_date')->first();
+    }
+
+    public function preferenceShareCapitalAtStart()
+    {
+        return $this->sharecapitalChanges()->where('effective_date', '<=', $this->current_year_from)->where('share_type', 'Preference shares')->latest('effective_date')->first();
+    }
+
     /* public function getLatestDetailBefore($date)
     {
         if (!$date) {

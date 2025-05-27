@@ -3,8 +3,10 @@
 namespace App\Livewire\Tenant\Pages\Company;
 
 use App\Models\Tenant\CompanyAddressChange;
+use App\Models\Tenant\CompanyBizAddressChange;
 use App\Models\Tenant\CompanyBusinessChange;
 use App\Models\Tenant\CompanyDetailChange;
+use App\Models\Tenant\CompanyShareCapitalChange;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
@@ -172,6 +174,47 @@ class CreateCompany extends Component
                 'postcode' => '',
                 'town' => '',
                 'state' => '',
+                'effective_date' => '2000-01-01',
+                'remarks' => '',
+            ]);
+
+            CompanyBizAddressChange::create([
+                'company_id' => $company->id,
+                'change_nature' => 'initial',
+                'country' => 'Malaysia',
+                'address_line1' => '',
+                'address_line2' => '',
+                'address_line3' => '',
+                'postcode' => '',
+                'town' => '',
+                'state' => '',
+                'effective_date' => '2000-01-01',
+                'remarks' => '',
+            ]);
+
+            CompanyShareCapitalChange::create([
+                'company_id' => $company->id,
+                'share_type' => 'Ordinary shares',
+                'allotment_type' => 'Cash allotment',
+                'issuance_term' => 'Cash',
+                'issuance_purpose' => 'Working Capital',
+                'fully_paid_shares' => 0,
+                'fully_paid_amount' => 0,
+                'partially_paid_shares' => 0,
+                'partially_paid_amount' => 0,
+                'effective_date' => '2000-01-01',
+                'remarks' => '',
+            ]);
+            CompanyShareCapitalChange::create([
+                'company_id' => $company->id,
+                'share_type' => 'Preference shares',
+                'allotment_type' => 'Cash allotment',
+                'issuance_term' => 'Cash',
+                'issuance_purpose' => 'Working Capital',
+                'fully_paid_shares' => 0,
+                'fully_paid_amount' => 0,
+                'partially_paid_shares' => 0,
+                'partially_paid_amount' => 0,
                 'effective_date' => '2000-01-01',
                 'remarks' => '',
             ]);
