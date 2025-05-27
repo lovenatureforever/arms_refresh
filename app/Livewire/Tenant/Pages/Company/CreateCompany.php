@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tenant\Pages\Company;
 
+use App\Models\Tenant\CompanyAddressChange;
 use App\Models\Tenant\CompanyBusinessChange;
 use App\Models\Tenant\CompanyDetailChange;
 use Exception;
@@ -157,6 +158,20 @@ class CreateCompany extends Component
                 'company_id' => $company->id,
                 'paragraph1' => '',
                 'paragraph2' => '',
+                'effective_date' => '2000-01-01',
+                'remarks' => '',
+            ]);
+
+            CompanyAddressChange::create([
+                'company_id' => $company->id,
+                'change_nature' => 'initial',
+                'country' => 'Malaysia',
+                'address_line1' => '',
+                'address_line2' => '',
+                'address_line3' => '',
+                'postcode' => '',
+                'town' => '',
+                'state' => '',
                 'effective_date' => '2000-01-01',
                 'remarks' => '',
             ]);

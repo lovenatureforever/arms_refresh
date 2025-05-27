@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Livewire\Tenant\Pages\CorporateInfo\BusinessNature;
+use App\Livewire\Tenant\Pages\CorporateInfo\CompanyAddress;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
 use Illuminate\Support\Facades\Route;
@@ -79,7 +80,7 @@ Route::middleware([
             Route::get('/year-end', YearEnd::class)->name('yearend');
             Route::get('/company-name', CompanyName::class)->name('companyname');
             Route::get('/business-nature', BusinessNature::class)->name('businessnature');
-            Route::get('/company-address', YearEnd::class)->name('companyaddress');
+            Route::get('/company-address', CompanyAddress::class)->name('companyaddress');
             Route::get('/business-address', YearEnd::class)->name('businessaddress');
             Route::get('/share-capital', YearEnd::class)->name('sharecapital');
             Route::get('/directors', YearEnd::class)->name('directors');

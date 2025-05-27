@@ -75,7 +75,7 @@ trait HasChangeRecords
 
     public function __call($name, $arguments)
     {
-        if (Str::startsWith($name, ['detail', 'business']))
+        if (Str::startsWith($name, ['detail', 'business', 'address']))
         {
             return $this->handleChangeRecordMethods($name, $arguments);
         }

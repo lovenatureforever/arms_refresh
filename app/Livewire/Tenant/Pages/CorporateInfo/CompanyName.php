@@ -34,7 +34,7 @@ class CompanyName extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $this->company = Company::with('detailChanges', 'reportSetting')->find($this->id);
+        $this->company = Company::with(['detailChanges', 'reportSetting'])->find($this->id);
         $this->registrationNo = $this->company->registration_no;
         $this->registrationNoOld = $this->company->registration_no_old;
     }
