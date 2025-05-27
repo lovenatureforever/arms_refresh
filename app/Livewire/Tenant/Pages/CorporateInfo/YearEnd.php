@@ -42,7 +42,7 @@ class YearEnd extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $this->company = Company::with('detailChanges')->find($id);
+        $this->company = Company::with('detailChanges', 'reportSetting')->find($id);
         $this->companyDetailAtStart = $this->company->detailAtStart();
         if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
             $this->companyDetailAtLast = $this->company->detailAtLast($this->company->reportSetting->report_date);
@@ -68,7 +68,7 @@ class YearEnd extends Component
 
     public function render()
     {
-        return view('livewire.tenant.pages.corporate-info.year-end', []);
+        return view('livewire.tenant.pages.corporate-info.year-end', [])->layout('layouts.corporate', ['id' => $this->id]);
     }
 
     public function submit()

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tenant\Pages\Company;
 
+use App\Models\Tenant\CompanyBusinessChange;
 use App\Models\Tenant\CompanyDetailChange;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -150,6 +151,14 @@ class CreateCompany extends Component
                 'functional_currency_code' => 'RM',
                 'domicile' => 'Malaysia',
                 'effective_date' => '2000-01-01',
+            ]);
+
+            CompanyBusinessChange::create([
+                'company_id' => $company->id,
+                'paragraph1' => '',
+                'paragraph2' => '',
+                'effective_date' => '2000-01-01',
+                'remarks' => '',
             ]);
 
             DB::commit();

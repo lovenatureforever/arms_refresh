@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('company_business_changes', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             // $table->boolean('is_year_start')->default(false);
             $table->string('paragraph1')->nullable();

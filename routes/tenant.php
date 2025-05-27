@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Tenant\Pages\CorporateInfo\BusinessNature;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
+use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -75,6 +77,18 @@ Route::middleware([
 
             // Serve the YearEnd Livewire component
             Route::get('/year-end', YearEnd::class)->name('yearend');
+            Route::get('/company-name', CompanyName::class)->name('companyname');
+            Route::get('/business-nature', BusinessNature::class)->name('businessnature');
+            Route::get('/company-address', YearEnd::class)->name('companyaddress');
+            Route::get('/business-address', YearEnd::class)->name('businessaddress');
+            Route::get('/share-capital', YearEnd::class)->name('sharecapital');
+            Route::get('/directors', YearEnd::class)->name('directors');
+            Route::get('/shareholders', YearEnd::class)->name('shareholders');
+            Route::get('/secretaries', YearEnd::class)->name('secretaries');
+            Route::get('/auditor', YearEnd::class)->name('auditor');
+            Route::get('/charges', YearEnd::class)->name('charges');
+            Route::get('/dividends', YearEnd::class)->name('dividends');
+            Route::get('/report-info', YearEnd::class)->name('reportinfo');
         });
     });
 });
