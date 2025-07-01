@@ -36,20 +36,31 @@ class CompanyDirectorChange extends Model
         return $this->belongsTo(CompanyDirector::class);
     }
 
+    public function getFullAddressAttribute()
+    {
+        $parts = array_filter([
+            $this->address_line1,
+            $this->address_line2,
+            $this->address_line3,
+            trim(implode(' ', array_filter([$this->postcode, $this->town]))),
+            $this->state,
+        ]);
+
+        return implode(", ", $parts);
+    }
+
     public const CHANGE_NATURE_DIRECTOR_APPOINTED = 'Director appointed';
     public const CHANGE_NATURE_DIRECTOR_RESIGNED = 'Director resigned';
     public const CHANGE_NATURE_DIRECTOR_DECEASED = 'Director deceased';
     public const CHANGE_NATURE_DIRECTOR_RETIRED = 'Director retired';
-    public const CHANGE_NATURE_CHANGED_OF_PASSPORT = 'Changed of passport';
+    public const CHANGE_NATURE_CHANGED_OF_ID = 'Changed of ID';
     public const CHANGE_NATURE_CHANGED_OF_ADDRESS = 'Changed of director address';
-    public const CHANGE_NATURE_CHANGED_OF_IC = 'Changed of IC';
     public static $changeNatures = [
         self::CHANGE_NATURE_DIRECTOR_APPOINTED,
         self::CHANGE_NATURE_DIRECTOR_RESIGNED,
         self::CHANGE_NATURE_DIRECTOR_DECEASED,
         self::CHANGE_NATURE_DIRECTOR_RETIRED,
-        self::CHANGE_NATURE_CHANGED_OF_PASSPORT,
+        self::CHANGE_NATURE_CHANGED_OF_ID,
         self::CHANGE_NATURE_CHANGED_OF_ADDRESS,
-        self::CHANGE_NATURE_CHANGED_OF_IC,
     ];
 }

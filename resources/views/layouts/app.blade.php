@@ -60,6 +60,7 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cleave.js"></script>
+    <script src="https://unpkg.com/@wotz/livewire-sortablejs@1.0.0/dist/livewire-sortable.js"></script>
     @livewireScripts
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

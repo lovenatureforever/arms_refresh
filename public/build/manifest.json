@@ -155,10 +155,9 @@
     "css": [
       "assets/app-fb658d82.css"
     ],
-    "file": "assets/app-d6cfc212.js",
+    "file": "assets/app-ced4b72d.js",
     "imports": [
-      "__commonjsHelpers-725317a4.js",
-      "_sweetalert2.all-a121887f.js"
+      "__commonjsHelpers-725317a4.js"
     ],
     "isEntry": true,
     "src": "resources/js/app.js"
@@ -385,7 +384,7 @@
     "src": "resources/js/pages/table-gridjs.js"
   },
   "resources/scss/app.scss": {
-    "file": "assets/app-494212cd.css",
+    "file": "assets/app-f162099a.css",
     "isEntry": true,
     "src": "resources/scss/app.scss"
   },

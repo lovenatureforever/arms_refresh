@@ -52,6 +52,15 @@ class Company extends Model
         return $this->hasMany(CompanyDetailChange::class);
     }
 
+    public function getEndDateReportAttribute()
+    {
+        $date = $this->current_year_to;
+        if ($this->reportSetting && $this->reportSetting->report_date) {
+            $date = $this->reportSetting->report_date;
+        }
+        return $date;
+    }
+
     /**
      * The company business changes.
      */
@@ -90,6 +99,11 @@ class Company extends Model
     public function directors()
     {
         return $this->hasMany(CompanyDirector::class);
+    }
+
+    public function activeDirectors()
+    {
+        return $this->hasMany(CompanyDirector::class)->where('is_active', true)->orderBy('sort');
     }
 
     /**

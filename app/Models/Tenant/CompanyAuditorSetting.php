@@ -28,8 +28,8 @@ class CompanyAuditorSetting extends Model
         'is_show_firm_email',
         'is_show_firm_fax',
         'is_firm_address_uppercase',
-        'seleted_firm_address',
-        'seleted_auditor_license',
+        'selected_firm_address',
+        'selected_auditor_license',
     ];
 
     protected $casts = [

@@ -9,7 +9,7 @@ import '../../vendor/rappasoft/laravel-livewire-tables/resources/imports/laravel
 import "@frostui/tailwindcss";
 
 import feather from 'feather-icons';
-import 'livewire-sortable';
+// import 'livewire-sortable';
 // import Swal from 'sweetalert2';
 
 // window.Swal = Swal;

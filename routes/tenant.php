@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Livewire\Tenant\Pages\CorporateInfo\BusinessAddress;
 use App\Livewire\Tenant\Pages\CorporateInfo\BusinessNature;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyAddress;
+use App\Livewire\Tenant\Pages\CorporateInfo\Director;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
 use App\Livewire\Tenant\Pages\CorporateInfo\ShareCapital;
@@ -85,7 +86,7 @@ Route::middleware([
             Route::get('/company-address', CompanyAddress::class)->name('companyaddress');
             Route::get('/business-address', BusinessAddress::class)->name('businessaddress');
             Route::get('/share-capital', ShareCapital::class)->name('sharecapital');
-            Route::get('/directors', YearEnd::class)->name('directors');
+            Route::get('/directors', Director::class)->name('directors');
             Route::get('/shareholders', YearEnd::class)->name('shareholders');
             Route::get('/secretaries', YearEnd::class)->name('secretaries');
             Route::get('/auditor', YearEnd::class)->name('auditor');

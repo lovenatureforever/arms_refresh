@@ -18,7 +18,7 @@ class CompanyDirector extends Model
         'id_type',
         'id_no',
         'gender',
-        'set_to_report',
+        // 'set_to_report',
         // 'is_rep_statutory',
         // 'is_rep_statement',
         // 'is_cover_page',
@@ -42,7 +42,7 @@ class CompanyDirector extends Model
      */
     public function alternate()
     {
-        return $this->belongsTo(CompanyDirector::class, 'alternate_to_id');
+        return $this->belongsTo(CompanyDirector::class, 'alternate_id');
     }
 
     /**
@@ -51,6 +51,24 @@ class CompanyDirector extends Model
     public function changes()
     {
         return $this->hasMany(CompanyDirectorChange::class);
+    }
+
+    public function latestChange()
+    {
+        return $this->hasOne(CompanyDirectorChange::class)->latest('effective_date');
+    }
+
+    public function isInactive()
+    {
+        $inactiveStatuses = [
+            CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_RETIRED,
+            CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_RESIGNED,
+            CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_DECEASED,
+        ];
+
+        $latestChange = $this->latestChange;
+
+        return $latestChange && in_array($latestChange->change_nature, $inactiveStatuses);
     }
 
     public const DESIGNATION_DIRECTOR = 'Director';
