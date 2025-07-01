@@ -71,13 +71,30 @@ class Director extends Component
         return view('livewire.tenant.pages.corporate-info.director', ['end_date' => $date]);
     }
 
-    public function deleteDirector($id)
+    public function deleteDirectorChange($id)
     {
         $res = CompanyDirectorChange::find($id);
         if ($res) {
+            if ($res->change_nature == CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED) {
+                // If the change is an appointment, we need to delete the director as well
+                $director = $res->companyDirector;
+                if ($director) {
+                    $current_year_changes = $director->changes()
+                        ->where('change_nature', '!=', CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED)
+                        ->whereBetween('effective_date', [$this->company->current_year_from, $this->company->end_date_report])
+                        ->count();
+                    if ($current_year_changes == 0) {
+                        $director->delete();
+                    }
+                    else {
+                        LivewireAlert::withOptions(["position" => "top-end", "icon" => "error", "title" => "This item cannot be deleted, as it has related changes.", "showConfirmButton" => false, "timer" => 1500])->show();
+                        return;
+                    }
+                }
+            }
             $res->delete();
             // session()->flash('success', 'Address Deleted');
-            LivewireAlert::withOptions(["position" => "top-end", "icon" => "success", "title" => "Company Director Deleted successfully.", "showConfirmButton" => false, "timer" => 1500])->show();
+            LivewireAlert::withOptions(["position" => "top-end", "icon" => "success", "title" => "Company Director Change Deleted successfully.", "showConfirmButton" => false, "timer" => 1500])->show();
         }
     }
 

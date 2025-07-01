@@ -164,5 +164,12 @@
             e.mask(t)
         }
         );
+
+        flatpickr('#effectiveDate', {
+            dateFormat: "Y-m-d",
+            minDate: "{{ $company->current_year_from }}",
+            defaultDate: "{{ $effectiveDate ?? now()->format('Y-m-d') }}",
+            maxDate: "{{ $company->current_year_to }}"
+        });
     </script>
 @endscript

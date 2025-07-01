@@ -92,18 +92,20 @@
 
 
                             <div class="relative mb-4 overflow-x-auto border rounded-lg">
-                                <div class="grid grid-cols-6 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <div class="grid grid-cols-7 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <div class="flex items-center justify-start p-4 border-r">Name</div>
                                     <div class="flex items-center justify-start p-4 border-r ">Designation</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Alternate To</div>
                                     <div class="flex items-center justify-start p-4 border-r">Id No.</div>
                                     <div class="flex items-center justify-start p-4 border-r">Address</div>
                                     <div class="flex items-center justify-start p-4 border-r">Remark</div>
                                     <div class="flex items-center justify-start p-4">Action</div>
                                 </div>
                                 @foreach ($directorChangesAtStart as $directorChange)
-                                <div class="grid grid-cols-6">
+                                <div class="grid grid-cols-7">
                                     <div class="p-4 border-b border-r">{{ $directorChange->companyDirector->name }}</div>
                                     <div class="p-4 border-b border-r">{{ $directorChange->companyDirector->designation }}</div>
+                                    <div class="p-4 border-b border-r">{{ $directorChange->companyDirector->alternate?->name }}</div>
                                     <div class="p-4 border-b border-r">{{ $directorChange->id_no }} ({{$directorChange->id_type}})</div>
                                     <div class="p-4 border-b border-r">
                                         {{ $directorChange->full_address }}
@@ -132,10 +134,11 @@
                             </div>
 
                             <div class="relative mb-4 overflow-x-auto border rounded-lg">
-                                <div class="grid grid-cols-8 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <div class="grid grid-cols-9 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <div class="flex items-center justify-start p-4 border-r">Name</div>
                                     <div class="flex items-center justify-start p-4 border-r ">Nature Of Change</div>
                                     <div class="flex items-center justify-start p-4 border-r ">Designation</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Alternate To</div>
                                     <div class="flex items-center justify-start p-4 border-r">Id No.</div>
                                     <div class="flex items-center justify-start p-4 border-r">Address</div>
                                     <div class="flex items-center justify-start p-4 border-r">Remark</div>
@@ -143,19 +146,32 @@
                                     <div class="flex items-center justify-start p-4">Action</div>
                                 </div>
                                 @foreach ($directorChangesCurrentYear as $directorChange)
-                                <div class="grid grid-cols-8">
+                                <div class="grid grid-cols-9">
                                     <div class="p-4 border-b border-r">{{ $directorChange->companyDirector->name }}</div>
                                     <div class="p-4 border-b border-r">{{ $directorChange->change_nature }}</div>
-                                    <div class="p-4 border-b border-r">{{ $directorChange->companyDirector->designation }}</div>
-                                    <div class="p-4 border-b border-r">{{ $directorChange->id_no }} ({{$directorChange->id_type}})</div>
+                                    <div class="p-4 border-b border-r">
+                                        @if ($directorChange->change_nature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED)
+                                            {{ $directorChange->companyDirector->designation }}
+                                        @endif
+                                    </div>
+                                    <div class="p-4 border-b border-r">
+                                        @if ($directorChange->change_nature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED)
+                                        {{ $directorChange->companyDirector->alternate?->name }}
+                                        @endif
+                                    </div>
+                                    <div class="p-4 border-b border-r">
+                                        @if ($directorChange->id_no && $directorChange->id_type)
+                                            {{ $directorChange->id_no }} ({{$directorChange->id_type}})
+                                        @endif
+                                    </div>
                                     <div class="p-4 border-b border-r">
                                         {{ $directorChange->full_address }}
                                     </div>
                                     <div class="p-4 border-b border-r">{{ $directorChange->remarks }}</div>
                                     <div class="p-4 border-b border-r">{{ $directorChange->effective_date->format('Y-m-d') }}</div>
                                     <div class="p-4 border-b">
-                                        <button class="text-white btn btn-sm bg-info" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.director-modal', arguments: { companyId : {{ $this->id }}, 'id' : {{ $directorChange->companyDirector->id }}, isStart: false }})">Edit</button>
-                                        <button class="text-white btn btn-sm bg-danger" type="button" wire:click="deleteDirector({{ $directorChange->companyDirector->id }})"
+                                        <button class="text-white btn btn-sm bg-info" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.director-modal', arguments: { companyId : {{ $this->id }}, 'id' : {{ $directorChange->id }}, isStart: false }})">Edit</button>
+                                        <button class="text-white btn btn-sm bg-danger" type="button" wire:click="deleteDirectorChange({{ $directorChange->id }})"
                                             wire:confirm="Are you sure you want to delete this?">
                                             Delete
                                         </button>

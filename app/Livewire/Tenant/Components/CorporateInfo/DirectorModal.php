@@ -4,6 +4,7 @@ namespace App\Livewire\Tenant\Components\CorporateInfo;
 
 
 use App\Livewire\Tenant\Pages\CorporateInfo\Director;
+use App\Models\Tenant\Company;
 use App\Models\Tenant\CompanyDirector;
 use App\Models\Tenant\CompanyDirectorChange;
 use Livewire\Component;
@@ -74,8 +75,12 @@ class DirectorModal extends ModalComponent
 
     public $directors;
 
+    #[Locked]
+    public $company;
+
     public function mount($companyId, $id = null, $isStart)
     {
+        $this->company = Company::find($companyId);
         $this->country = 'Malaysia';
         $this->idType = CompanyDirector::ID_TYPE_MYKAD;
         $this->changeNature = CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED;
@@ -110,7 +115,7 @@ class DirectorModal extends ModalComponent
     public function render()
     {
         $this->directors = CompanyDirector::where('company_id', $this->companyId)
-            ->where('is_active', true)
+            // ->where('is_active', true)
             ->orderBy('sort')
             ->get();
         return view('livewire.tenant.components.corporate-info.director-modal');
