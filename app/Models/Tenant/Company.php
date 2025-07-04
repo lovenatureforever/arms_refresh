@@ -101,11 +101,6 @@ class Company extends Model
         return $this->hasMany(CompanyDirector::class);
     }
 
-    public function activeDirectors()
-    {
-        return $this->hasMany(CompanyDirector::class)->where('is_active', true)->orderBy('sort');
-    }
-
     /**
      * The company director changes.
      */

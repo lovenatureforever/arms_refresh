@@ -53,11 +53,6 @@ class CompanyDirector extends Model
         return $this->hasMany(CompanyDirectorChange::class);
     }
 
-    public function latestChange()
-    {
-        return $this->hasOne(CompanyDirectorChange::class)->latest('effective_date');
-    }
-
     public function isInactive()
     {
         $inactiveStatuses = [
@@ -66,7 +61,10 @@ class CompanyDirector extends Model
             CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_DECEASED,
         ];
 
-        $latestChange = $this->latestChange;
+        $latestChange = $this->changes()
+                            ->where('effective_date', '<=', $this->company->end_date_report)
+                            ->latest('effective_date')
+                            ->first();
 
         return $latestChange && in_array($latestChange->change_nature, $inactiveStatuses);
     }

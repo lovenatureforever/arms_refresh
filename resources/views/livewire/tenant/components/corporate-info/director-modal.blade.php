@@ -30,7 +30,7 @@
                 @if (!$isStart)
                     <div class="">
                         <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="changeNature">Nature of Change</label>
-                        <select class="form-input" id="changeNature" name="changeNature" wire:model.live="changeNature">
+                        <select class="form-input" id="changeNature" name="changeNature" wire:model.live="changeNature" {{ $id ? 'disabled' : '' }}>
                             @foreach (App\Models\Tenant\CompanyDirectorChange::$changeNatures as $c)
                             <option value="{{ $c }}">{{ $c }}</option>
                             @endforeach
@@ -42,7 +42,7 @@
                     @if ($changeNature == "Director appointed")
                         <input class="form-input" id="input-name" type="text" wire:model="name">
                     @else
-                        <select class="form-input" id="select-name" wire:model="selectedDirector">
+                        <select class="form-input" id="select-name" wire:model="selectedDirector" {{ $id ? 'disabled' : '' }}>
                             <option value="">Select director</option>
                             @foreach ($directors as $director)
                             <option value="{{ $director->id }}">{{ $director->name }}</option>
@@ -68,7 +68,7 @@
                         </div>
                     @endif
 
-                    @if ($designation == App\Models\Tenant\CompanyDirector::DESIGNATION_ALTERNATEDIRECTOR)
+                    @if ($changeNature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED && $designation == App\Models\Tenant\CompanyDirector::DESIGNATION_ALTERNATEDIRECTOR)
                         <div>
                             <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="alternateTo">Alternate To</label>
                             <select class="form-input" id="alternateTo" name="alternateTo" wire:model="alternateTo">

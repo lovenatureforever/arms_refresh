@@ -17,6 +17,7 @@ class CompanyShareholder extends Model
         'type',
         'id_type',
         'id_no',
+        'company_domicile',
         'is_active',
         // 'effective_date',
     ];
@@ -33,6 +34,11 @@ class CompanyShareholder extends Model
     public function director()
     {
         return $this->belongsTo(CompanyDirector::class);
+    }
+
+    public function related_directors()
+    {
+        return $this->belongsToMany(CompanyDirector::class);
     }
 
     /**

@@ -24,9 +24,9 @@ class CompanyShareholderChange extends Model
         // 'is_year_start' => 'boolean',
     ];
 
-    public function companyDirector()
+    public function companyShareholder()
     {
-        return $this->belongsTo(CompanyDirector::class);
+        return $this->belongsTo(CompanyShareholder::class);
     }
 
     public const CHANGE_NATURE_ALLOT = 'Allot';

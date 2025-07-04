@@ -36,15 +36,22 @@ function format_number($number)
 
 function readNumber($value)
 {
-    // Remove commas
     $value = str_replace(',', '', $value);
 
-    // Check if the input has parentheses (accounting format for negative)
     if (preg_match('/^\((.*)\)$/', $value, $matches)) {
-        return -1 * abs((float) $matches[1]);
+        $value = $matches[1];
+        $isNegative = true;
+    } else {
+        $isNegative = false;
     }
 
-    return (float) $value;
+    // Validate if $value is a valid number
+    if (!is_numeric($value)) {
+        return null;
+    }
+
+    $number = (float) $value;
+    return $isNegative ? -abs($number) : $number;
 }
 
 function displayNumber($value)
@@ -54,6 +61,7 @@ function displayNumber($value)
     }
 
     $number = floatval($value);
+    if ($number === 0) return '-';
     $formatted = number_format(abs($number), 2); // Format with 2 decimal places
     $formatted = preg_replace('/\.?0+$/', '', $formatted);
     // Format negative numbers with parentheses

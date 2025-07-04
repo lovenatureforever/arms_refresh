@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->string('id_type')->nullable();
             $table->string('id_no')->nullable();
+            $table->string('company_domicile')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();

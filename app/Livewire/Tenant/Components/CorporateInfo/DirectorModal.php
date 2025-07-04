@@ -261,16 +261,14 @@ class DirectorModal extends ModalComponent
             }
             // When the nature of change is not director appointed.
             else {
-                if ($this->directorChange->change_nature === CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED) {
-                    $this->directorChange->companyDirector->update([
-                        'is_active' => false,
-                    ]);
-                }
-
+                // if ($this->directorChange->change_nature === CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED) {
+                //     $this->directorChange->companyDirector->update([
+                //         'is_active' => false,
+                //     ]);
+                // }
+                $current_director = CompanyDirector::where('id', $this->selectedDirector)->first();
                 if ($this->changeNature === CompanyDirectorChange::CHANGE_NATURE_CHANGED_OF_ID) {
-                    $current_director = CompanyDirector::where('id', $this->selectedDirector)->first();
-                    $this->directorChange = CompanyDirectorChange::find($this->id)->update([
-                        'company_id' => $this->companyId,
+                    $this->directorChange->update([
                         'company_director_id' => $current_director->id,
                         'change_nature' => $this->changeNature,
                         'id_type' => $this->idType,
@@ -293,14 +291,36 @@ class DirectorModal extends ModalComponent
                         ]);
                     }
                 } else if ($this->changeNature === CompanyDirectorChange::CHANGE_NATURE_CHANGED_OF_ADDRESS) {
-                    $current_director = CompanyDirector::where('id', $this->selectedDirector)->first();
-                    $this->directorChange->companyDirector()->associate($current_director);
+                    $this->directorChange->update([
+                        'company_director_id' => $current_director->id,
+                        'address_line1' => $this->addressLine1,
+                        'address_line2' => $this->addressLine2,
+                        'address_line3' => $this->addressLine3,
+                        'postcode' => $this->postcode,
+                        'town' => $this->town,
+                        'state' => $this->state,
+                        'country' => $this->country,
+                        'effective_date' => $this->effectiveDate,
+                        'remarks' => $this->remarks,
+                    ]);
                 } else {
-                    // For other change natures, we just update the effective date and remarks
+                    // For other change natures, resigned, deceased, etc.
+                    $this->directorChange->update([
+                        'company_director_id' => $current_director->id,
+                        'change_nature' => $this->changeNature,
+                        'effective_date' => $this->effectiveDate,
+                        'remarks' => $this->remarks,
+                    ]);
+                }
+
+                if ($current_director->isInactive()) {
+                    $current_director->is_active = false;
+                    $current_director->save();
+                } else {
+                    $current_director->is_active = true;
+                    $current_director->save();
                 }
             }
-            $this->directorChange->companyDirector()->associate($this->directorChange->companyDirector);
-            $this->directorChange->companyDirector->save();
 
             $this->closeModalWithEvents([
                 Director::class => 'successUpdated'

@@ -93,6 +93,10 @@ class Director extends Component
                 }
             }
             $res->delete();
+            if (!$res->companyDirector->isInactive())
+            {
+                $res->companyDirector->update(['is_active' => true]);
+            }
             // session()->flash('success', 'Address Deleted');
             LivewireAlert::withOptions(["position" => "top-end", "icon" => "success", "title" => "Company Director Change Deleted successfully.", "showConfirmButton" => false, "timer" => 1500])->show();
         }
