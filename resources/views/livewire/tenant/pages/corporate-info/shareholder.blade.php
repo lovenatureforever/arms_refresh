@@ -114,7 +114,7 @@
                                         <button
                                             class="text-white btn btn-sm bg-danger"
                                             type="button"
-                                            wire:click="deleteCompanyShareholder({{ $shareholderChange->companyShareholder->id }})"
+                                            wire:click="deleteShareholderChange({{ $shareholderChange->id }})"
                                             wire:confirm="Are you sure you want to delete this?"
                                         >
                                             Delete
@@ -195,10 +195,14 @@
                                         <div class="p-2 border-r">{{ displayNumber($i['cf']) }}</div>
                                         <div class="p-2 border-r">{{ $i['percentage'] }}</div>
                                         <div class="p-2 border-r justify-center">
-                                            <input class="form-switch" type="checkbox" role="switch" disabled {{ $i['isDirector'] ? 'checked' : ''}}>
+                                            @if ($i['isDirector'])
+                                                <i class="mgc_check_2_fill text-xl"></i>
+                                            @endif
                                         </div>
                                         <div class="p-2 border-r">
-                                            <input class="form-switch" type="checkbox" role="switch" disabled {{ $i['isHoldingCompany'] ? 'checked' : ''}}>
+                                            @if ($i['isHoldingCompany'])
+                                                <i class="mgc_check_2_fill text-xl"></i>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -225,10 +229,14 @@
                                         <div class="p-2 border-r">{{ displayNumber($i['cf']) }}</div>
                                         <div class="p-2 border-r">{{ $i['percentage'] }}</div>
                                         <div class="p-2 border-r">
-                                            <input class="form-switch" type="checkbox" role="switch" disabled {{ $i['isDirector'] ? 'checked' : ''}}>
+                                            @if ($i['isDirector'])
+                                                <i class="mgc_check_2_fill text-xl"></i>
+                                            @endif
                                         </div>
                                         <div class="p-2 border-r">
-                                            <input class="form-switch" type="checkbox" role="switch" disabled {{ $i['isHoldingCompany'] ? 'checked' : ''}}>
+                                            @if ($i['isHoldingCompany'])
+                                                <i class="mgc_check_2_fill text-xl"></i>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach

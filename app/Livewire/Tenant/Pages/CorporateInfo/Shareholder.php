@@ -83,7 +83,7 @@ class Shareholder extends Component
 
         $this->shareholderChangesCurrentYear = $this->company->shareholderChangesCurrentYear();
         $this->resultSummary = $this->calculateResult();
-        return view('livewire.tenant.pages.corporate-info.shareholder', ['end_date' => $date]);
+        return view('livewire.tenant.pages.corporate-info.shareholder');
     }
 
     public function deleteShareholderChange($id)

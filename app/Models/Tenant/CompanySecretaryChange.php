@@ -22,15 +22,17 @@ class CompanySecretaryChange extends Model
         // 'is_year_start' => 'boolean',
     ];
 
-    public function companyDirector()
+    public function companySecretary()
     {
-        return $this->belongsTo(CompanyDirector::class);
+        return $this->belongsTo(CompanySecretary::class);
     }
 
     public const CHANGE_NATURE_SECRETARY_APPOINTED = 'Secretary appointed';
     public const CHANGE_NATURE_SECRETARY_RESIGNED = 'Secretary resigned';
+    public const CHANGE_NATURE_SECRETARY_DECEASED = 'Secretary deceased';
     public static $changeNatures = [
         self::CHANGE_NATURE_SECRETARY_APPOINTED,
         self::CHANGE_NATURE_SECRETARY_RESIGNED,
+        self::CHANGE_NATURE_SECRETARY_DECEASED,
     ];
 }
