@@ -74,6 +74,19 @@ class Secretaries extends Component
     {
         $res = CompanySecretaryChange::find($id);
         if ($res) {
+            if ($res->change_nature == CompanySecretaryChange::CHANGE_NATURE_SECRETARY_APPOINTED) {
+                $secretary = $res->companySecretary;
+                if ($secretary) {
+                    $secretary->is_active = false;
+                    $secretary->save();
+                }
+            } else {
+                $secretary = $res->companySecretary;
+                if ($secretary) {
+                    $secretary->is_active = true;
+                    $secretary->save();
+                }
+            }
             $res->delete();
             // session()->flash('success', 'Address Deleted');
             LivewireAlert::withOptions(["position" => "top-end", "icon" => "success", "title" => "Company Secretary Change Deleted successfully.", "showConfirmButton" => false, "timer" => 1500])->show();

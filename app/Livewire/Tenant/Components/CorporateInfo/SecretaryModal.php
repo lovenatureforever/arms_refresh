@@ -89,8 +89,9 @@ class SecretaryModal extends ModalComponent
     public function render()
     {
         $this->secretaries = CompanySecretary::where('company_id', $this->companyId)
-            // ->where('is_active', true)
+            ->where('is_active', true)
             ->get();
+        if ($this->secretary) $this->secretaries->add($this->secretary);
         return view('livewire.tenant.components.corporate-info.secretary-modal');
     }
 
@@ -197,7 +198,6 @@ class SecretaryModal extends ModalComponent
                 $start = $appointed->gt($start) ? $appointed : $start;
             }
         }
-        Log::info('start: ' . $start->format('Y-m-d'));
         $this->validateOnly('effectiveDate', [
             'effectiveDate' => [
                 'required',

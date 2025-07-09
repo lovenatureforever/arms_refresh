@@ -24,7 +24,7 @@ return new class extends Migration
             $table->date('registration_date')->nullable();
             $table->date('discharge_date')->nullable();
             $table->string('charge_nature')->nullable();
-            $table->string('cargee_name')->nullable();
+            $table->string('chargee_name')->nullable();
             $table->decimal('indebtedness_amount', 8, 2)->nullable();
             $table->date('effective_date')->nullable();
             $table->string('remarks')->nullable();

@@ -43,10 +43,10 @@ trait HasChangeRecords
         {
             $relation = 'secretaryChanges';
         }
-        // elseif ($name == 'chargeChangesCurrentYear')
-        // {
-        //     $relation = 'chargeChanges';
-        // }
+        elseif ($name == 'chargeChangesCurrentYear')
+        {
+            $relation = 'chargeChanges';
+        }
         else
         {
             throw new BadMethodCallException("Method {$name} does not exist.");
@@ -75,7 +75,7 @@ trait HasChangeRecords
 
     public function __call($name, $arguments)
     {
-        if (Str::startsWith($name, ['detail', 'business', 'address', 'bizAddress', 'sharecapital', 'director', 'shareholder', 'secretar',]))
+        if (Str::startsWith($name, ['detail', 'business', 'address', 'bizAddress', 'sharecapital', 'director', 'shareholder', 'secretar', 'charge']))
         {
             return $this->handleChangeRecordMethods($name, $arguments);
         }

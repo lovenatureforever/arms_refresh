@@ -18,7 +18,7 @@ class CompanyChargeChange extends Model
         'registration_date',
         'discharge_date',
         'charge_nature',
-        'cargee_name',
+        'chargee_name',
         'indebtedness_amount',
         'effective_date',
         'remarks',

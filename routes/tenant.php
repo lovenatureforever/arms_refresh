@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Livewire\Tenant\Pages\CorporateInfo\BusinessAddress;
 use App\Livewire\Tenant\Pages\CorporateInfo\BusinessNature;
+use App\Livewire\Tenant\Pages\CorporateInfo\Charges;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyAddress;
 use App\Livewire\Tenant\Pages\CorporateInfo\Director;
 use App\Livewire\Tenant\Pages\CorporateInfo\Secretaries;
@@ -92,7 +93,7 @@ Route::middleware([
             Route::get('/shareholders', Shareholder::class)->name('shareholders');
             Route::get('/secretaries', Secretaries::class)->name('secretaries');
             Route::get('/auditor', YearEnd::class)->name('auditor');
-            Route::get('/charges', YearEnd::class)->name('charges');
+            Route::get('/charges', Charges::class)->name('charges');
             Route::get('/dividends', YearEnd::class)->name('dividends');
             Route::get('/report-info', YearEnd::class)->name('reportinfo');
         });

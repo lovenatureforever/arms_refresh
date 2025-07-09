@@ -33,13 +33,13 @@
                     <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.shareholders', ['id' => $id]) }}">
                         Shareholders
                     </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-primary text-white active" role="tab" href="{{ route('corporate.secretaries', ['id' => $id]) }}">
+                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.secretaries', ['id' => $id]) }}">
                         Secretaries
                     </a>
                     <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.auditor', ['id' => $id]) }}">
                         Auditor
                     </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.charges', ['id' => $id]) }}">
+                    <a class="btn border border-gray-100 mr-2 mb-2 bg-primary text-white active" role="tab" href="{{ route('corporate.charges', ['id' => $id]) }}">
                         Charges
                     </a>
                     <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.dividends', ['id' => $id]) }}">
@@ -86,31 +86,37 @@
                             <div class="flex flex-row justify-between mb-4">
                                 <h1 class="text-xl">{{ $company->current_is_first_year ? 'Info as at incorporation' : 'As at prior year end' }}</h1>
                                 <div>
-                                    <button class="text-white btn btn-sm bg-info" type="button" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.secretary-modal', arguments: { companyId : {{ $id }}, id: null, isStart: true }})">Create</button>
+                                    <button class="text-white btn btn-sm bg-info" type="button" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.charge-modal', arguments: { companyId : {{ $id }}, id: null, isStart: true }})">Create</button>
                                 </div>
                             </div>
 
 
                             <div class="relative mb-4 overflow-x-auto border rounded-lg">
-                                <div class="grid grid-cols-5 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <div class="flex items-center justify-start p-4 border-r">Name</div>
-                                    <div class="flex items-center justify-start p-4 border-r">Id No.</div>
-                                    <div class="flex items-center justify-start p-4 border-r">Secretary No.</div>
+                                <div class="grid grid-cols-8 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <div class="flex items-center justify-start p-4 border-r">Registered No.</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Register at</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Discharge at</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Nature of Charge</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Chargee</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Indebtedness Amount</div>
                                     <div class="flex items-center justify-start p-4 border-r">Remarks</div>
                                     <div class="flex items-center justify-start p-4">Action</div>
                                 </div>
-                                @foreach ($secretaryChangesAtStart as $secretaryChange)
-                                <div class="grid grid-cols-5">
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->companySecretary->name }}</div>
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->companySecretary->id_no }} ({{$secretaryChange->companySecretary->id_type}})</div>
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->companySecretary->secretary_no }}</div>
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->remarks }}</div>
+                                @foreach ($chargeChangesAtStart as $chargeChange)
+                                <div class="grid grid-cols-8">
+                                    <div class="p-4 border-r">{{ $chargeChange->registered_number }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->registration_date?->format('Y-m-d') }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->discharge_date?->format('Y-m-d') }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->charge_nature }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->chargee_name }}</div>
+                                    <div class="p-4 border-r">{{ displayNumber($chargeChange->indebtedness_amount) }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->remarks }}</div>
                                     <div class="p-4 border-b">
-                                        <button class="text-white btn btn-sm bg-info" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.secretary-modal', arguments: { companyId : {{ $id }}, 'id' : {{ $secretaryChange->id }}, isStart: true }})">Edit</button>
+                                        <button class="text-white btn btn-sm bg-info" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.charge-modal', arguments: { companyId : {{ $id }}, 'id' : {{ $chargeChange->id }}, isStart: true }})">Edit</button>
                                         <button
                                             class="text-white btn btn-sm bg-danger"
                                             type="button"
-                                            wire:click="deleteSecretaryChange({{ $secretaryChange->id }})"
+                                            wire:click="deleteChargeChange({{ $chargeChange->id }})"
                                             wire:confirm="Are you sure you want to delete this?"
                                         >
                                             Delete
@@ -123,35 +129,37 @@
                             <div class="flex flex-row justify-between mt-8 mb-4">
                                 <h1 class="text-xl">Changes during the year</h1>
                                 <div>
-                                    <button class="text-white btn btn-sm bg-info" type="button" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.secretary-modal', arguments: { companyId : {{ $id }}, id: null, isStart: false }})">Create</button>
+                                    <button class="text-white btn btn-sm bg-info" type="button" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.charge-modal', arguments: { companyId : {{ $id }}, id: null, isStart: false }})">Create</button>
                                 </div>
                             </div>
 
                             <div class="relative mb-4 overflow-x-auto border rounded-lg">
-                                <div class="grid grid-cols-7 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <div class="flex items-center justify-start p-4 border-r">Name</div>
-                                    <div class="flex items-center justify-start p-4 border-r">Nature Of Change</div>
-                                    <div class="flex items-center justify-start p-4 border-r">Id No.</div>
-                                    <div class="flex items-center justify-start p-4 border-r ">SECRETARY NO.</div>
-                                    <div class="flex items-center justify-start p-4 border-r">Effective Date</div>
+                                <div class="grid grid-cols-10 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <div class="flex items-center justify-start p-4 border-r">Nature of Change</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Registered No.</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Register at</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Discharge at</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Nature of Charge</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Chargee</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Indebtedness Amount</div>
+                                    <div class="flex items-center justify-start p-4 border-r ">Effective Date</div>
                                     <div class="flex items-center justify-start p-4 border-r">Remarks</div>
                                     <div class="flex items-center justify-start p-4">Action</div>
                                 </div>
-                                @foreach ($secretaryChangesCurrentYear as $secretaryChange)
-                                <div class="grid grid-cols-7">
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->companySecretary->name }}</div>
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->change_nature }}</div>
-                                    <div class="p-4 border-b border-r">
-                                        {{ $secretaryChange->change_nature === App\Models\Tenant\CompanySecretaryChange::CHANGE_NATURE_SECRETARY_APPOINTED ? $secretaryChange->companySecretary->id_no.'('.$secretaryChange->companySecretary->id_type.')' : '' }}
-                                    </div>
-                                    <div class="p-4 border-b border-r">
-                                        {{ $secretaryChange->change_nature === App\Models\Tenant\CompanySecretaryChange::CHANGE_NATURE_SECRETARY_APPOINTED ? $secretaryChange->companySecretary->secretary_no : '' }}
-                                    </div>
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->effective_date->format('Y-m-d') }}</div>
-                                    <div class="p-4 border-b border-r">{{ $secretaryChange->remarks }}</div>
+                                @foreach ($chargeChangesCurrentYear as $chargeChange)
+                                <div class="grid grid-cols-10">
+                                    <div class="p-4 border-r">{{ $chargeChange->change_nature }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->registered_number }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->registration_date?->format('Y-m-d') }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->discharge_date?->format('Y-m-d') }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->charge_nature }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->chargee_name }}</div>
+                                    <div class="p-4 border-r">{{ displayNumber($chargeChange->indebtedness_amount) }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->effective_date->format('Y-m-d') }}</div>
+                                    <div class="p-4 border-r">{{ $chargeChange->remarks }}</div>
                                     <div class="p-4 border-b">
-                                        <button class="text-white btn btn-sm bg-info" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.secretary-modal', arguments: { companyId : {{ $this->id }}, 'id' : {{ $secretaryChange->id }}, isStart: false }})">Edit</button>
-                                        <button class="text-white btn btn-sm bg-danger" type="button" wire:click="deleteSecretaryChange({{ $secretaryChange->id }})"
+                                        <button class="text-white btn btn-sm bg-info" wire:click="$dispatch('openModal', {component: 'tenant.components.corporate-info.charge-modal', arguments: { companyId : {{ $this->id }}, 'id' : {{ $chargeChange->id }}, isStart: false }})">Edit</button>
+                                        <button class="text-white btn btn-sm bg-danger" type="button" wire:click="deleteChargeChange({{ $chargeChange->id }})"
                                             wire:confirm="Are you sure you want to delete this?">
                                             Delete
                                         </button>
@@ -162,18 +170,24 @@
 
                             <div class="mt-8 mb-4">
                                 <h1 class="text-xl text-primary">Result Summary</h1>
-                                <div class="text-sm text-gray-400">as at current report date</div>
+                                <div class="text-sm text-gray-400">as at current year end</div>
                             </div>
 
                             <div class="relative mb-4 overflow-x-auto border rounded-lg">
-                                <div class="grid grid-cols-4 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <div class="flex items-center justify-start p-4 border-r">No.</div>
-                                    <div class="flex items-center justify-start col-span-3 p-4 border-r">Secretary Info</div>
+                                <div class="grid grid-cols-5 text-xs font-bold text-gray-700 uppercase border-b rounded-lg rounded-b-none bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <div class="flex items-center justify-start p-4 border-r">Particular Of Assets Charge</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Name Of Chargee</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Amount Of Charge</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Date Created</div>
+                                    <div class="flex items-center justify-start p-4 border-r">Date Discharged</div>
                                 </div>
-                                @foreach ($secretariesAtLast as $appointed)
-                                <div class="grid grid-cols-4">
-                                    <div class="p-4 border-r">{{ $loop->iteration }}</div>
-                                    <div class="col-span-3 p-4 border-r">{{ $appointed->name }} ({{ $appointed->secretary_no }})</div>
+                                @foreach ($chargeResults as $charge)
+                                <div class="grid grid-cols-5 border-b cursor-grab">
+                                    <div class="p-4 border-r">{{ $charge->charge_nature }}</div>
+                                    <div class="p-4 border-r">{{ $charge->chargee_name }}</div>
+                                    <div class="p-4 border-r">{{ displayNumber($charge->indebtedness_amount) }}</div>
+                                    <div class="p-4 border-r">{{ $charge->registration_date?->format('Y-m-d') }}</div>
+                                    <div class="p-4 border-r">{{ $charge->discharge_date?->format('Y-m-d') }}</div>
                                 </div>
                                 @endforeach
                             </div>
