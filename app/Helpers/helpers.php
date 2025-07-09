@@ -73,6 +73,25 @@ function removeTrailingZeros($number) {
     return floatval($number);
 }
 
+function numberToOrdinalWord($number)
+{
+    $words = [
+        1 => 'First',
+        2 => 'Second',
+        3 => 'Third',
+        4 => 'Fourth',
+        5 => 'Fifth',
+        6 => 'Sixth',
+        7 => 'Seventh',
+        8 => 'Eighth',
+        9 => 'Ninth',
+        10 => 'Tenth',
+        // ... add more as needed
+    ];
+
+    return $words[$number] ?? "{$number}th";
+}
+
 function mbrsMappingList() {
     return [
         'Amortisation',

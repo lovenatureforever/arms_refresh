@@ -36,7 +36,7 @@ class CompanyDividendChange extends Model
 
     public const SHARETYPE_ORDINARY = 'Ordinary Share';
     public const SHARETYPE_PREFERENCE = 'Preference Share';
-    public static $sharetypes = [
+    public static $shareTypes = [
         self::SHARETYPE_ORDINARY,
         self::SHARETYPE_PREFERENCE
     ];

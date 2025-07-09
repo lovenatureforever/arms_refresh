@@ -103,7 +103,7 @@
                                     <div class="flex items-center justify-start p-4">Action</div>
                                 </div>
                                 @foreach ($chargeChangesAtStart as $chargeChange)
-                                <div class="grid grid-cols-8">
+                                <div class="grid border-b grid-cols-8">
                                     <div class="p-4 border-r">{{ $chargeChange->registered_number }}</div>
                                     <div class="p-4 border-r">{{ $chargeChange->registration_date?->format('Y-m-d') }}</div>
                                     <div class="p-4 border-r">{{ $chargeChange->discharge_date?->format('Y-m-d') }}</div>
@@ -147,7 +147,7 @@
                                     <div class="flex items-center justify-start p-4">Action</div>
                                 </div>
                                 @foreach ($chargeChangesCurrentYear as $chargeChange)
-                                <div class="grid grid-cols-10">
+                                <div class="grid border-b grid-cols-10">
                                     <div class="p-4 border-r">{{ $chargeChange->change_nature }}</div>
                                     <div class="p-4 border-r">{{ $chargeChange->registered_number }}</div>
                                     <div class="p-4 border-r">{{ $chargeChange->registration_date?->format('Y-m-d') }}</div>
@@ -200,17 +200,6 @@
         </div>
     </div>
 </div>
-
-@script
-<script>
-    document.querySelectorAll('.numberInput').forEach(function (el) {
-        new Cleave(el, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand'
-        });
-    });
-</script>
-@endscript
 
 @livewireScripts
 <script src="https://unpkg.com/@wotz/livewire-sortablejs@1.0.0/dist/livewire-sortable.js"></script>

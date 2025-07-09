@@ -6,6 +6,7 @@ use App\Livewire\Tenant\Pages\CorporateInfo\BusinessAddress;
 use App\Livewire\Tenant\Pages\CorporateInfo\BusinessNature;
 use App\Livewire\Tenant\Pages\CorporateInfo\Charges;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyAddress;
+use App\Livewire\Tenant\Pages\CorporateInfo\Dividends;
 use App\Livewire\Tenant\Pages\CorporateInfo\Director;
 use App\Livewire\Tenant\Pages\CorporateInfo\Secretaries;
 use App\Livewire\Tenant\Pages\CorporateInfo\Shareholder;
@@ -94,7 +95,7 @@ Route::middleware([
             Route::get('/secretaries', Secretaries::class)->name('secretaries');
             Route::get('/auditor', YearEnd::class)->name('auditor');
             Route::get('/charges', Charges::class)->name('charges');
-            Route::get('/dividends', YearEnd::class)->name('dividends');
+            Route::get('/dividends', Dividends::class)->name('dividends');
             Route::get('/report-info', YearEnd::class)->name('reportinfo');
         });
     });

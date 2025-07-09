@@ -262,17 +262,6 @@
     </div>
 </div>
 
-@script
-<script>
-    document.querySelectorAll('.numberInput').forEach(function (el) {
-        new Cleave(el, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand'
-        });
-    });
-</script>
-@endscript
-
 @livewireScripts
 <script src="https://unpkg.com/@wotz/livewire-sortablejs@1.0.0/dist/livewire-sortable.js"></script>
 
