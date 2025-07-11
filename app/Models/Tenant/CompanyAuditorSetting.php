@@ -22,13 +22,14 @@ class CompanyAuditorSetting extends Model
         'is_letterhead_repeat', // Letterhead on:
         'blank_header_spacing',
         'is_show_firm_name',
+        'is_show_firm_title',
         'is_show_firm_license',
         'is_show_firm_address',
         'is_show_firm_contact',
         'is_show_firm_email',
         'is_show_firm_fax',
         'is_firm_address_uppercase',
-        'selected_firm_address',
+        'selected_firm_address_id',
         'selected_auditor_license',
     ];
 
@@ -39,6 +40,7 @@ class CompanyAuditorSetting extends Model
         'is_default_letterhead' => 'boolean',
         'is_letterhead_repeat' => 'boolean',
         'is_show_firm_name' => 'boolean',
+        'is_show_firm_title' => 'boolean',
         'is_show_firm_license' => 'boolean',
         'is_show_firm_address' => 'boolean',
         'is_show_firm_contact' => 'boolean',

@@ -164,6 +164,11 @@ class Company extends Model
         return $this->hasOne(CompanyReportSetting::class);
     }
 
+    public function auditorSetting()
+    {
+        return $this->hasOne(CompanyAuditorSetting::class);
+    }
+
     public function getNameAttribute()
     {
         return $this->detailAtLast()->name ?? null;

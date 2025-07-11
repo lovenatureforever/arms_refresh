@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->foreignId('auditor_id')->nullable()->constrained('auditors')->cascadeOnDelete();
-            $table->foreignId('selected_firm_address')->nullable()->constrained('audit_firm_addresses')->nullOnDelete();
+            $table->foreignId('selected_firm_address_id')->nullable()->constrained('audit_firm_addresses')->nullOnDelete();
             $table->unsignedBigInteger('selected_auditor_license')->nullable();
             $table->boolean('audit_firm_changed')->default(false);
             $table->string('prior_audit_firm')->nullable();
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->boolean('is_letterhead_repeat')->default(false);
             $table->float('blank_header_spacing')->nullable();
             $table->boolean('is_show_firm_name')->default(true);
+            $table->boolean('is_show_firm_title')->default(true);
             $table->boolean('is_show_firm_license')->default(true);
             $table->boolean('is_show_firm_address')->default(true);
             $table->boolean('is_show_firm_contact')->default(true);
