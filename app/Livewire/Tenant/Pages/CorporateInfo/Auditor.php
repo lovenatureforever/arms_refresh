@@ -23,16 +23,15 @@ class Auditor extends Component
     #[Locked]
     public $id;
 
-    #[Locked]
     public $auditSetting;
 
-    #[Locked]
     public $auditor;
 
-    #[Locked]
     public $company;
 
     public $auditFirmChanged;
+
+    #[Validate('required_if:auditFirmChanged,1')]
     public $priorAuditFirm;
     public $priorReportDate;
     public $priorReportOpinion;
@@ -66,31 +65,6 @@ class Auditor extends Component
         $this->company = Company::with(relations: ['auditorSetting'])->find($this->id);
 
         $this->auditSetting = $this->company->auditorSetting;
-        if (!$this->auditSetting) {
-            $this->auditSetting = new CompanyAuditorSetting();
-            $this->auditSetting->company_id = $this->id;
-            $this->auditSetting->auditor_id = null;
-            $this->auditSetting->audit_firm_changed = false;
-            $this->auditSetting->prior_audit_firm = null;
-            $this->auditSetting->prior_report_date = null;
-            $this->auditSetting->prior_report_opinion = null;
-            $this->auditSetting->with_breakline = tenant()->withBreakline; // Audit license no. position
-            $this->auditSetting->audit_firm_description = tenant()->auditFirmDescription;
-            $this->auditSetting->is_default_letterhead = tenant()->isDefaultLetterhead;
-            $this->auditSetting->is_letterhead_repeat = tenant()->isLetterheadRepeat;
-            $this->auditSetting->blank_header_spacing = tenant()->blankHeaderSpacing;
-            $this->auditSetting->is_show_firm_name = tenant()->isShowFirmName;
-            $this->auditSetting->is_show_firm_title = tenant()->isShowFirmTitle;
-            $this->auditSetting->is_show_firm_address = tenant()->isShowFirmAddress;
-            $this->auditSetting->is_show_firm_contact = tenant()->isShowFirmContact;
-            $this->auditSetting->is_show_firm_email = tenant()->isShowFirmEmail;
-            $this->auditSetting->is_show_firm_fax = tenant()->isShowFirmFax;
-            $this->auditSetting->is_firm_address_uppercase = tenant()->isFirmAddressUppercase;
-            $this->auditSetting->selected_firm_address_id = tenant()->selectedAddressId;
-            $this->auditSetting->selected_auditor_license = null;
-            $this->auditSetting->save();
-        }
-
 
         $this->auditFirmChanged = $this->auditSetting->audit_firm_changed ? '1' : '0';
         $this->priorAuditFirm = $this->auditSetting->audit_firm_changed ? $this->auditSetting->prior_audit_firm : '';
@@ -174,6 +148,13 @@ class Auditor extends Component
             $this->priorAuditFirm = $this->auditSetting->prior_audit_firm;
             $this->priorReportDate = $this->auditSetting->prior_report_date ? $this->auditSetting->prior_report_date->format('Y-m-d') : null;
             $this->priorReportOpinion = $this->auditSetting->prior_report_opinion;
+        }
+    }
+
+    public function updatedIsDefaultLetterhead($value)
+    {
+        if ($value == '0') {
+            $this->isFirmAddressUppercase = false;
         }
     }
 

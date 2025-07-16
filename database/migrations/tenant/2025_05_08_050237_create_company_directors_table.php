@@ -25,8 +25,9 @@ return new class extends Migration
             $table->string('id_no')->nullable();
             $table->boolean('gender')->default(true);
             // $table->boolean('set_to_report')->default(false);
-            // $table->boolean('is_rep_statutory')->default(false);
-            // $table->boolean('is_rep_statement')->default(false);
+            $table->boolean('is_alternate_signing')->default(false);
+            $table->boolean('is_rep_statutory')->default(false);
+            $table->boolean('is_rep_statement')->default(false);
             // $table->boolean('is_cover_page')->default(false);
             // $table->string('cover_page_title')->nullable();
             $table->unsignedSmallInteger('sort')->default(0);

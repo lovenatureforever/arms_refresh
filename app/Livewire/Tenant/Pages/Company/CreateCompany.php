@@ -3,9 +3,11 @@
 namespace App\Livewire\Tenant\Pages\Company;
 
 use App\Models\Tenant\CompanyAddressChange;
+use App\Models\Tenant\CompanyAuditorSetting;
 use App\Models\Tenant\CompanyBizAddressChange;
 use App\Models\Tenant\CompanyBusinessChange;
 use App\Models\Tenant\CompanyDetailChange;
+use App\Models\Tenant\CompanyReportSetting;
 use App\Models\Tenant\CompanyShareCapitalChange;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -217,6 +219,65 @@ class CreateCompany extends Component
                 'partially_paid_amount' => 0,
                 'effective_date' => '2000-01-01',
                 'remarks' => '',
+            ]);
+
+            // Auditor settings
+            CompanyAuditorSetting::create([
+                'company_id' => $company->id,
+                'auditor_id' => null,
+                'audit_firm_changed' => false,
+                'prior_audit_firm' => null,
+                'prior_report_date' => null,
+                'prior_report_opinion' => null,
+                'with_breakline' => tenant()->withBreakline, // Audit license no. position
+                'audit_firm_description' => tenant()->auditFirmDescription,
+                'is_default_letterhead' => tenant()->isDefaultLetterhead,
+                'is_letterhead_repeat' => tenant()->isLetterheadRepeat,
+                'blank_header_spacing' => tenant()->blankHeaderSpacing,
+                'is_show_firm_name' => tenant()->isShowFirmName,
+                'is_show_firm_title' => tenant()->isShowFirmTitle,
+                'is_show_firm_address' => tenant()->isShowFirmAddress,
+                'is_show_firm_contact' => tenant()->isShowFirmContact,
+                'is_show_firm_email' => tenant()->isShowFirmEmail,
+                'is_show_firm_fax' => tenant()->isShowFirmFax,
+                'is_firm_address_uppercase' => tenant()->isFirmAddressUppercase,
+                'selected_firm_address_id' => tenant()->selectedAddressId,
+                'selected_auditor_license' => null,
+            ]);
+
+            // Report settings
+            CompanyReportSetting::create([
+                'company_id' => $company->id,
+                'officer_name' => '',
+                'officer_id_type' => '',
+                'officer_id' => '',
+                'officer_mia_no' => '',
+                'cover_sign_position' => '',
+                'cover_sign_name' => '',
+                'cover_signature_position' => '',
+                'cover_sign_secretary_no' => '',
+                'report_date' => null,
+                'director_report_location' => '',
+                'statement_date' => null,
+                'statement_location' => '',
+                'statement_as_report_date' => false,
+                'statutory_date' => null,
+                'statutory_location' => '',
+                'statutory_as_report_date' => false,
+                'auditor_report_date' => null,
+                'auditor_report_location' => '',
+                'auditor_report_as_report_date' => false,
+                'circulation_date' => null,
+                'declaration_country' => 'Malaysia',
+                'foreign_act' => '',
+                'declaration_commissioner' => 'Commissioner for Oaths',
+                'auditor_remuneration' => 0.00,
+                'is_declaration_officer' => false,
+                'is_declaration_mia' => false,
+                'selected_director' => null,
+                'selected_secretary' => null,
+                'is_approved_application' => false,
+                'is_exempt' => false,
             ]);
 
             DB::commit();

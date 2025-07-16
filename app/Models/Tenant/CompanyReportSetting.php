@@ -12,7 +12,7 @@ class CompanyReportSetting extends Model
         'company_id',
         'officer_name',
         'officer_id_type',
-        'offier_id',
+        'officer_id',
         'officer_mia_no',
         'cover_sign_position',
         'cover_sign_name',

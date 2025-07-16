@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite --host 198.18.1.42",
+        "dev": "vite --host 192.168.135.57",
         "build": "vite build",
         "server-build": "npm run build"
     },

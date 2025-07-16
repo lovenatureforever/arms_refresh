@@ -52,7 +52,23 @@
                 <div class="col-span-4 p-4 mb-2 mr-2 border border-gray-100 rounded">
                     <div role="tabpanel">
                         {{-- Detail Content --}}
-                        <form wire:submit="submit">
+                        @if ($errors->any())
+                        <div class="p-4 border border-red-200 rounded-md bg-red-50" role="alert">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="text-xl text-red-800 mgc_information_line"></i>
+                                </div>
+                                <div class="ms-4">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                        <li class="text-sm font-semibold text-red-800">{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                        <form>
                             <!-- Auditor Change Section -->
                             <div class="flex flex-row justify-between mb-4">
                                 <h3 class="text-xl">Current year auditor</h3>
@@ -124,8 +140,8 @@
                                                     <input type="radio" class="form-radio" name="DefaultLetterHead" value="1" id="is_default_yes" wire:model.live="isDefaultLetterhead" />
                                                     <span>Yes</span>
                                                 </label>
-                                                <label for="cb_is_address_uppercase" class="ml-4">
-                                                    <input type="checkbox" class="form-checkbox rounded" id="cb_is_address_uppercase" wire:model.live="isFirmAddressUppercase" />
+                                                <label for="cb_is_address_uppercase" class="ml-4 {{ $isDefaultLetterhead == '1' ? '' : 'opacity-70' }}">
+                                                    <input type="checkbox" class="form-checkbox rounded" id="cb_is_address_uppercase" wire:model="isFirmAddressUppercase" {{ $isDefaultLetterhead == '1' ? '' : 'disabled' }} />
                                                     <span>Address in uppercase</span>
                                                 </label>
                                                 <br/>
@@ -139,7 +155,7 @@
                                             <td class="p-2 text-sm font-medium text-gray-800">Height to leave blank:</td>
                                             <td class="p-2">
                                                 <div class="flex">
-                                                    <select id="blank_spacing" class="form-input ltr:rounded-r-none rtl:rounded-l-none w-24" wire:model="blankHeaderSpacing">
+                                                    <select id="blank_spacing" class="form-input ltr:rounded-r-none rtl:rounded-l-none w-24" wire:model="blankHeaderSpacing" {{ $isDefaultLetterhead == '1' ? 'disabled' : '' }}>
                                                         <option value="">-</option>
                                                         <option value="3.0">3.0</option>
                                                         <option value="3.5">3.5</option>
@@ -301,10 +317,16 @@
                                 </table>
                             </div>
 
-                            <div class="fixed bottom-0 left-0 w-full dark:bg-gray-800 z-50 text-center p-4">
-                                <button class="btn bg-primary text-white">Save</button>
-                                <button class="ml-4 btn bg-secondary text-white">Cancel</button>
+                            <div class="lg:col-span-4 mt-5 sticky end-12 bottom-0 w-full bg-white">
+                            <div class="flex justify-end gap-3">
+                                <button type="button" class="btn bg-danger text-white w-36" wire:click="cancel">
+                                    Cancel
+                                </button>
+                                <button type="button" class="btn bg-success text-white w-36" wire:click="submit">
+                                    Save
+                                </button>
                             </div>
+                        </div>
                         </form>
                         {{-- End Detail Content --}}
                     </div>
