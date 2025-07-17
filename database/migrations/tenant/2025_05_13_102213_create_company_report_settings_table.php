@@ -40,8 +40,8 @@ return new class extends Migration
             $table->decimal('auditor_remuneration')->nullable();
             $table->boolean('is_declaration_officer')->default(false);
             $table->boolean('is_declaration_mia')->default(false);
-            $table->foreignId('selected_director')->nullable()->constrained('company_directors')->nullOnDelete();
-            $table->foreignId('selected_secretary')->nullable()->constrained('company_secretaries')->nullOnDelete();
+            $table->foreignId('selected_director_id')->nullable()->constrained('company_directors')->nullOnDelete();
+            $table->foreignId('selected_secretary_id')->nullable()->constrained('company_secretaries')->nullOnDelete();
             $table->boolean('is_approved_application')->default(false);
             $table->boolean('is_exempt')->default(false);
             $table->timestamps();

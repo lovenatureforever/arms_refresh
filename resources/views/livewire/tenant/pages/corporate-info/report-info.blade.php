@@ -98,7 +98,7 @@
                                     </div>
                                     <div class="justify-center p-4 border-r">
                                         <label class="p-1 btn custom-btn-color" style="width:40px">
-                                            <input type="radio" class="form-radio" name="selectedDirectorForStatutory" value="{{ $director->id }}" wire:model="selectedDirectorForStatutory">
+                                            <input type="radio" class="form-radio" name="selectedDirectorForStatutory" value="{{ $director->id }}" wire:model="selectedDirectorForStatutory" {{ $isDeclarationOfficer ? 'disabled' : '' }}>
                                         </label>
                                     </div>
                                     <div class="justify-center p-4 border-r">
@@ -185,7 +185,7 @@
                                             <input class="form-input w-36"
                                                 id="directorReportDate"
                                                 type="text"
-                                                wire:model="directorReportDate"
+                                                wire:model.live="directorReportDate"
                                                 wire:dirty.class="border-yellow-500"
                                                 {{-- wire:blur="directorReport" --}}
                                             >
@@ -215,7 +215,7 @@
                                         <div class="p-4">
                                             <input type="checkbox" class="form-checkbox rounded"
                                                 id="statement_is_same"
-                                                wire:model="statementAsReportDate"
+                                                wire:model.live="statementAsReportDate"
                                                 {{-- wire:blur="statementReport" --}}
                                             >
                                         </div>
@@ -243,7 +243,7 @@
                                         <div class="p-4">
                                             <input type="checkbox" class="form-checkbox rounded"
                                                 id="statutory_is_same"
-                                                wire:model="statutoryAsReportDate"
+                                                wire:model.live="statutoryAsReportDate"
                                                 {{-- wire:blur="statutoryReport" --}}
                                             >
                                         </div>
@@ -271,7 +271,7 @@
                                         <div class="p-4">
                                             <input type="checkbox" class="form-checkbox rounded"
                                                 id="auditor_is_same"
-                                                wire:model="auditorReportAsReportDate"
+                                                wire:model.live="auditorReportAsReportDate"
                                                 {{-- wire:blur="auditorReport" --}}
                                             >
                                         </div>
@@ -306,10 +306,10 @@
                                         </select>
                                     </div>
                                     <div class="p-4 border-r">
-                                        <input type="text" class="form-input" wire:model="foreignAct" {{ $declarationCommissioner === "Malaysia" ? 'disabled' : '' }}>
+                                        <input type="text" class="form-input" wire:model="foreignAct" {{ $declarationCountry === "Malaysia" ? 'disabled' : '' }}>
                                     </div>
                                     <div class="p-4 border-r">
-                                        <input type="text" class="form-input" wire:model="declarationCommissioner" {{ $declarationCommissioner === "Malaysia" ? 'disabled' : '' }}>
+                                        <input type="text" class="form-input" wire:model="declarationCommissioner" {{ $declarationCountry === "Malaysia" ? 'disabled' : '' }}>
                                     </div>
                                     <div class="p-4">
                                         <input type="text" class="form-input numberInput" wire:model="auditorRemuneration">
@@ -332,30 +332,26 @@
                                     <div class="p-4 border-r">
                                         <select class="form-input" id="signByChange" name="signByChange" wire:model.live="coverSignPosition">
                                             <option value="">--Select--</option>
-                                            <option value="Secretary">Secretary</option>
                                             <option value="Director">Director</option>
+                                            <option value="Secretary">Secretary</option>
                                         </select>
                                     </div>
                                     <div class="p-4">
-                                        <select class="form-input" id="signIdChange" name="signIdChange" wire:model.live="coverSignName">
-                                            <option value="">--Select--</option>
-
-                                        </select>
-                                        {{-- @if ($this->signByChange == 'Secretary')
-                                            <select class="form-input" id="signIdChange" name="signIdChange" wire:model.live="signIdChange">
+                                        @if ($this->coverSignPosition == 'Secretary')
+                                            <select class="form-input" id="signIdChange" name="signIdChange" wire:model.live="coverSignName">
                                                 <option value="">--Select--</option>
-                                                @foreach ($this->secretaryList as $nameList)
-                                                    <option value="{{ $nameList['id'] }}">{{ $nameList['name'] }} ({{ $nameList['id_no'] }})</option>
-                                                @endforeach
-                                            </select>
-                                        @else
-                                            <select class="form-input" id="signIdChange" name="signIdChange" wire:model.live="signIdChange" {{ $this->signByChange == null || $this->signByChange == '' ? 'disabled' : '' }}>
-                                                <option value="">--Select--</option>
-                                                @foreach ($this->directorList as $nameList)
+                                                @foreach ($this->secretaries as $nameList)
                                                     <option value="{{ $nameList['id'] }}">{{ $nameList['name'] }}</option>
                                                 @endforeach
                                             </select>
-                                        @endif --}}
+                                        @else
+                                            <select class="form-input" id="signIdChange" name="signIdChange" wire:model.live="coverSignName" {{ $this->coverSignPosition == null || $this->coverSignPosition == '' ? 'disabled' : '' }}>
+                                                <option value="">--Select--</option>
+                                                @foreach ($this->directors as $nameList)
+                                                    <option value="{{ $nameList['id'] }}">{{ $nameList['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                         <br/>
                                         @if ($coverSignPosition === 'Secretary')
                                             <input class="form-input mb-3" id="coverSignSecretaryNo" type="text" wire:dirty.class="border-amber-500" wire:model.live="coverSignSecretaryNo">

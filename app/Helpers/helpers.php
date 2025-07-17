@@ -93,17 +93,18 @@ function numberToOrdinalWord($number)
 }
 
 function getFullAddress($address)
-    {
-        $parts = array_filter([
-            $address->address_line1,
-            $address->address_line2,
-            $address->address_line3,
-            trim(implode(' ', array_filter([$address->postcode, $address->town]))),
-            $address->state,
-        ]);
+{
+    if ($address == null) return '';
+    $parts = array_filter([
+        $address->address_line1,
+        $address->address_line2,
+        $address->address_line3,
+        trim(implode(' ', array_filter([$address->postcode, $address->town]))),
+        $address->state,
+    ]);
 
-        return implode(", ", $parts);
-    }
+    return implode(", ", $parts);
+}
 
 function mbrsMappingList() {
     return [
