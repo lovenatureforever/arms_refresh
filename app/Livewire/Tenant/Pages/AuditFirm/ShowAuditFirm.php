@@ -9,7 +9,6 @@ use Livewire\Attributes\Validate;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
-use Illuminate\Support\Facades\Log;
 
 use App\Models\Central\Tenant;
 use App\Models\Tenant\Auditor;
