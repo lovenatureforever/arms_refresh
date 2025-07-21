@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('company_share_capital_changes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             // $table->boolean('is_year_start')->default(false);
             $table->string('share_type')->nullable();
             $table->string('allotment_type')->nullable();

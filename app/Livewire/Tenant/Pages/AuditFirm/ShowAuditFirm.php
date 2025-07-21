@@ -84,7 +84,7 @@ class ShowAuditFirm extends Component
     {
         $addresses = AuditFirmAddress::paginate(10);
         $address = AuditFirmAddress::find(tenant()->selectedAddressId);
-        $this->firmAddress = implode(', ', array_filter([$address->address_line1, $address->address_line2, $address->address_line3, $address->postcode, $address->town, $address->state]));
+        $this->firmAddress = getFullAddress($address);
 
         return view('livewire.tenant.pages.audit-firm.show-audit-firm', [
             'addresses' => $addresses

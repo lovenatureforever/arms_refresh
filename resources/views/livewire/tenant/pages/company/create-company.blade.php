@@ -87,7 +87,7 @@
 
                         <div>
                             <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="currentAuditPeriodFrom">Current Year Account Opening Date</label>
-                            <input class="form-input" id="currentAuditPeriodFrom" name="date" type="date" wire:model="currentYearFrom">
+                            <input class="form-input" id="currentAuditPeriodFrom" name="date" type="text" wire:model="currentYearFrom">
                             @error('currentYearFrom')
                             <div class="pristine-error text-help" role="alert">{{ $message }}</div>
                             @enderror
@@ -95,7 +95,7 @@
 
                         <div>
                             <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="currentAuditPeriodTo">Current Year Account Closing Date</label>
-                            <input class="form-input" id="currentAuditPeriodTo" name="date" type="date" wire:model="currentYearTo">
+                            <input class="form-input" id="currentAuditPeriodTo" name="date" type="text" wire:model="currentYearTo">
                             @error('currentYearTo')
                             <div class="pristine-error text-help" role="alert">{{ $message }}</div>
                             @enderror
@@ -147,7 +147,7 @@
 
                         <div>
                             <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="lastAuditPeriodFrom">Last Year Account Opening Date</label>
-                            <input class="form-input" id="lastAuditPeriodFrom" name="date" type="date" wire:model="lastYearFrom" {{ $currentIsFirstYear ? 'disabled' : '' }}>
+                            <input class="form-input" id="lastAuditPeriodFrom" name="date" type="text" wire:model="lastYearFrom" {{ $currentIsFirstYear ? 'disabled' : '' }}>
                             @error('lastYearFrom')
                             <div class="pristine-error text-help" role="alert">{{ $message }}</div>
                             @enderror
@@ -155,7 +155,7 @@
 
                         <div>
                             <label class="mb-2 inline-block text-sm font-medium text-gray-800" for="lastAuditPeriodTo">Last Year Account Closing Date</label>
-                            <input class="form-input" id="lastAuditPeriodTo" name="date" type="date" wire:model="lastYearTo" {{ $currentIsFirstYear ? 'disabled' : '' }}>
+                            <input class="form-input" id="lastAuditPeriodTo" name="date" type="text" wire:model="lastYearTo" {{ $currentIsFirstYear ? 'disabled' : '' }}>
                             @error('lastYearTo')
                             <div class="pristine-error text-help" role="alert">{{ $message }}</div>
                             @enderror
@@ -221,6 +221,22 @@
             numeral: true,
             numeralThousandsGroupStyle: 'thousand'
         });
+    });
+    flatpickr('#currentAuditPeriodFrom', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $currentYearFrom ?? now()->format('Y-m-d') }}",
+    });
+    flatpickr('#currentAuditPeriodTo', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $currentYearTo ?? now()->format('Y-m-d') }}",
+    });
+    flatpickr('#lastAuditPeriodFrom', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $lastYearFrom ?? now()->format('Y-m-d') }}",
+    });
+    flatpickr('#lastAuditPeriodTo', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $lastYearTo ?? now()->format('Y-m-d') }}",
     });
 </script>
 @endscript

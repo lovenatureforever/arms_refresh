@@ -67,6 +67,7 @@ class CreateTenant extends Component
                 'city' => $this->city,
                 'state' => $this->state,
                 'zip' => $this->zip,
+                'selectedAddressId' => 1,
             ]);
 
             $tenant->domains()->create(

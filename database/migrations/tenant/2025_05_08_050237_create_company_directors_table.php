@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('alternate_id')
                   ->nullable()
                   ->constrained('company_directors')
-                  ->nullOnDelete();
+                  ->cascadeOnDelete();
             // $table->boolean('is_year_start')->default(false);
             $table->string('name')->nullable();
             $table->string('designation')->nullable();

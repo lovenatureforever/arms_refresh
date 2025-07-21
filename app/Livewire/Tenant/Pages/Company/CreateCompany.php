@@ -54,13 +54,13 @@ class CreateCompany extends Component
     #[Validate('required_if:lastIsFirstYear,0', message: 'Last year report header display format is required')]
     public $lastReportHeaderFormat;
 
-    #[Validate('required_if:currenctIsFirstYear,0', message: 'Last financial year is required')]
+    #[Validate('required_if:currentIsFirstYear,0', message: 'Last financial year is required')]
     public $lastYear;
 
-    #[Validate('required_if:currenctIsFirstYear,0', message: 'Last audit period from is required')]
+    #[Validate('required_if:currentIsFirstYear,0', message: 'Last audit period from is required')]
     public $lastYearFrom;
 
-    #[Validate('required_if:currenctIsFirstYear,0', message: 'Last audit period to is required')]
+    #[Validate('required_if:currentIsFirstYear,0', message: 'Last audit period to is required')]
     public $lastYearTo;
 
     public $auditFee;
@@ -68,7 +68,7 @@ class CreateCompany extends Component
 
     public function render()
     {
-        return view('livewire.tenant.pages.companies.create-company');
+        return view('livewire.tenant.pages.company.create-company');
     }
 
     public function updatingCurrentIsFirstYear($val)
@@ -142,7 +142,7 @@ class CreateCompany extends Component
                 'last_year' => $this->lastYear,
                 'last_year_from' => $this->lastYearFrom,
                 'last_year_to' => $this->lastYearTo,
-                'audit_fee' => $this->auditFee
+                'audit_fee' => readNumber($this->auditFee)
             ]);
 
             CompanyDetailChange::create([
