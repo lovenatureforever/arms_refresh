@@ -117,8 +117,8 @@
                                                         <div class="w-36">Prior year end</div>
                                                     </td>
                                                     <td class="p-4"><input class="border border-gray-200 rounded form-checkbox" id="firstYear" type="checkbox" wire:dirty.class="border-yellow-500" wire:model.live="lastIsFirstYear" {{ $lastIsFirstYear == 1 ? 'checked' : '' }} {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
-                                                    <td class="p-4"><input class="form-input w-36" id="accountOpenDate" type="date" wire:dirty.class="border-yellow-500" wire:model="lastYearFrom" {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
-                                                    <td class="p-4"><input class="form-input w-36" id="accountClosingDate" type="date" wire:dirty.class="border-yellow-500" wire:model="lastYearTo" {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
+                                                    <td class="p-4"><input class="form-input w-36" id="accountOpenDate" type="text" wire:dirty.class="border-yellow-500" wire:model="lastYearFrom" {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
+                                                    <td class="p-4"><input class="form-input w-36" id="accountClosingDate" type="text" wire:dirty.class="border-yellow-500" wire:model="lastYearTo" {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
                                                     <td class="p-4"><input class="form-input w-36" id="financialYear" type="year" wire:dirty.class="border-yellow-500" wire:model="lastYear" {{ $currentIsFirstYear ? 'disabled' : '' }}></td>
                                                     <td class="p-4">
                                                         <select class="form-select w-36" id="yearPeriod" wire:model.live="lastYearType" wire:dirty.class="border-yellow-500" {{ $lastIsFirstYear || $currentIsFirstYear ? 'disabled' : '' }}>
@@ -141,8 +141,8 @@
                                                         <div class="w-36">Current year end</div>
                                                     </td>
                                                     <td class="p-4"><input class="border border-gray-200 rounded form-checkbox" id="currentFirstYear" type="checkbox" wire:dirty.class="border-yellow-500" wire:model.live="currentIsFirstYear" {{ $currentIsFirstYear == 1 ? 'checked' : '' }}></td>
-                                                    <td class="p-4"><input class="form-input w-36" id="currentAccountOpenDate" type="date" wire:model="currentYearFrom" wire:dirty.class="border-yellow-500"></td>
-                                                    <td class="p-4"><input class="form-input w-36" id="currentAccountClosingDate" type="date" wire:model="currentYearTo" wire:dirty.class="border-yellow-500"></td>
+                                                    <td class="p-4"><input class="form-input w-36" id="currentAccountOpenDate" type="text" wire:model="currentYearFrom" wire:dirty.class="border-yellow-500"></td>
+                                                    <td class="p-4"><input class="form-input w-36" id="currentAccountClosingDate" type="text" wire:model="currentYearTo" wire:dirty.class="border-yellow-500"></td>
                                                     <td class="p-4"><input class="form-input w-36" id="currentFinancialYear" type="year" wire:model="currentYear" wire:dirty.class="border-yellow-500"></td>
                                                     <td class="p-4">
                                                         <select class="form-select w-36" id="currentYearPeriod" wire:model.live="currentYearType" wire:dirty.class="border-yellow-500" {{ $currentIsFirstYear ? 'disabled' : '' }}>
@@ -190,3 +190,23 @@
         </div>
     </div>
 </div>
+@script
+<script>
+    flatpickr('#currentAccountOpenDate', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $currentYearFrom ?? now()->format('Y-m-d') }}",
+    });
+    flatpickr('#currentAccountClosingDate', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $currentYearTo ?? now()->format('Y-m-d') }}",
+    });
+    flatpickr('#accountOpenDate', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $lastYearFrom ?? now()->format('Y-m-d') }}",
+    });
+    flatpickr('#accountClosingDate', {
+        dateFormat: "Y-m-d",
+        defaultDate: "{{ $lastYearTo ?? now()->format('Y-m-d') }}",
+    });
+</script>
+@endscript
