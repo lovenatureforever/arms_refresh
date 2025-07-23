@@ -8,47 +8,7 @@
 
         <div class="p-6">
             <div class="grid grid-cols-1 gap-5" data-fc-type="tab">
-                <nav class="flex-wrap rounded md:flex-col" role="tablist" aria-label="Tabs">
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.yearend', ['id' => $id]) }}">
-                        Year End Info
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.companyname', ['id' => $id]) }}">
-                        Company Name
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.businessnature', ['id' => $id]) }}">
-                        Nature of Business
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.companyaddress', ['id' => $id]) }}">
-                        Registered Address
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.businessaddress', ['id' => $id]) }}">
-                        Business Address
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.sharecapital', ['id' => $id]) }}">
-                        Share Capital
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.directors', ['id' => $id]) }}">
-                        Directors
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.shareholders', ['id' => $id]) }}">
-                        Shareholders
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.secretaries', ['id' => $id]) }}">
-                        Secretaries
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-primary text-white active" role="tab" href="{{ route('corporate.auditor', ['id' => $id]) }}">
-                        Auditor
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.charges', ['id' => $id]) }}">
-                        Charges
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.dividends', ['id' => $id]) }}">
-                        Dividends
-                    </a>
-                    <a class="btn border border-gray-100 mr-2 mb-2 bg-transparent" role="tab" href="{{ route('corporate.reportinfo', ['id' => $id]) }}">
-                        Report Info
-                    </a>
-                </nav>
+                <x-corporate-tabs :active="'corporate.auditor'" :id="$id" />
                 <div class="col-span-4 p-4 mb-2 mr-2 border border-gray-100 rounded">
                     <div role="tabpanel">
                         {{-- Detail Content --}}
