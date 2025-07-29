@@ -12,18 +12,18 @@ use App\Models\Tenant\DirectorReportConfig as TenantsDirectorReportConfig;
 class DirectorReportConfig extends Component
 {
     #[Locked]
-    public $companyId;
+    public $id;
 
     public function mount($id)
     {
-        $this->companyId = $id;
+        $this->id = $id;
 
-        $count = TenantsDirectorReportConfig::where('company_id', $this->companyId)->count();
+        $count = TenantsDirectorReportConfig::where('company_id', $this->id)->count();
         if ($count == 0) {
             $configs = ReportConfig::all();
             foreach ($configs as $config) {
                 TenantsDirectorReportConfig::create([
-                    'company_id' => $this->companyId,
+                    'company_id' => $this->id,
                     'report_content' => $config->report_content,
                     'position' => $config->position,
                     'template_type' => $config->template_type,
@@ -39,7 +39,7 @@ class DirectorReportConfig extends Component
 
     public function render()
     {
-        $reportConfigs = TenantsDirectorReportConfig::where('company_id', $this->companyId)->get();
+        $reportConfigs = TenantsDirectorReportConfig::where('company_id', $this->id)->get();
 
         return view('livewire.tenant.pages.report-config.director-report-config', [
             'reportConfigs' => $reportConfigs

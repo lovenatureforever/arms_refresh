@@ -15,7 +15,6 @@ use App\Livewire\Tenant\Pages\CorporateInfo\Shareholder;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
 use App\Livewire\Tenant\Pages\CorporateInfo\ShareCapital;
-use App\Livewire\Tenant\Pages\ReportConfig\ReportConfigs;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -102,7 +101,11 @@ Route::middleware([
             Route::get('/report-info', ReportInfo::class)->name('reportinfo');
         });
 
-        Route::get('companies/{id}/report-config', ReportConfigs::class)->name('reportconfig');
+        // Report Config individual pages
+        Route::group(['prefix' => 'companies/{id}/report-config', 'as' => 'reportconfig.'], function () {
+            Route::get('/director', \App\Livewire\Tenant\Pages\ReportConfig\DirectorReportConfig::class)->name('director');
+            Route::get('/ntfs', \App\Livewire\Tenant\Pages\ReportConfig\NtfsConfig::class)->name('ntfs');
+        });
 
     });
 });
