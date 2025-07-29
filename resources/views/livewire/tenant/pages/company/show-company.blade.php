@@ -96,7 +96,7 @@
                 <div class="border-t border-gray-300 p-5 dark:border-gray-700">
                     <div class="grid gap-4 lg:grid-cols-2">
                         <div class="flex items-center gap-2">
-                            <button class="btn w-full bg-primary text-white" type="button" wire:click="reportConfiguration">View</button>
+                            <a class="btn w-full bg-primary text-white" href="{{ route('reportconfig', ['id' => $id]) }}">View</a>
                         </div>
                     </div>
                 </div>
