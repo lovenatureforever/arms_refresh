@@ -45,16 +45,16 @@
                                                 @if ($this->currentTab == 'general-info')
                                                 <div role="tabpanel">
                                                     <div>
-                                                        @livewire('tenant.pages.report-config.ntfs.general-info', ['id' => $this->id], key('generalInfo'))
+                                                        @livewire('tenant.pages.report-config.ntfs.general-info', ['id' => $this->id], 'generalInfo')
                                                     </div>
                                                 </div>
                                                 @elseif ($this->currentTab == 'sig-acc-policies')
                                                 <div role="tabpanel">
-                                                    @livewire('tenant.pages.report-config.ntfs.sig-acc-policies', ['id' => $this->id], key('sigAccPolicies'))
+                                                    @livewire('tenant.pages.report-config.ntfs.sig-acc-policies', ['id' => $this->id], 'sigAccPolicies')
                                                 </div>
                                                 @elseif ($this->currentTab == 'est-uncertainties')
                                                 <div role="tabpanel">
-                                                    @livewire('tenant.pages.report-config.ntfs.est-uncertainties', ['id' => $this->id], key('estUncertainties'))
+                                                    @livewire('tenant.pages.report-config.ntfs.est-uncertainties', ['id' => $this->id], 'estUncertainties')
                                                 </div>
                                                 @endif
                                             </div>

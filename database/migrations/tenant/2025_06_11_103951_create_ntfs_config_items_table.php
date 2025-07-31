@@ -27,6 +27,7 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->string('remark')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_director_company_shareholder', function (Blueprint $table) {
-            $table->unsignedBigInteger('company_director_id');
-            $table->unsignedBigInteger('company_shareholder_id');
-            $table->primary(['company_director_id', 'company_shareholder_id']);
+        Schema::create('company_report_soce_rows', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
+            $table->string('sort')->nullable();
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('director_shareholder');
+        Schema::dropIfExists('company_report_soce_rows');
     }
 };

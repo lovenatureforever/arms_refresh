@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies_users', function (Blueprint $table) {
+        Schema::create('company_report_soce_cols', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('name')->nullable();
+            $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
+            $table->string('data_type')->default('text');
+            $table->string('sort')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies_users');
+        Schema::dropIfExists('company_report_soce_cols');
     }
 };
