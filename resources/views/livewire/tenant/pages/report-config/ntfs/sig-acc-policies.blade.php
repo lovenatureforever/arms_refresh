@@ -20,7 +20,7 @@
                         class="btn"
                         type="button"
                         title="Add"
-                        wire:click="$dispatch('openModal', {component: 'tenants.modal.report.config.sig-acc-policies-modal', arguments: { companyId: {{ $this->id }}, isUpdate: false, id: {{ $item->id }} }})"
+                        wire:click="$dispatch('openModal', {component: 'tenant.components.report-config.sig-acc-policies-modal', arguments: { companyId: {{ $this->id }}, isUpdate: false, id: {{ $item->id }} }})"
                     >
                         <i class="text-base text-success mgc_add_fill"></i>
                     </button>
@@ -28,7 +28,7 @@
                         class="btn {{ $item->is_default_content ? 'hidden' : '' }}"
                         type="button"
                         title="Edit"
-                        wire:click="$dispatch('openModal', {component: 'tenants.modal.report.config.sig-acc-policies-modal', arguments: { companyId: {{ $this->id }}, isUpdate: true, id: {{ $item->id }} }})"
+                        wire:click="$dispatch('openModal', {component: 'tenant.components.report-config.sig-acc-policies-modal', arguments: { companyId: {{ $this->id }}, isUpdate: true, id: {{ $item->id }} }})"
                     >
                         <i class="text-base text-info mgc_edit_3_line"></i>
                     </button>

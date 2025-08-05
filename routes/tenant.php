@@ -36,6 +36,8 @@ use App\Livewire\Tenant\Pages\Report\DataImport;
 use App\Http\Controllers\Tenant\CompanyReportController;
 use App\Livewire\Tenant\Pages\Report\DataMigration;
 use App\Livewire\Tenant\Pages\Report\NtfsMigration;
+use App\Livewire\Tenant\Pages\ReportConfig\DirectorReportConfig;
+use App\Livewire\Tenant\Pages\ReportConfig\NtfsConfig;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -106,13 +108,14 @@ Route::middleware([
         });
 
         Route::group(['prefix' => 'companies/{id}/report-config', 'as' => 'reportconfig.'], function () {
-            Route::get('/director', \App\Livewire\Tenant\Pages\ReportConfig\DirectorReportConfig::class)->name('director');
-            Route::get('/ntfs', \App\Livewire\Tenant\Pages\ReportConfig\NtfsConfig::class)->name('ntfs');
+            Route::get('/director', DirectorReportConfig::class)->name('director');
+            Route::get('/ntfs', NtfsConfig::class)->name('ntfs');
         });
 
         Route::get('/companies/{id}/reports', DataImport::class)->name('datamigration.index');
         Route::get('/reports/{id}/download-excel', [CompanyReportController::class, 'downloadExcel'])->name('downloadexcel');
         Route::get('/reports/{id}/migration', DataMigration::class)->name('datamigration');
         Route::get('/reports/{report}/ntfs/{id}', NtfsMigration::class)->name('datamigration.ntfs');
+        Route::get('/reports/{id}', [CompanyReportController::class, 'viewFinancialReport'])->name('financialreport');
     });
 });

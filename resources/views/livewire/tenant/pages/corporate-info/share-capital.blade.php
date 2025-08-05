@@ -264,7 +264,7 @@
 
                             <div class="mt-8 mb-4">
                                 <h1 class="text-xl text-primary">Result Summary</h1>
-                                <div class="text-sm text-gray-400">as at current report date</div>
+                                <div class="text-sm text-gray-400">as at current year end</div>
                             </div>
 
                             <div class="relative mb-4 overflow-x-auto border rounded-lg">

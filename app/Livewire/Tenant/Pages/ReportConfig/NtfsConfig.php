@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Locked;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use App\Models\Tenants\DirectorReportConfig as TenantsDirectorReportConfig;
+use App\Models\Tenant\DirectorReportConfig as TenantsDirectorReportConfig;
 
 class NtfsConfig extends Component
 {

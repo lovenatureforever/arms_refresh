@@ -7,7 +7,7 @@
                 class="btn"
                 type="button"
                 title="Edit"
-                wire:click="$dispatch('openModal', {component: 'tenants.modal.report.config.update-ntfs-general-title-modal', arguments: { id: {{ $item->id }} }})"
+                wire:click="$dispatch('openModal', {component: 'tenant.components.report-config.update-ntfs-general-title-modal', arguments: { id: {{ $item->id }} }})"
             >
                 <i class="text-base text-info mgc_edit_3_line"></i>
             </button>
@@ -35,7 +35,7 @@
                         class="btn"
                         type="button"
                         title="Edit"
-                        wire:click="$dispatch('openModal', {component: 'tenants.modal.report.config.update-ntfs-general-content-modal', arguments: { id: {{ $item->id }} }})"
+                        wire:click="$dispatch('openModal', {component: 'tenant.components.report-config.update-ntfs-general-content-modal', arguments: { id: {{ $item->id }} }})"
                     >
                         <i class="text-base text-info mgc_edit_3_line"></i>
                     </button>
