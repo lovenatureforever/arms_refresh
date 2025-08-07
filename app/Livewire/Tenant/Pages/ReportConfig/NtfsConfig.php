@@ -6,7 +6,7 @@ use App\Models\ReportConfig;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Locked;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use App\Models\Tenant\DirectorReportConfig as TenantsDirectorReportConfig;
 
 class NtfsConfig extends Component
@@ -56,7 +56,13 @@ class NtfsConfig extends Component
     public function successUpdated()
     {
         // session()->flash('success', 'Content was updated');
-        $this->alert('success', 'Item was updated!');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Item was updated!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
         $this->render();
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Locked;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use App\Models\Tenant\NtfsConfigItem;
 use App\Models\Central\DefaultNtfsConfigItem;
 
@@ -48,14 +48,26 @@ class SigAccPolicies extends Component
     public function successCreated()
     {
         // session()->flash('success', 'Content was created');
-        $this->alert('success', 'Item was created!');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Item was created!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     #[On('successUpdated')]
     public function successUpdated()
     {
         // session()->flash('success', 'Content was updated');
-        $this->alert('success', 'Item was updated!');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Item was updated!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     public function updateOrder($orderItem)
@@ -67,7 +79,13 @@ class SigAccPolicies extends Component
             $config->save();
         }
 
-        $this->alert('success', 'Order Saved!');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Order Saved!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     private function loadSigAccPolicies()

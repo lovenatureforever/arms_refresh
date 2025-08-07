@@ -107,12 +107,12 @@
                                         </td>
                                         @foreach ($this->soce_cols??[] as $col)
                                         <td wire:key='{{ $col->id }}' class="px-4 py-3 text-right align-middle">
-                                            <input type="text" {{ $col->data_type === "number" ? "pattern=^\(?\d+(\.\d+)?\)?$" : '' }} wire:model.blur='soce_items.{{ $row->id }}.{{ $col->id }}' class="block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
+                                            <input type="text" {{ $col->data_type === "number" ? "pattern=^\(?\d{1,3}(,\d{3})*(\.\d+)?\)?$" : '' }} wire:model.blur='soce_items.{{ $row->id }}.{{ $col->id }}' class="numberInput block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
                                         </td>
                                         @endforeach
                                         {{-- <td class="flex items-center px-4 py-3">
                                             <input type="checkbox" wire:model.live="skin_check_boxes.{{ $item->id }}" {{ !($check_boxes[$item->id]) ? "disabled" : "" }} class="w-4 h-4 mr-4 bg-white border-gray-300 rounded text-slate-600 focus:ring-slate-500 focus:ring-2 {{ strtolower($item->item) == 'adjustments for:' ? 'invisible' : '' }}" />
-                                            <input wire:model="actual_displays.{{ $item->id }}" {{ !($skin_check_boxes[$item->id]) ? "disabled" : "" }} class="block px-3 py-2 bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-500" />
+                                            <input wire:model="actual_displays.{{ $item->id }}" {{ !($skin_check_boxes[$item->id]) ? "disabled" : "" }} class="block px-3 py-2 bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
                                         </td> --}}
                                     </tr>
                                     @endforeach
@@ -135,10 +135,10 @@
                                                 <a class="text-blue-400 underline capitalize" href="/reports/{{ $this->id }}/ntfs/{{ $item->id }}" target="_blank">{{ $item->item }}</a>
                                             </td>
                                             <td class="px-3 text-right align-middle">
-                                                <input type="text" pattern="^\(?\d+(\.\d+)?\)?$" disabled wire:model.blur='this_year_values.{{ $item->id }}' class="block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
+                                                <input type="text" disabled wire:model.blur='this_year_values.{{ $item->id }}' class="numberInput block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
                                             </td>
                                             <td class="px-4 py-3 text-right">
-                                                <input type="text" pattern="^\(?\d+(\.\d+)?\)?$" disabled wire:model.blur='last_year_values.{{ $item->id }}' class="block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
+                                                <input type="text" disabled wire:model.blur='last_year_values.{{ $item->id }}' class="numberInput block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
                                             </td>
                                             <td class="flex items-center px-4 py-3">
                                                 <input type="checkbox" wire:model.live="skin_check_boxes.{{ $item->id }}" disabled class="w-4 h-4 mr-4 bg-white border-gray-300 rounded text-slate-600 focus:ring-slate-500 focus:ring-2 {{ strtolower($item->item) == 'adjustments for:' ? 'invisible' : '' }}" />
@@ -182,12 +182,12 @@
                                                 </td>
                                                 <td class="px-3 text-right align-middle">
                                                     @if ($item->type != 'label')
-                                                    <input type="text" pattern="^\(?\d+(\.\d+)?\)?$" {{ ($item->type != 'value' || !$check_boxes[$item->id]) ? 'disabled' : '' }} wire:model.blur='this_year_values.{{ $item->id }}' class="block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
+                                                    <input type="text" {{ ($item->type != 'value' || !$check_boxes[$item->id]) ? 'disabled' : '' }} wire:model.blur='this_year_values.{{ $item->id }}' class="numberInput block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
                                                     @endif
                                                 </td>
                                                 <td class="px-4 py-3 text-right">
                                                     @if ($item->type != 'label')
-                                                    <input type="text" pattern="^\(?\d+(\.\d+)?\)?$" {{ ($item->type != 'value' || !$check_boxes[$item->id]) ? 'disabled' : '' }} wire:model.blur='last_year_values.{{ $item->id }}' class="block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
+                                                    <input type="text" {{ ($item->type != 'value' || !$check_boxes[$item->id]) ? 'disabled' : '' }} wire:model.blur='last_year_values.{{ $item->id }}' class="numberInput block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
                                                     @endif
                                                 </td>
                                                 <td class="flex items-center px-4 py-3">
@@ -209,3 +209,14 @@
     </div>
     </form>
 </div>
+
+@script
+<script>
+    document.querySelectorAll('.numberInput').forEach(function (el) {
+        new Cleave(el, {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
+    });
+</script>
+@endscript

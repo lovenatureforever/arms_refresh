@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Locked;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use App\Models\Tenant\NtfsConfigItem;
 use App\Models\Central\DefaultNtfsConfigItem;
 
@@ -50,15 +50,25 @@ class GeneralInfo extends Component
     public function successUpdatedTitle()
     {
         // session()->flash('success', 'Content was created');
-        $this->alert('success', 'Title was updated!');
-        $this->render();
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Title was updated!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     #[On('successUpdatedContent')]
     public function successUpdatedContent()
     {
-        $this->alert('success', 'Custom content was updated!');
-        $this->render();
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Custom content was updated!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     private function loadGeneralInfoItems()

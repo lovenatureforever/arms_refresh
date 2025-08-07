@@ -37,7 +37,7 @@
                                                     @foreach ($reportConfigs->sortBy('order_no') as $key => $item)
                                                     <tr wire:sortable.item="{{ $item->id }}" wire:key="report-{{ $item->id }}">
                                                         <td class="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200 max-w-[400px]">
-                                                            <button class="btn" type="button" wire:sortable.handle>
+                                                            <button class="btn handle cursor-grab" type="button" wire:sortable.handle>
                                                                 <i class="text-base mgc_transfer_4_fill"></i>
                                                             </button>
                                                             <button
@@ -104,3 +104,6 @@
         </div>
     </div>
 </div>
+
+@livewireScripts
+<script src="https://unpkg.com/@wotz/livewire-sortablejs@1.0.0/dist/livewire-sortable.js"></script>

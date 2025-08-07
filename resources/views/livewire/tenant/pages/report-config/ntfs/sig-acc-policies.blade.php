@@ -9,11 +9,11 @@
                 <th class="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase max-w-[200px]" scope="col">Remark</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-700" wire:sortable="updateOrder">
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700" wire:sortable="updateOrder" wire:sortable.options="{ animation: 100 }">
             @foreach ($items->sortBy('order') as $key => $item)
             <tr wire:sortable.item="{{ $item->id }}" wire:key="sap-{{ $item->id }}">
                 <td class="py-4 text-sm font-medium text-gray-800 dark:text-gray-200 max-w-[400px]">
-                    <button class="btn" type="button" wire:sortable.handle>
+                    <button class="btn cursor-grab" type="button" wire:sortable.handle>
                         <i class="text-base mgc_transfer_4_fill"></i>
                     </button>
                     <button

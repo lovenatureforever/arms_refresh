@@ -15,7 +15,7 @@ use App\Models\Tenant\CompanyReportItem;
 use App\Models\Tenant\CompanyReportType;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\CompanyReportSoceRow;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -201,7 +201,13 @@ class DataMigration extends Component
                 }
             }
             $this->refresh($this->type);
-            $this->alert('success', 'Saved successful!');
+            LivewireAlert::withOptions([
+                "position" => "top-end",
+                "icon" => "success",
+                "title" => "Saved successful!",
+                "showConfirmButton" => false,
+                "timer" => 1500
+            ])->show();
         } else {
             foreach ($this->company_report_items as $item) {
                 if ($item->type == CompanyReportItem::TYPE_VALUE) {
@@ -368,7 +374,13 @@ class DataMigration extends Component
             }
 
             $this->refresh($this->type);
-            $this->alert('success', 'Saved successful!');
+            LivewireAlert::withOptions([
+                "position" => "top-end",
+                "icon" => "success",
+                "title" => "Saved successful!",
+                "showConfirmButton" => false,
+                "timer" => 1500
+            ])->show();
             // $this->redirect(DataImport::class);
         }
         // } catch (Exception $e) {

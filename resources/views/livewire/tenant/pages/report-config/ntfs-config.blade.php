@@ -70,3 +70,6 @@
         </div>
     </div>
 </div>
+
+@livewireScripts
+<script src="https://unpkg.com/@wotz/livewire-sortablejs@1.0.0/dist/livewire-sortable.js"></script>

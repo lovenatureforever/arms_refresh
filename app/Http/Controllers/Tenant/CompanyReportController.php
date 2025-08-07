@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Models\Tenant\CompanyAddressChange;
+use App\Models\Tenant\CompanyDirector;
+use App\Models\Tenant\CompanyDirectorChange;
+use App\Models\Tenant\CompanyShareCapitalChange;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant\DirectorReportConfig;
@@ -14,6 +17,7 @@ use App\Models\Tenant\CompanyReportItem;
 use App\Models\Tenant\CompanyReportType;
 use App\Models\Tenant\CompanyReportAccount;
 use App\Models\Tenant\NtfsConfigItem;
+use App\Models\Tenant\CompanyDividendChange;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
@@ -22,25 +26,47 @@ class CompanyReportController extends Controller
     public function viewFinancialReport($id)
     {
         $report = CompanyReport::find($id);
-        $report_types = $report->company_report_types;
 
         $company = $report->company;
-        $current_year_end = $company->current_year_end()->first();
-        $prior_year_end = $company->prior_year_end()->first();
-        $prior_company_name = $company->prior_company_name()->first();
-        $business_nature = $company->business_natures->last();
-        $declared_dividends = $company->declared_dividends()->get();
-        $proposed_dividends = $company->proposed_dividends()->get();
-        $share_capitals = $company->share_capitals()->get();
+        $current_year_end = $company->current_year_to;
+        $prior_year_end = $company->last_year_to;
+        $prior_company_name = $company->detailAtStart()?->name;
+        $business_nature = $company->businessAtLast();
+        $declared_dividends = CompanyDividendChange::where('company_id', $company->id)
+            ->where('is_declared', true)
+            ->whereBetween('effective_date', [$company->current_year_from, $company->end_date_report])
+            ->get();
+        $proposed_dividends = CompanyDividendChange::where('company_id', $company->id)
+            ->where('is_declared', false)
+            ->whereBetween('effective_date', [$company->current_year_from, $company->end_date_report])
+            ->get();
+        $share_capitals = $company->sharecapitalChanges;
         $directors = $company->directors;
-        $prior_ordinary_share = $company->prior_ordinary_share()->first();
-        $prior_preference_share = $company->prior_preference_share()->first();
-        $current_ordinary_shares = $company->current_ordinary_share()->get();
-        $current_preference_shares = $company->current_preference_share()->get();
-        $business_address = $company->business_addresses()->latest()->first();
-        $prior_business_address = $company->prior_business_addresses()->first();
-        $prior_directors = $company->prior_directors()->get();
-        $statement_directors = $company->statement_directors()->get();
+        $prior_ordinary_share = $company->ordinaryShareCapitalAtStart();
+        $prior_preference_share = $company->preferenceShareCapitalAtStart();
+        $current_ordinary_shares = CompanyShareCapitalChange::whereBetween('effective_date', [$company->current_year_from, $company->current_year_to])->where('share_type', CompanyShareCapitalChange::SHARETYPE_ORDINARY)->get();
+        $current_preference_shares = CompanyShareCapitalChange::whereBetween('effective_date', [$company->current_year_from, $company->current_year_to])->where('share_type', CompanyShareCapitalChange::SHARETYPE_PREFERENCE)->get();
+        $business_address = $company->bizAddressAtLast($company->end_date_report);
+        $prior_business_address = $company->bizAddressAtStart();
+        $prior_directors = CompanyDirectorChange::with(['companyDirector' => function($query) use ($company) {
+                $query->where('company_id', $company->id);
+            }])
+            ->whereHas('companyDirector', function($query) use ($company) {
+                $query->where('company_id', $company->id);
+            }, '=', 1) // Explicit count for better performance
+            ->where('effective_date', '<', $company->current_year_from)
+            ->latest('effective_date')
+            ->get();
+        // $statement_directors = $company->statement_directors()->get();
+        $statement_directors = CompanyDirector::where('company_id', $company->id)
+            ->where('is_active', true)
+            ->where('is_rep_statement', true)
+            ->whereHas('changes', function($query) use ($company) {
+                $query->where('effective_date', '<=', $company->end_date_report)
+                    ->latest('effective_date');
+            })
+            ->orderBy('sort')
+            ->get();
         $statement_info = $company->statement_infos()->first();
         $statutory_info = $company->statutory_infos()->first();
         $related_party_transactions = $company->related_party_transactions;

@@ -6,7 +6,7 @@ use App\Models\Central\ReportConfig;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Locked;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use App\Models\Tenant\DirectorReportConfig as TenantsDirectorReportConfig;
 
 class DirectorReportConfig extends Component
@@ -64,14 +64,26 @@ class DirectorReportConfig extends Component
     public function successCreated()
     {
         // session()->flash('success', 'Content was created');
-        $this->alert('success', 'Item was created!');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Item was created!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     #[On('successUpdated')]
     public function successUpdated()
     {
         // session()->flash('success', 'Content was updated');
-        $this->alert('success', 'Item was updated!');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Item was updated!",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
     }
 
     public function deleteItem($id)
@@ -88,6 +100,12 @@ class DirectorReportConfig extends Component
             $report->save();
         }
 
-        $this->alert('success', 'Order Saved!');
+       LivewireAlert::withOptions([
+           "position" => "top-end",
+           "icon" => "success",
+           "title" => "Order Saved!",
+           "showConfirmButton" => false,
+           "timer" => 1500
+       ])->show();
     }
 }
