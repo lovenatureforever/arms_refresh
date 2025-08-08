@@ -35,6 +35,12 @@ use App\Livewire\Tenant\Pages\Company\ShowCompany;
 use App\Livewire\Tenant\Pages\Report\DataImport;
 use App\Http\Controllers\Tenant\CompanyReportController;
 use App\Livewire\Tenant\Pages\Report\DataMigration;
+use App\Livewire\Tenant\Pages\Report\DataMigration\SofpDataMigration;
+use App\Livewire\Tenant\Pages\Report\DataMigration\SociDataMigration;
+use App\Livewire\Tenant\Pages\Report\DataMigration\SoceDataMigration;
+use App\Livewire\Tenant\Pages\Report\DataMigration\SocfDataMigration;
+use App\Livewire\Tenant\Pages\Report\DataMigration\StsooDataMigration;
+use App\Livewire\Tenant\Pages\Report\DataMigration\NtfsDataMigration;
 use App\Livewire\Tenant\Pages\Report\NtfsMigration;
 use App\Livewire\Tenant\Pages\ReportConfig\DirectorReportConfig;
 use App\Livewire\Tenant\Pages\ReportConfig\NtfsConfig;
@@ -114,8 +120,16 @@ Route::middleware([
 
         Route::get('/companies/{id}/reports', DataImport::class)->name('datamigration.index');
         Route::get('/reports/{id}/download-excel', [CompanyReportController::class, 'downloadExcel'])->name('downloadexcel');
+        // Data Migration Tabs
+        Route::get('/reports/{id}/migration/sofp', SofpDataMigration::class)->name('datamigration.sofp');
+        Route::get('/reports/{id}/migration/soci', SociDataMigration::class)->name('datamigration.soci');
+        Route::get('/reports/{id}/migration/soce', SoceDataMigration::class)->name('datamigration.soce');
+        Route::get('/reports/{id}/migration/socf', SocfDataMigration::class)->name('datamigration.socf');
+        Route::get('/reports/{id}/migration/stsoo', StsooDataMigration::class)->name('datamigration.stsoo');
+        Route::get('/reports/{id}/migration/ntfs', NtfsDataMigration::class)->name('datamigration.ntfs');
+        // Optionally, keep the old route for backward compatibility
         Route::get('/reports/{id}/migration', DataMigration::class)->name('datamigration');
-        Route::get('/reports/{report}/ntfs/{id}', NtfsMigration::class)->name('datamigration.ntfs');
+        Route::get('/reports/{report}/migration/ntfs/{id}', NtfsMigration::class)->name('datamigration.ntfsdetail');
         Route::get('/reports/{id}', [CompanyReportController::class, 'viewFinancialReport'])->name('financialreport');
     });
 });
