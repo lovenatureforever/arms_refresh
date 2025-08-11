@@ -72,7 +72,7 @@
                                     @foreach ($this->company_report_items??[] as $item)
                                         <tr wire:key='{{ $item->id }}'>
                                             <td class="px-4 align-middle">
-                                                <a class="text-blue-400 underline capitalize" href="/reports/{{ $this->id }}/ntfs/{{ $item->id }}" target="_blank">{{ $item->item }}</a>
+                                                <a class="text-blue-400 underline capitalize" href="/reports/{{ $this->id }}/migration/ntfs/{{ $item->id }}" target="_blank">{{ $item->item }}</a>
                                             </td>
                                             <td class="px-3 text-right align-middle">
                                                 <input type="text" disabled wire:model.blur='this_year_values.{{ $item->id }}' class="numberInput block px-3 py-2 text-right bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />

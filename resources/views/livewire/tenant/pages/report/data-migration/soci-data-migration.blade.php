@@ -1,35 +1,5 @@
 
 <div>
-    @if (session()->has('error'))
-    <div class="p-4 border border-red-200 rounded-md bg-red-50" role="alert">
-        <div class="flex">
-            <div class="flex-shrink-0">
-                <i class="text-xl mgc_information_line"></i>
-            </div>
-            <div class="ms-4">
-                <h3 class="text-sm font-semibold text-red-800">
-                    {{ session('error') }}
-                </h3>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    @if (session()->has('success'))
-    <div class="p-4 mb-5 border border-green-200 rounded-md bg-green-50" role="alert">
-        <div class="flex">
-            <div class="flex-shrink-0">
-                <i class="text-xl mgc_information_line"></i>
-            </div>
-            <div class="ms-4">
-                <h3 class="text-sm font-semibold text-green-800">
-                    {{ session('success') }}
-                </h3>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <form wire:submit="save" wire:confirm="Are you sure?">
     <div class="lg:col-span-4 sticky top-[70px]">
         <div class="card">

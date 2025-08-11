@@ -41,6 +41,7 @@ class SofpDataMigration extends Component
 
     public $activeTab = 'sofp';
 
+
     public function mount($id)
     {
         $this->id = $id;

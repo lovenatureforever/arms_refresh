@@ -1,40 +1,10 @@
 
 <div>
-    @if (session()->has('error'))
-    <div class="p-4 border border-red-200 rounded-md bg-red-50" role="alert">
-        <div class="flex">
-            <div class="flex-shrink-0">
-                <i class="text-xl mgc_information_line"></i>
-            </div>
-            <div class="ms-4">
-                <h3 class="text-sm font-semibold text-red-800">
-                    {{ session('error') }}
-                </h3>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    @if (session()->has('success'))
-    <div class="p-4 mb-5 border border-green-200 rounded-md bg-green-50" role="alert">
-        <div class="flex">
-            <div class="flex-shrink-0">
-                <i class="text-xl mgc_information_line"></i>
-            </div>
-            <div class="ms-4">
-                <h3 class="text-sm font-semibold text-green-800">
-                    {{ session('success') }}
-                </h3>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <form wire:submit="save" wire:confirm="Are you sure?">
     <div class="lg:col-span-4 sticky top-[70px]">
         <div class="card">
             <div class="flex items-center justify-between card-header">
-                <h6 class="card-title">STSOO Data Migration</h6>
+                <h6 class="card-title">Data Migration</h6>
                 <div class="self-end">
                     <button class="text-white btn btn-sm bg-info" type="submit">Save</button>
                 </div>
@@ -69,19 +39,42 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($company_report_items ?? [] as $item)
-                                        @if ($item->type == 'group')
-                                            <tr class="bg-gray-200" wire:key="{{ $item->id }}">
-                                                <td colspan="4" class="px-3 py-3">
-                                                    <div class="inline-flex items-center align-middle">
-                                                        <div class="flex items-center mr-5 font-bold uppercase">{{ $item->item }}</div>
-                                                        <input type="checkbox" wire:model.live="skin_check_boxes.{{ $item->id }}" class="w-4 h-4 mr-4 bg-white border-gray-300 rounded text-slate-600 focus:ring-slate-500 focus:ring-2" />
-                                                        <input wire:model="actual_displays.{{ $item->id }}" class="w-[400px] block px-3 py-2 uppercase bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @else
-                                            <tr wire:key="{{ $item->id }}">
+                                @php
+                                    $parentGroupId = null;
+                                @endphp
+                                @foreach ($company_report_items ?? [] as $item)
+                                    @if ($item->type == 'group')
+                                        <tr class="bg-gray-200" wire:key="{{ $item->id }}">
+                                            <td colspan="4" class="px-3 py-3">
+                                                <div class="inline-flex items-center align-middle">
+                                                    <div class="flex items-center mr-5 font-bold uppercase">{{ $item->item }}</div>
+                                                    <input type="checkbox" wire:model.live="skin_check_boxes.{{ $item->id }}" class="w-4 h-4 mr-4 bg-white border-gray-300 rounded text-slate-600 focus:ring-slate-500 focus:ring-2" />
+                                                    <input wire:model="actual_displays.{{ $item->id }}" class="w-[400px] block px-3 py-2 uppercase bg-white border rounded-md shadow-sm border-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:ring-slate-300 sm:text-sm focus:ring-1 contrast-more:border-slate-400 contrast-more:placeholder-slate-300" />
+                                                </div>
+                                                <div class="inline-flex items-center px-1 py-1 mt-1 mr-4 text-center bg-gray-100 border rounded float-end cursor-pointer"
+                                                     x-data="{ rotated: false }"
+                                                     @click="rotated = !rotated; $dispatch('collapse-group', {{ $item->id }})"
+                                                     title="Collapse/Expand Group">
+                                                    <i class="mgc_up_fill transition-transform duration-200"
+                                                       :style="'transform: rotate(' + (rotated ? 0 : 180) + 'deg);'"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @php $parentGroupId = $item->id; @endphp
+                                    @else
+                                        @php
+                                            $isCollapsed = false;
+                                        @endphp
+                                        <tr wire:key="{{ $item->id }}" x-data="{ show: {{ $isCollapsed ? 'false' : 'true' }} }"
+                                            x-show="show"
+                                            x-transition:enter="transition ease-out duration-300"
+                                            x-transition:enter-start="opacity-0 -translate-y-2"
+                                            x-transition:enter-end="opacity-100 translate-y-0"
+                                            x-transition:leave="transition ease-in duration-200"
+                                            x-transition:leave-start="opacity-100 translate-y-0"
+                                            x-transition:leave-end="opacity-0 -translate-y-2"
+                                            @collapse-group.window="if($event.detail == {{ $parentGroupId ?? 'null' }}) show = !show"
+                                        >
                                                 <td class="px-4 align-middle">
                                                     <span class="@if ($item->type == 'total') font-bold @endif">{{ $item->item }}</span>
                                                 </td>

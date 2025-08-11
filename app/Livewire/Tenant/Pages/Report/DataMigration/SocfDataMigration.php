@@ -3,8 +3,6 @@
 namespace App\Livewire\Tenant\Pages\Report\DataMigration;
 
 use Livewire\Component;
-
-
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use App\Models\Tenant\CompanyReport;

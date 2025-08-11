@@ -3,8 +3,6 @@
 namespace App\Livewire\Tenant\Pages\Report\DataMigration;
 
 use Livewire\Component;
-
-
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use App\Models\Tenant\CompanyReport;
@@ -28,6 +26,7 @@ class StsooDataMigration extends Component
     public $check_boxes = [];
     public $skin_check_boxes = [];
     public $activeTab = 'stsoo';
+
 
     public function mount($id)
     {
