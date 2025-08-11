@@ -26,6 +26,15 @@
     <div class="">
         <div class="card">
             <div class="card-header">
+                <div class="flex justify-end mb-2">
+                    <button
+                        class="text-white btn btn-sm bg-info"
+                        wire:click.prevent="$dispatch('openModal', {component: 'tenant.components.data-migration.create-update-item-modal', arguments: { company_report_type_id : {{ $company_report_type->id ?? '' }}, parentComponent: '{{ addslashes(static::class) }}' }})"
+                        wire:loading.attr="disabled"
+                    >
+                        Add Item
+                    </button>
+                </div>
                 <div class="overflow-x-auto">
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden">

@@ -42,11 +42,18 @@ class NtfsDataMigration extends Component
     #[On('successCreated')]
     public function successCreated()
     {
-        session()->flash('success', 'Report item was created');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Report item was created",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
         $this->refresh();
     }
 
     private function refresh() {
+        $this->company_report_type = CompanyReportType::where('company_report_id', $this->id)->where('name', 'NTFS')->first();
         $sofp_type = CompanyReportType::where('company_report_id', $this->id)->where('name', 'SOFP')->first();
         $soci_type = CompanyReportType::where('company_report_id', $this->id)->where('name', 'SOCI')->first();
         $this->company_report_items = CompanyReportItem::where('company_report_type_id', $sofp_type->id)->where('type', 'value')->where('is_report', 1)->orderBy('sort')->orderBy('id')->get();

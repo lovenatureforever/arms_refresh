@@ -64,7 +64,13 @@ class SofpDataMigration extends Component
     #[On('successCreated')]
     public function successCreated()
     {
-        session()->flash('success', 'Report item was created');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Report item was created",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
         $this->refresh();
     }
 
@@ -95,49 +101,48 @@ class SofpDataMigration extends Component
         }
 
         // DB::statement("UPDATE company_report_items SET this_year_amount = (SELECT SUM(company_report_items.this_year_amount) FROM company_report_items LEFT JOIN company_report_accounts ON company_report_items.company_report_account_id = company_report_accounts.id WHERE company_report_accounts.name IN ('CA', 'NCA') AND company_report_items.type = 'value' AND company_report_items.company_report_id = ? AND company_report_items.company_report_type_id = ?) WHERE company_report_items.item = ?", [$this->id, $this->type, 'TOTAL ASSETS']);
-        if ($this->company_report_type->name == 'SOFP') {
-            // sofp: TOTAL NON-CURRENT ASSET
-            // sofp: TOTAL CURRENT ASSET
-            // sofp: TOTAL EQUITY
-            // sofp: TOTAL NON-CURRENT LIABILITY
-            // sofp: TOTAL CURRENT LIABILITY
-            foreach ($this->company_report_type->company_report_accounts as $group) {
-                $total_item = CompanyReportItem::where('company_report_type_id', $this->type)->where('company_report_account_id', $group->id)->where('type', CompanyReportItem::TYPE_TOTAL)->first();
-                $total_sum = DB::selectOne("SELECT SUM(this_year_amount) as this_year_amount, SUM(last_year_amount) as last_year_amount FROM company_report_items WHERE company_report_type_id = ? AND company_report_account_id = ? AND type = ? AND is_report = 1", [$this->type, $group->id, CompanyReportItem::TYPE_VALUE]);
-                $total_item->this_year_amount = $total_sum->this_year_amount;
-                $total_item->last_year_amount = $total_sum->last_year_amount;
-                $total_item->save();
-            }
-            // sofp: total assets
-            $total_asset_sum = DB::selectOne("SELECT SUM(company_report_items.this_year_amount) as this_year_amount, SUM(company_report_items.last_year_amount) as last_year_amount FROM company_report_items LEFT JOIN company_report_accounts ON company_report_items.company_report_account_id = company_report_accounts.id WHERE company_report_accounts.name IN ('CA', 'NCA') AND company_report_items.type = 'total' AND company_report_items.company_report_type_id = ?", [$this->type]);
-            $total_asset_item = CompanyReportItem::where('company_report_type_id', $this->type)->where('item', 'TOTAL ASSETS')->first();
-            $total_asset_item->this_year_amount = $total_asset_sum->this_year_amount;
-            $total_asset_item->last_year_amount = $total_asset_sum->last_year_amount;
-            $total_asset_item->save();
-            // sofp: TOTAL LIABILITIES
-            $total_liability_sum = DB::selectOne("SELECT SUM(company_report_items.this_year_amount) as this_year_amount, SUM(company_report_items.last_year_amount) as last_year_amount FROM company_report_items LEFT JOIN company_report_accounts ON company_report_items.company_report_account_id = company_report_accounts.id WHERE company_report_accounts.name IN ('CL', 'NCL') AND company_report_items.type = 'total' AND company_report_items.company_report_type_id = ?", [$this->type]);
-            $total_liability_item = CompanyReportItem::where('company_report_type_id', $this->type)->where('item', 'TOTAL LIABILITIES')->first();
-            $total_liability_item->this_year_amount = $total_liability_sum->this_year_amount;
-            $total_liability_item->last_year_amount = $total_liability_sum->last_year_amount;
-            $total_liability_item->save();
-            // sofp: TOTAL EQUITY AND LIABILITIES
-            $total_equity_item = CompanyReportItem::where('company_report_type_id', $this->type)->where('item', 'LIKE', 'TOTAL EQUIT%')->first();
-            $total_equity_liability_item = CompanyReportItem::whereRaw("company_report_id = ? AND company_report_type_id = ? AND item LIKE 'TOTAL EQUIT%' AND item LIKE '%AND LIABILIT%'", [$this->id, $this->type])->first();
-            $total_equity_liability_item->this_year_amount = $total_equity_item->this_year_amount + $total_liability_sum->this_year_amount;
-            $total_equity_liability_item->last_year_amount = $total_equity_item->last_year_amount + $total_liability_sum->last_year_amount;
-            $total_equity_liability_item->save();
 
-            // sofp: Retained Profits/(Accumulated Losses)
-            $retainedProfit = CompanyReportItem::whereRaw("`company_report_id` = ? AND `company_report_type_id` = ? AND LOWER(`item`) = 'retained profits/(accumulated losses)'", [$this->id, $this->type])->first();
-            if ($retainedProfit->this_year_amount > $retainedProfit->last_year_amount) {
-                // $retainedProfit->item = "Retained profits";
-                $retainedProfit->display = "Retained profits";
-                $retainedProfit->save();
-            } else {
-                // $retainedProfit->item = "Accumulated losses";
-                $retainedProfit->display = "Accumulated losses";
-                $retainedProfit->save();
-            }
+        // sofp: TOTAL NON-CURRENT ASSET
+        // sofp: TOTAL CURRENT ASSET
+        // sofp: TOTAL EQUITY
+        // sofp: TOTAL NON-CURRENT LIABILITY
+        // sofp: TOTAL CURRENT LIABILITY
+        foreach ($this->company_report_type->company_report_accounts as $group) {
+            $total_item = CompanyReportItem::where('company_report_type_id', $this->company_report_type->id)->where('company_report_account_id', $group->id)->where('type', CompanyReportItem::TYPE_TOTAL)->first();
+            $total_sum = DB::selectOne("SELECT SUM(this_year_amount) as this_year_amount, SUM(last_year_amount) as last_year_amount FROM company_report_items WHERE company_report_type_id = ? AND company_report_account_id = ? AND type = ? AND is_report = 1", [$this->company_report_type->id, $group->id, CompanyReportItem::TYPE_VALUE]);
+            $total_item->this_year_amount = $total_sum->this_year_amount;
+            $total_item->last_year_amount = $total_sum->last_year_amount;
+            $total_item->save();
+        }
+        // sofp: total assets
+        $total_asset_sum = DB::selectOne("SELECT SUM(company_report_items.this_year_amount) as this_year_amount, SUM(company_report_items.last_year_amount) as last_year_amount FROM company_report_items LEFT JOIN company_report_accounts ON company_report_items.company_report_account_id = company_report_accounts.id WHERE company_report_accounts.name IN ('CA', 'NCA') AND company_report_items.type = 'total' AND company_report_items.company_report_type_id = ?", [$this->company_report_type->id]);
+        $total_asset_item = CompanyReportItem::where('company_report_type_id', $this->company_report_type->id)->where('item', 'TOTAL ASSETS')->first();
+        $total_asset_item->this_year_amount = $total_asset_sum->this_year_amount;
+        $total_asset_item->last_year_amount = $total_asset_sum->last_year_amount;
+        $total_asset_item->save();
+        // sofp: TOTAL LIABILITIES
+        $total_liability_sum = DB::selectOne("SELECT SUM(company_report_items.this_year_amount) as this_year_amount, SUM(company_report_items.last_year_amount) as last_year_amount FROM company_report_items LEFT JOIN company_report_accounts ON company_report_items.company_report_account_id = company_report_accounts.id WHERE company_report_accounts.name IN ('CL', 'NCL') AND company_report_items.type = 'total' AND company_report_items.company_report_type_id = ?", [$this->company_report_type->id]);
+        $total_liability_item = CompanyReportItem::where('company_report_type_id', $this->company_report_type->id)->where('item', 'TOTAL LIABILITIES')->first();
+        $total_liability_item->this_year_amount = $total_liability_sum->this_year_amount;
+        $total_liability_item->last_year_amount = $total_liability_sum->last_year_amount;
+        $total_liability_item->save();
+        // sofp: TOTAL EQUITY AND LIABILITIES
+        $total_equity_item = CompanyReportItem::where('company_report_type_id', $this->company_report_type->id)->where('item', 'LIKE', 'TOTAL EQUIT%')->first();
+        $total_equity_liability_item = CompanyReportItem::whereRaw("company_report_id = ? AND company_report_type_id = ? AND item LIKE 'TOTAL EQUIT%' AND item LIKE '%AND LIABILIT%'", [$this->id, $this->company_report_type->id])->first();
+        $total_equity_liability_item->this_year_amount = $total_equity_item->this_year_amount + $total_liability_sum->this_year_amount;
+        $total_equity_liability_item->last_year_amount = $total_equity_item->last_year_amount + $total_liability_sum->last_year_amount;
+        $total_equity_liability_item->save();
+
+        // sofp: Retained Profits/(Accumulated Losses)
+        $retainedProfit = CompanyReportItem::whereRaw("`company_report_id` = ? AND `company_report_type_id` = ? AND LOWER(`item`) = 'retained profits/(accumulated losses)'", [$this->id, $this->company_report_type->id])->first();
+        if ($retainedProfit->this_year_amount > $retainedProfit->last_year_amount) {
+            // $retainedProfit->item = "Retained profits";
+            $retainedProfit->display = "Retained profits";
+            $retainedProfit->save();
+        } else {
+            // $retainedProfit->item = "Accumulated losses";
+            $retainedProfit->display = "Accumulated losses";
+            $retainedProfit->save();
         }
 
         $this->refresh();

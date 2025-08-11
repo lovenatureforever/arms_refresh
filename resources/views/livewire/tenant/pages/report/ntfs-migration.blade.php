@@ -29,7 +29,7 @@
     </div>
     @endif
 
-    <form wire:submit="save" wire:key='{{ $this->type??"null" }}' wire:confirm="Are you sure?">
+    <form wire:submit="save" wire:confirm="Are you sure?">
     <div class="lg:col-span-4 sticky top-[70px] z-50">
         <div class="card">
             <div class="flex items-center justify-between card-header">

@@ -52,7 +52,13 @@ class SociDataMigration extends Component
     #[On('successCreated')]
     public function successCreated()
     {
-        session()->flash('success', 'Report item was created');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Report item was created",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
         $this->refresh();
     }
 

@@ -49,7 +49,13 @@ class StsooDataMigration extends Component
     #[On('successCreated')]
     public function successCreated()
     {
-        session()->flash('success', 'Report item was created');
+        LivewireAlert::withOptions([
+            "position" => "top-end",
+            "icon" => "success",
+            "title" => "Report item was created",
+            "showConfirmButton" => false,
+            "timer" => 1500
+        ])->show();
         $this->refresh();
     }
 
@@ -79,6 +85,14 @@ class StsooDataMigration extends Component
         }
 
         // STSOO-specific calculations
+
+        // STSOO: TOTAL Revenue
+        // STSOO: TOTAL Cost of sales
+        // STSOO: TOTAL Other operating income
+        // STSOO: TOTAL Administrative expenses
+        // STSOO: TOTAL Other operating expenses
+        // STSOO: TOTAL Finance costs
+        // STSOO: TOTAL Tax expenses
         foreach ($this->company_report_type->company_report_accounts as $group) {
             $total_item = CompanyReportItem::where('company_report_type_id', $this->company_report_type->id)->where('company_report_account_id', $group->id)->where('type', CompanyReportItem::TYPE_TOTAL)->first();
             if ($total_item) {

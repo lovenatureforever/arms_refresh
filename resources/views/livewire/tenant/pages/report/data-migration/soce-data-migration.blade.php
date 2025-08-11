@@ -32,7 +32,7 @@
                             <div class="flex justify-end mb-2">
                                 <button
                                     class="text-white btn btn-sm bg-info"
-                                    wire:click.prevent="$dispatch('openModal', {component: 'tenants.modal.data-migrations.create-col-row-modal', arguments: { company_report_id : {{ $id }} }})"
+                                    wire:click.prevent="$dispatch('openModal', {component: 'tenant.components.data-migration.create-col-row-modal', arguments: { company_report_id : {{ $id }} }})"
                                     wire:loading.attr="disabled"
                                 >
                                     Add
