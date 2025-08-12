@@ -15,6 +15,12 @@ use App\Livewire\Tenant\Pages\CorporateInfo\Shareholder;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
 use App\Livewire\Tenant\Pages\CorporateInfo\ShareCapital;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecIndex;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecReport;
+use App\Livewire\Tenant\Pages\Cosec\CartCosec;
+use App\Livewire\Tenant\Pages\Cosec\IndexCosec;
+use App\Livewire\Tenant\Pages\Cosec\OrderCosec;
+use App\Livewire\Tenant\Pages\Cosec\ViewCosec;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -131,5 +137,19 @@ Route::middleware([
         Route::get('/reports/{id}/migration', DataMigration::class)->name('datamigration');
         Route::get('/reports/{report}/migration/ntfs/{id}', NtfsMigration::class)->name('datamigration.ntfsdetail');
         Route::get('/reports/{id}', [CompanyReportController::class, 'viewFinancialReport'])->name('financialreport');
+
+
+        Route::prefix('/admin/cosec')->group(function () {
+            Route::get('/', AdminCosecIndex::class)->name('admin.cosec.index');
+            // Route::get('/{id}', AdminCosecIndex::class)->name('admin.cosec.show');
+            Route::get('/report/{id}', AdminCosecReport::class)->name('admin.cosec.report');
+        });
+
+        Route::prefix('/cosec')->group(function () {
+            Route::get('/{id}', IndexCosec::class)->name('cosec.index');
+            Route::get('/{id}/cart', CartCosec::class)->name('cosec.cart');
+            Route::get('/order/{id}', ViewCosec::class)->name('cosec.view');
+            Route::get('/{id}/order', OrderCosec::class)->name('cosec.order');
+        });
     });
 });

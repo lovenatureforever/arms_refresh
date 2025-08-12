@@ -82,6 +82,14 @@
                 </a>
             </li>
             -->
+            @role('internal_admin')
+            <li class="menu-item">
+                <a class="menu-link" href="{{ route('admin.cosec.index') }}">
+                    <span class="menu-icon"><i class="mgc_department_line"></i></span>
+                    <span class="menu-text">Cosec Orders</span>
+                </a>
+            </li>
+            @endrole
 
         </ul>
 
