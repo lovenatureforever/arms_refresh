@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\CosecServiceSeeder;
 
 class TenantDatabaseSeeder extends Seeder
 {
@@ -13,5 +14,6 @@ class TenantDatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(TenantRolePermissionSeeder::class);
+        $this->call(CosecServiceSeeder::class);
     }
 }

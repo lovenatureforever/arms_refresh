@@ -21,29 +21,9 @@ class IndexCosec extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $this->services = [
-            'APPOINTMENT OF DIRECTOR',
-            'RESIGNATION  OF DIRECTOR',
-            'TRANSFER OF SHARE',
-            'INCREASE OF PAID UP CAPITAL',
-            'BUSINESS ADDRESS - CHANGE / NEW',
-            'BRANCH ADDRESS - ADD / CLOSE',
-            'OPEN BANK ACCOUNT',
-            'CHANGE OF BANK SIGNATORIES',
-            'CHANGE OF MAKER AND CHECKER',
-        ];
-
-        $this->serviceCost = [
-            200,
-            100,
-            50,
-            300,
-            100,
-            100,
-            150,
-            100,
-            250,
-        ];
+        $services = \App\Models\Tenant\CosecService::all();
+        $this->services = $services->pluck('name')->toArray();
+        $this->serviceCost = $services->pluck('cost')->toArray();
     }
 
     public function requestData()

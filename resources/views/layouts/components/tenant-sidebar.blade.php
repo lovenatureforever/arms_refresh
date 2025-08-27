@@ -84,10 +84,29 @@
             -->
             @role('internal_admin')
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('admin.cosec.index') }}">
-                    <span class="menu-icon"><i class="mgc_department_line"></i></span>
-                    <span class="menu-text">Cosec Orders</span>
+                <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
+                    <span class="menu-icon"><i class="mgc_file_check_line"></i></span>
+                    <span class="menu-text"> COSEC </span>
+                    <span class="menu-arrow"></span>
                 </a>
+
+                <ul class="sub-menu hidden" style="height: 0px;">
+                    <li class="menu-item">
+                        <a href="{{ route('admin.cosec.index') }}" class="menu-link">
+                            <span class="menu-text">COSEC Orders</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <span class="menu-text">COSEC Credits</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('admin.cosec.services') }}" class="menu-link">
+                            <span class="menu-text">COSEC Forms</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             @endrole
 

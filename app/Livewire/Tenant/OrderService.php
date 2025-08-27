@@ -8,7 +8,7 @@ class OrderService
     {
         $orders = session()->get('orders', []);
         $orders[] = [
-            "itemID" => "#009090", // unique id for each item for each company
+            "itemID" => $this->generateOrderNumber(), // unique id for each item for each company
             "itemType" => $serviceType,
             "itemName" => $serviceName,
             "modifiedAt" => date('Y-m-d'),
@@ -25,5 +25,12 @@ class OrderService
 
     public function setOrders($orders) {
         return session()->put('orders', $orders);
+    }
+
+    private function generateOrderNumber()
+    {
+        $dateTime = date('YmdHis');
+        $random = str_pad(mt_rand(0, 99), 2, '0', STR_PAD_LEFT);
+        return $dateTime . $random;
     }
 }
