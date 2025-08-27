@@ -97,7 +97,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="menu-link">
+                        <a href="{{ route('admin.cosec.credits') }}" class="menu-link">
                             <span class="menu-text">COSEC Credits</span>
                         </a>
                     </li>

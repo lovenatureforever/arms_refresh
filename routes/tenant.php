@@ -15,6 +15,7 @@ use App\Livewire\Tenant\Pages\CorporateInfo\Shareholder;
 use App\Livewire\Tenant\Pages\CorporateInfo\YearEnd;
 use App\Livewire\Tenant\Pages\CorporateInfo\CompanyName;
 use App\Livewire\Tenant\Pages\CorporateInfo\ShareCapital;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecCredit;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecIndex;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecReport;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecService;
@@ -145,6 +146,7 @@ Route::middleware([
             // Route::get('/{id}', AdminCosecIndex::class)->name('admin.cosec.show');
             Route::get('/report/{id}', AdminCosecReport::class)->name('admin.cosec.report');
             Route::get('/services', AdminCosecService::class)->name('admin.cosec.services');
+            Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits');
         });
 
         Route::prefix('/cosec')->group(function () {
