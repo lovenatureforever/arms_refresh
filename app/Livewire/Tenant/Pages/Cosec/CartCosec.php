@@ -58,32 +58,30 @@ class CartCosec extends Component
     public function checkoutOrder(OrderService $orderService) {
         $orders = $orderService->getOrders();
 
-        $tenantId = tenant()->id;
-        $firmName = tenant()->firmName;
+        // $tenantId = tenant()->id;
+        // $firmName = tenant()->firmName;
         $company = Company::find($this->id);
         $userId = auth()->user()->id;
         $userName = auth()->user()->name;
 
-        tenancy()->central(function () use ($orders, $tenantId, $userId, $company, $firmName, $userName) {
-            foreach ($orders as $order)
-                CosecOrder::create([
-                    'tenant_id' => $tenantId,
-                    'tenant_company_id' => $this->id,
-                    'firm' => $firmName,
-                    'company_name' => $company->company_name,
-                    'company_no' => $company->company_registration_no,
-                    'company_old_no' => $company->company_registration_no_old,
-                    'tenant_user_id' => $userId,
-                    'uuid' => $order['itemID'],
-                    'form_type' => $order['itemType'],
-                    'form_name' => $order['itemName'],
-                    'user' => $userName,
-                    'data' => json_encode($order['data']),
-                    'requested_at' => $order['modifiedAt'],
-                    'cost' => $order['cost'],
-                    'status' => 0
-                ]);
-        });
+        foreach ($orders as $order)
+            CosecOrder::create([
+                // 'tenant_id' => $tenantId,
+                'tenant_company_id' => $this->id,
+                // 'firm' => $firmName,
+                'company_name' => $company->name,
+                'company_no' => $company->registration_no,
+                'company_old_no' => $company->registration_no_old,
+                'tenant_user_id' => $userId,
+                'uuid' => $order['itemID'],
+                'form_type' => $order['itemType'],
+                'form_name' => $order['itemName'],
+                'user' => $userName,
+                'data' => json_encode($order['data']),
+                'requested_at' => $order['modifiedAt'],
+                'cost' => $order['cost'],
+                'status' => 0
+            ]);
 
         session()->forget('orders');
 

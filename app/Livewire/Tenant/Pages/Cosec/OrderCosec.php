@@ -20,18 +20,19 @@ class OrderCosec extends Component
     }
 
     public function render() {
-        $orders = [];
-        tenancy()->central(function () use (&$orders) {
-            $orders = CosecOrder::where('tenant_company_id', $this->id)->get();
-        });
+        $orders = CosecOrder::where('tenant_company_id', $this->id)->get();
+        // tenancy()->central(function () use (&$orders) {
+        //     $orders = CosecOrder::where('tenant_company_id', $this->id)->get();
+        // });
 
         return view('livewire.tenant.pages.cosec.order', ['orders' => $orders]);
     }
 
     public function printForm($orderId) {
-        tenancy()->central(function () use ($orderId, &$order) {
-            $order = CosecOrder::find($orderId);
-        });
+        // tenancy()->central(function () use ($orderId, &$order) {
+        //     $order = CosecOrder::find($orderId);
+        // });
+        $order = CosecOrder::find($orderId);
 
         switch ($order->form_type) {
             case 1:

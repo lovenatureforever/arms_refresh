@@ -16,7 +16,7 @@ return new class extends Migration
             // $table->string('tenant_id');
             $table->integer('tenant_company_id')->nullable();
             $table->integer('tenant_user_id')->nullable();
-            $table->string('firm')->nullable();
+            // $table->string('firm')->nullable();
             $table->string('company_name')->nullable();
             $table->string('company_no')->nullable();
             $table->string('company_old_no')->nullable();

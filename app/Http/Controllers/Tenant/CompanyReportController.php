@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers\Tenant;
 
-use App\Models\Tenant\CompanyAddressChange;
-use App\Models\Tenant\CompanyDirector;
-use App\Models\Tenant\CompanyDirectorChange;
-use App\Models\Tenant\CompanyShareCapitalChange;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Http\Controllers\Controller;
-use App\Models\Tenant\DirectorReportConfig;
-use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+
+use App\Http\Controllers\Controller;
 use App\Models\Tenant\CompanyReport;
 use App\Models\Tenant\CompanyReportItem;
 use App\Models\Tenant\CompanyReportType;
 use App\Models\Tenant\CompanyReportAccount;
-use App\Models\Tenant\NtfsConfigItem;
 use App\Models\Tenant\CompanyDividendChange;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
+use App\Models\Tenant\CompanyDirector;
+use App\Models\Tenant\CompanyDirectorChange;
+use App\Models\Tenant\CompanyShareCapitalChange;
+use App\Models\Tenant\CompanyAddressChange;
+use App\Models\Tenant\DirectorReportConfig;
+use App\Models\Tenant\NtfsConfigItem;
+use App\Models\Tenant\CompanyShareholder;
+use App\Models\Tenant\CompanyShareholderChange;
 
 class CompanyReportController extends Controller
 {
@@ -62,35 +65,86 @@ class CompanyReportController extends Controller
             ->where('is_active', true)
             ->where('is_rep_statement', true)
             ->whereHas('changes', function($query) use ($company) {
-                $query->where('effective_date', '<=', $company->end_date_report)
-                    ->latest('effective_date');
+                $query->where('effective_date', '<=', $company->end_date_report);
             })
             ->orderBy('sort')
             ->get();
-        $statement_info = $company->statement_infos()->first();
-        $statutory_info = $company->statutory_infos()->first();
-        $related_party_transactions = $company->related_party_transactions;
-        $statutory_director = $company->statutory_directors()->first();
+        $report_info = $company->reportSetting;
+        // $statement_info = $company->statement_infos()->first();
+        // $statutory_info = $company->statutory_infos()->first();
+        // $related_party_transactions = $company->related_party_transactions;
+        // $statutory_director = $company->statutory_directors()->first();
+        $statutory_director = CompanyDirector::where('company_id', $company->id)
+            ->where('is_active', true)
+            ->where('is_rep_statutory', true)
+            ->whereHas('changes', function($query) use ($company) {
+                $query->where('effective_date', '<=', $company->end_date_report);
+            })
+            ->first();
 
         $statement_director_names = $statement_directors->pluck('name')->toArray();
         $statutory_director_name = $statutory_director ? $statutory_director->pluck('name', 'id_no')->toArray() : [];
-        foreach ($prior_directors as $prior_director) {
-            if (isset($prior_director['is_rep_statement']) && filter_var($prior_director['is_rep_statement'], FILTER_VALIDATE_BOOLEAN)) {
-                array_push($statement_director_names, $prior_director['name']);
-            }
+        // foreach ($prior_directors as $prior_director) {
+        //     if (isset($prior_director['is_rep_statement']) && filter_var($prior_director['is_rep_statement'], FILTER_VALIDATE_BOOLEAN)) {
+        //         array_push($statement_director_names, $prior_director['name']);
+        //     }
 
-            if (isset($prior_director['is_rep_statutory']) && filter_var($prior_director['is_rep_statutory'], FILTER_VALIDATE_BOOLEAN)) {
-                array_push($statutory_director_name, [$prior_director['name'], $prior_director['id_no']]);
-            }
-        }
+        //     if (isset($prior_director['is_rep_statutory']) && filter_var($prior_director['is_rep_statutory'], FILTER_VALIDATE_BOOLEAN)) {
+        //         array_push($statutory_director_name, [$prior_director['name'], $prior_director['id_no']]);
+        //     }
+        // }
         $statutory_director_name = collect($statutory_director_name)->flatten();
         // Log::debug("statutory_director_name ->", [$statutory_director_name]);
 
         # Shareholders data
-        $shareholders_count = $company->shareholders()->count();
-        $shareholders = $company->shareholders()->get()->groupBy('type_of_share');
+        // $shareholders_count = $company->shareholders()->count();
+        $shareholders_count = CompanyShareholder::where('company_id', $company->id)->count();
+        $shareholders = CompanyShareholder::where('company_id', $company->id)->get()->groupBy('share_type');
 
-        $shareholders_data = [];
+        $shareholders_data = [
+            CompanyShareholderChange::SHARETYPE_ORDINARY => [],
+            CompanyShareholderChange::SHARETYPE_PREFERENCE => [],
+        ];
+        $results = DB::select('
+            SELECT
+                s.`id`,
+                s.`company_director_id`,
+                s.`name`,
+                s.`type`,
+                sc.`change_nature`,
+                sc.`share_type`,
+                SUM(sc.`shares`) as `shares`,
+                sc.`effective_date`
+            FROM `company_shareholders` s
+            JOIN `company_shareholder_changes` sc
+                ON s.`id` = sc.`company_shareholder_id`
+            WHERE s.`company_id` = ?
+            AND sc.`effective_date` <= ?
+            GROUP BY s.`id`, s.`type`, s.`company_director_id`, s.`name`, sc.`change_nature`, sc.`share_type`, sc.`effective_date`
+            ORDER BY sc.`share_type`, s.`name`
+        ', [$company->id, $company->current_year_to]);
+
+        foreach ($results as $row) {
+            $shareType = $row->share_type;
+            $name = $row->name;
+
+            // Initialize if not set
+            if (!isset($shareholders_data[$shareType][$name])) {
+                $shareholders_data[$shareType][$name] = [
+                    'id' => $row->id,
+                    'name' => $name,
+                    'bf' => 0,
+                    'bought' => 0,
+                    'sold' => 0,
+                    'cf' => 0,
+                    'percentage' => 0,
+                    'isDirector' => !!$row->company_director_id,
+                    'isHoldingCompany' => $row->type === CompanyShareholder::TYPE_COMPANY ? true : false,
+                ];
+            }
+            $tmp = &$shareholders_data[$shareType][$name];
+        }
+        //
         foreach ($shareholders as $share_type => $shareholder) {
             $holder_groups = $shareholder->groupBy('title');
 
@@ -228,9 +282,9 @@ class CompanyReportController extends Controller
         $company_data['ntfs_config_gen_info'] = $this->generalInformation($company_data);
         $company_data['ntfs_config_sig_acc_policies'] = $this->significantAccountingPolices($company_data);
         $company_data['ntfs_config_est_uncertainties'] = $this->estimationUncertainty($company_data);
-        // return view('livewire.tenants.excel-data.index', $company_data);
+        // return view('livewire.tenant.pages.index', $company_data);
 
-        $pdf = Pdf::loadView('livewire.tenants.excel-data.index', $company_data)
+        $pdf = Pdf::loadView('livewire.tenant.pages.index', $company_data)
                 ->setOption(['dpi' => 96, 'defaultFontSize' => '11px', 'defaultFont' => 'sans-serif', 'defaultPaperSize' => 'a4']);
         $pdf->render();
         $canvas = $pdf->getCanvas();
