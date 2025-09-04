@@ -44,11 +44,7 @@ class YearEnd extends Component
         $this->id = $id;
         $this->company = Company::with('detailChanges', 'reportSetting')->find($id);
         $this->companyDetailAtStart = $this->company->detailAtStart();
-        if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
-            $this->companyDetailAtLast = $this->company->detailAtLast($this->company->reportSetting->report_date);
-        } else {
-            $this->companyDetailAtLast = $this->company->detailAtLast();
-        }
+        $this->companyDetailAtLast = $this->company->detailAtLast($this->company->end_date_report);
 
         $this->currentIsFirstYear = $this->company->current_is_first_year;
         $this->currentYearFrom = $this->company->current_year_from->format('Y-m-d');

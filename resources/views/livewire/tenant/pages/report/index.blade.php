@@ -520,26 +520,6 @@
                 <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></p>
             </div>
 
-            {{-- @php
-                $sofp_equity_search = collect($sofp_equity_data)->values()->flatten(2);
-            @endphp
-            @if ($sofp_equity_search->search('Share capital') !== false || $sofp_equity_search->search('Retained profits/(Accumulated losses)') !== false)
-                @php
-                    $sc = collect(isset($sofp_equity_data['EQUITY']) ? $sofp_equity_data['EQUITY'] : $sofp_equity_data['EQUITIES'])->where('group_name', 'Share capital')->all();
-                    $last_sc_sum = $sc ? collect($sc)->sum('last_year_amount') : 0;
-                    $this_sc_sum = $sc ? collect($sc)->sum('this_year_amount') : 0;
-                    $rp = collect(isset($sofp_equity_data['EQUITY']) ? $sofp_equity_data['EQUITY'] : $sofp_equity_data['EQUITIES'])->where('group_name', 'Retained profits/(Accumulated losses)')->all();
-                    $last_rp_sum = $rp ? collect($rp)->sum('last_year_amount') : 0;
-                    $this_rp_sum = $rp ? collect($rp)->sum('this_year_amount') : 0;
-                    $last_rp_value = floatval($last_rp_sum) + floatval($soci_total_data['last_year_profit']);
-                    $this_rp_value = floatval($soci_total_data['this_year_profit']) - floatval($last_rp_sum);
-                    $last_sc_value = floatval($last_sc_sum) - 0;
-                    $total_last_year = floatval($last_rp_sum) - floatval($last_sc_sum);
-                    $total_this_year = floatval($this_sc_sum) + floatval($this_rp_value);
-                    $total_last_last_year = floatval($last_rp_value) - floatval($last_sc_value);
-                @endphp
-            @endif --}}
-
             <table class="center" style="width: 80%">
                 <tr>
                     <th width="40%" class="left"></th>

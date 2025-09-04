@@ -45,10 +45,7 @@ class Director extends Component
             ->where('effective_date', '<', $this->company->current_year_from)
             ->latest('effective_date')
             ->get();
-        $date = $this->company->current_year_to;
-        if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
-            $date = $this->company->reportSetting->report_date;
-        }
+        $date = $this->company->end_date_report;
         $this->directorsAtLast = CompanyDirector::where('company_id', $this->id)
             ->whereHas('changes', function($query) use ($date) {
                 $query->where('effective_date', '<=', $date)

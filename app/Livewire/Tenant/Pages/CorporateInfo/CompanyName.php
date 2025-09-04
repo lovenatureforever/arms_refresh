@@ -42,11 +42,7 @@ class CompanyName extends Component
     public function render()
     {
         $this->companyDetailAtStart = $this->company->detailAtStart();
-        if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
-            $this->companyDetailAtLast = $this->company->detailAtLast($this->company->reportSetting->report_date);
-        } else {
-            $this->companyDetailAtLast = $this->company->detailAtLast();
-        }
+        $this->companyDetailAtLast = $this->company->detailAtLast($this->company->end_date_report);
         $this->companyDetailChanges = $this->company->detailChangesCurrentYear();
 
         return view('livewire.tenant.pages.corporate-info.company-name', []);

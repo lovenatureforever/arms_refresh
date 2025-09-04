@@ -54,11 +54,7 @@ class BusinessAddress extends Component
     {
         $this->addressAtStart = $this->company->bizAddressAtStart();
         $this->addressChanges = $this->company->bizAddressChangesCurrentYear();
-        if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
-            $this->addressAtLast = $this->company->bizAddressAtLast($this->company->reportSetting->report_date);
-        } else {
-            $this->addressAtLast = $this->company->bizAddressAtLast();
-        }
+        $this->addressAtLast = $this->company->bizAddressAtLast($this->company->end_date_report);
         $this->hasNoBusinessAddress = $this->company->no_business_address;
         return view('livewire.tenant.pages.corporate-info.business-address');
     }

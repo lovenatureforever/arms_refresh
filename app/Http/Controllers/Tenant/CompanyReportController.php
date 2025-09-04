@@ -44,23 +44,29 @@ class CompanyReportController extends Controller
             ->whereBetween('effective_date', [$company->current_year_from, $company->end_date_report])
             ->get();
         $share_capitals = $company->sharecapitalChanges;
-        $directors = $company->directors;
+        $date = $company->end_date_report;
+        $directors = CompanyDirector::where('company_id', $this->id)
+            ->whereHas('changes', function($query) use ($date) {
+                $query->where('effective_date', '<=', $date)
+                    ->latest('effective_date');
+            })
+            ->orderBy('sort')
+            ->get();
         $prior_ordinary_share = $company->ordinaryShareCapitalAtStart();
         $prior_preference_share = $company->preferenceShareCapitalAtStart();
         $current_ordinary_shares = CompanyShareCapitalChange::whereBetween('effective_date', [$company->current_year_from, $company->current_year_to])->where('share_type', CompanyShareCapitalChange::SHARETYPE_ORDINARY)->get();
         $current_preference_shares = CompanyShareCapitalChange::whereBetween('effective_date', [$company->current_year_from, $company->current_year_to])->where('share_type', CompanyShareCapitalChange::SHARETYPE_PREFERENCE)->get();
         $business_address = $company->bizAddressAtLast($company->end_date_report);
         $prior_business_address = $company->bizAddressAtStart();
-        $prior_directors = CompanyDirectorChange::with(['companyDirector' => function($query) use ($company) {
-                $query->where('company_id', $company->id);
-            }])
-            ->whereHas('companyDirector', function($query) use ($company) {
-                $query->where('company_id', $company->id);
-            }, '=', 1) // Explicit count for better performance
-            ->where('effective_date', '<', $company->current_year_from)
-            ->latest('effective_date')
-            ->get();
-        // $statement_directors = $company->statement_directors()->get();
+        // $prior_directors = CompanyDirectorChange::with(['companyDirector' => function($query) use ($company) {
+        //         $query->where('company_id', $company->id);
+        //     }])
+        //     ->whereHas('companyDirector', function($query) use ($company) {
+        //         $query->where('company_id', $company->id);
+        //     }, '=', 1) // Explicit count for better performance
+        //     ->where('effective_date', '<', $company->current_year_from)
+        //     ->latest('effective_date')
+        //     ->get();
         $statement_directors = CompanyDirector::where('company_id', $company->id)
             ->where('is_active', true)
             ->where('is_rep_statement', true)
@@ -70,10 +76,6 @@ class CompanyReportController extends Controller
             ->orderBy('sort')
             ->get();
         $report_info = $company->reportSetting;
-        // $statement_info = $company->statement_infos()->first();
-        // $statutory_info = $company->statutory_infos()->first();
-        // $related_party_transactions = $company->related_party_transactions;
-        // $statutory_director = $company->statutory_directors()->first();
         $statutory_director = CompanyDirector::where('company_id', $company->id)
             ->where('is_active', true)
             ->where('is_rep_statutory', true)
@@ -84,22 +86,8 @@ class CompanyReportController extends Controller
 
         $statement_director_names = $statement_directors->pluck('name')->toArray();
         $statutory_director_name = $statutory_director ? $statutory_director->pluck('name', 'id_no')->toArray() : [];
-        // foreach ($prior_directors as $prior_director) {
-        //     if (isset($prior_director['is_rep_statement']) && filter_var($prior_director['is_rep_statement'], FILTER_VALIDATE_BOOLEAN)) {
-        //         array_push($statement_director_names, $prior_director['name']);
-        //     }
-
-        //     if (isset($prior_director['is_rep_statutory']) && filter_var($prior_director['is_rep_statutory'], FILTER_VALIDATE_BOOLEAN)) {
-        //         array_push($statutory_director_name, [$prior_director['name'], $prior_director['id_no']]);
-        //     }
-        // }
         $statutory_director_name = collect($statutory_director_name)->flatten();
-        // Log::debug("statutory_director_name ->", [$statutory_director_name]);
-
-        # Shareholders data
-        // $shareholders_count = $company->shareholders()->count();
         $shareholders_count = CompanyShareholder::where('company_id', $company->id)->count();
-        $shareholders = CompanyShareholder::where('company_id', $company->id)->get()->groupBy('share_type');
 
         $shareholders_data = [
             CompanyShareholderChange::SHARETYPE_ORDINARY => [],
@@ -137,46 +125,28 @@ class CompanyReportController extends Controller
                     'bought' => 0,
                     'sold' => 0,
                     'cf' => 0,
-                    'percentage' => 0,
-                    'isDirector' => !!$row->company_director_id,
-                    'isHoldingCompany' => $row->type === CompanyShareholder::TYPE_COMPANY ? true : false,
                 ];
             }
             $tmp = &$shareholders_data[$shareType][$name];
-        }
-        //
-        foreach ($shareholders as $share_type => $shareholder) {
-            $holder_groups = $shareholder->groupBy('title');
 
-            $holder_data = [];
-            foreach ($holder_groups as $holder_title => $shares) {
-                $share_brought = 0;
-                $share_sold = 0;
-                $share_prior_year = 0;
-
-                foreach ($shares as $share) {
-                    if ($share->nature_change == null) {
-                        $share_prior_year += $share->no_of_share;
-                    } else if ($share->nature_change == 'Transfer In') {
-                        $share_brought += $share->no_of_share;
-                    } else if ($share->nature_change == 'Transfer Out') {
-                        $share_sold += $share->no_of_share;
-                    }
-                }
-
-                $share_data = [
-                    'name' => $holder_title,
-                    'brought' => $share_brought,
-                    'sold' => $share_sold,
-                    'prior_year' => $share_prior_year,
-                    'total_share' => $share_prior_year + $share_brought - $share_sold
-                ];
-
-                array_push($holder_data, $share_data);
+            // Determine action
+            if (Carbon::parse($row->effective_date)->lt($this->company->current_year_from)) {
+                $tmp['bf'] += $row->shares;
+            } elseif (
+                $row->change_nature === CompanyShareholderChange::CHANGE_NATURE_ALLOT ||
+                $row->change_nature === CompanyShareholderChange::CHANGE_NATURE_TRANSFER_IN
+            ) {
+                $tmp['bought'] += $row->shares;
+            } elseif (
+                $row->change_nature === CompanyShareholderChange::CHANGE_NATURE_TRANSFER_OUT ||
+                $row->change_nature === CompanyShareholderChange::CHANGE_NATURE_REDUCTION
+            ) {
+                $tmp['sold'] += $row->shares;
             }
-
-            $shareholders_data[$share_type] = $holder_data;
+            $tmp['cf'] = $tmp['bf'] + $tmp['bought'] - $tmp['sold'];
         }
+
+        /////////////////
 
         # Report data
         $sofp_type = CompanyReportType::where('company_report_id', $id)->where('name', 'SOFP')->first();
@@ -218,17 +188,9 @@ class CompanyReportController extends Controller
         $total_this_year = floatval($this_sc_sum) + floatval($this_rp_value);
         $total_last_last_year = floatval($last_rp_value) - floatval($last_sc_value);
 
-        $registered_address = CompanyRegisteredAddress::where('company_id', $company->id)->latest()->first();
-        $address_parts = array_filter([
-            $registered_address->address_line1,
-            $registered_address->address_line2,
-            $registered_address->address_line3,
-            $registered_address->postcode,
-            $registered_address->town,
-            $registered_address->state
-        ]);
+        $registered_address = $company->addressAtLast($this->company->end_date_report);
 
-        $address_string = implode(', ', $address_parts);
+        $address_string = $registered_address?->full_address ?? '';
 
         $company_data = [
             'tenant' => tenant(),
@@ -253,11 +215,12 @@ class CompanyReportController extends Controller
             'prior_business_address' => $prior_business_address,
             'statement_director_names' => $statement_director_names,
             'statutory_director_name' => $statutory_director_name,
-            'statement_info' => $statement_info,
+            'report_info' => $report_info,
+            // 'statement_info' => $statement_info,
             'signed_by' => $signed_by,
             'director_renumerations' => $director_renumerations,
-            'related_party_transactions' => $related_party_transactions,
-            'statutory_info' => $statutory_info,
+            // 'related_party_transactions' => $related_party_transactions,
+            // 'statutory_info' => $statutory_info,
             'sofp' => $sofp,
             'stsoo' => $stsoo,
             'socf' => $socf,
@@ -389,20 +352,20 @@ class CompanyReportController extends Controller
             if ($company['declared_dividends']) {
                 foreach ($company['declared_dividends'] as $declared_dividend) {
                     $content .= '<tr>';
-                    $content .= '<td style="width:70%">'.$declared_dividend->dividend_type.' dividend of '.$declared_dividend->rate_unit.$declared_dividend->rate.' per '.$declared_dividend->dividend_type.' in respect of financial year end '.Carbon::parse($company['current_year_end']['account_closing_date'])->format('d F Y').'</td>';
-                    $content .= '<td style="text-align:center">'.$declared_dividend->amount.'</td>';
+                    $content .= '<td style="width:70%">' . $declared_dividend->dividend_type . ' dividend of ' . $declared_dividend->rate_unit . $declared_dividend->rate . ' per ' . $declared_dividend->dividend_type . ' in respect of financial year end ' . Carbon::parse($company['current_year_to'])->format('d F Y').'</td>';
+                    $content .= '<td style="text-align:center">' . $declared_dividend->amount . '</td>';
                     $content .= '</tr>';
                 }
                 $content .= '<tr>';
                 $content .= '<td></td>';
-                $content .= '<td style="text-align: center">'.$company['declared_dividends']->sum('amount').'</td>';
+                $content .= '<td style="text-align: center">' . $company['declared_dividends']->sum('amount') . '</td>';
                 $content .= '</tr>';
             }
             $content .= '</table>';
 
             if ($company['proposed_dividends']) {
                 foreach ($company['proposed_dividends'] as $proposed_dividend) {
-                    $content .= '<p>The directors have recommended a '.$proposed_dividend->dividend_type.' of RM'.$proposed_dividend->rate.' per ordinary share amounting to RM'.$proposed_dividend->amount.' in respect of the financial year ended '.Carbon::parse($company['current_year_end']['account_closing_date'])->format('d F Y').'</p>';
+                    $content .= '<p>The directors have recommended a ' . $proposed_dividend->dividend_type . ' of RM' . $proposed_dividend->rate . ' per ordinary share amounting to RM'.$proposed_dividend->amount . ' in respect of the financial year ended ' . Carbon::parse($company['current_year_to'])->format('d F Y').'</p>';
                 }
             }
         } elseif ($content =='-- Content of Issues of shares and debentures --') {
@@ -418,14 +381,16 @@ class CompanyReportController extends Controller
                 </tr>';
             if ($company['share_capitals']) {
                 foreach ($company['share_capitals'] as $share_capital) {
+                    $total_shares = $share_capital->fully_paid_shares + $share_capital->partly_paid_shares;
+                    $total_amount = $share_capital->fully_paid_amount + $share_capital->partly_paid_amount;
                     $content .= '<tr>';
                     $content .= '<td>'.$share_capital->effective_date.'</td>';
                     $content .= '<td>'.$share_capital->share_type.'</td>';
-                    $content .= '<td>'.$share_capital->total_no_share.'</td>';
-                    $content .= '<td>'.$share_capital->total_amount.'</td>';
+                    $content .= '<td>'.$total_shares.'</td>';
+                    $content .= '<td>'.$total_amount.'</td>';
                     $content .= '<td></td>';
-                    $content .= '<td>'.$share_capital->terms_of_issue.'</td>';
-                    $content .= '<td>'.$share_capital->purpose_of_issue.'</td>';
+                    $content .= '<td>'.$share_capital->issuance_term.'</td>';
+                    $content .= '<td>'.$share_capital->issuance_purpose.'</td>';
                     $content .= '</tr>';
                 }
             }
@@ -433,10 +398,19 @@ class CompanyReportController extends Controller
         } elseif ($content =='-- Content of Directors --') {
             $content = '<div style="margin-left: 20px">';
             foreach ($company['directors'] as $director) {
-                $content .= '<p>'.$director->name.'</p>';
-                if (in_array($director->nature_change, ['Director resigned', 'Director deceased', 'Director retired'])) {
-                    $content .= '<p>'.$director->name.'</p> (appointed on '.$director->effective_date.')';
+                $director_changes_current = $director->changes()->whereBetween('effective_date', [$company->current_year_from, $company->end_date_report])
+                                                                ->orderBy('effective_date')
+                                                                ->get();
+                $d = [];
+                foreach ($director_changes_current as $change) {
+                    // Director appointed on 29/04/2024, Director resigned on 20/08/2024
+                    $d[] = $change->change_nature . ' on ' . $change->effective_date->format('Y-m-d');
                 }
+                $director->changes_current = implode(', ', $d);
+            }
+            foreach ($company['directors'] as $director) {
+                $content .= "<p>{$director->name}" . ($director->alternate ? " (alternate director to {$director->alternate->name})" : "") . ($director->changes_current ? " ({$director->changes_current})" : "") . "</p>";
+
             }
             $content .= '</div>';
         } elseif ($content =='-- Content of Directors\' remunerations --') {
@@ -461,20 +435,20 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center">At '.$company['current_year_end']['account_opening_date'].'</td>
+                    <td style="text-align: center">At '.$company['current_year_from'].'</td>
                     <td style="text-align: center">Brought</td>
                     <td style="text-align: center">Sold</td>
-                    <td style="text-align: center">At '.$company['current_year_end']['account_closing_date'].'</td>
+                    <td style="text-align: center">At '.$company['current_year_to'].'</td>
                 </tr>';
             if (isset($company['shareholders_data']['Ordinary shares'])) {
                 foreach ($company['shareholders_data']['Ordinary shares'] as $type => $share) {
                     if ($share['total_share'] > 0) {
                         $content .= '<tr>';
                         $content .= '<td style=""><b>'.$share['name'].'</b></td>';
-                        $content .= '<td style="text-align: center">'.$share['prior_year'].'</td>';
+                        $content .= '<td style="text-align: center">'.$share['bf'].'</td>';
                         $content .= '<td style="text-align: center">'.$share['brought'].'</td>';
                         $content .= '<td style="text-align: center">'.$share['sold'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['total_share'].'</td>';
+                        $content .= '<td style="text-align: center">'.$share['cf'].'</td>';
                         $content .= '</tr>';
                     }
                 }
@@ -486,20 +460,20 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center">At '.$company['current_year_end']['account_opening_date'].'</td>
+                    <td style="text-align: center">At '.$company['current_year_from'].'</td>
                     <td style="text-align: center">Brought</td>
                     <td style="text-align: center">Sold</td>
-                    <td style="text-align: center">At '.$company['current_year_end']['account_closing_date'].'</td>
+                    <td style="text-align: center">At '.$company['current_year_to'].'</td>
                 </tr>';
             if (isset($company['shareholders_data']['Preference shares'])) {
                 foreach ($company['shareholders_data']['Preference shares'] as $type => $share) {
                     if ($share['total_share'] > 0) {
                         $content .= '<tr>';
                         $content .= '<td style="width: 35%">'.$share['name'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['prior_year'].'</td>';
+                        $content .= '<td style="text-align: center">'.$share['bf'].'</td>';
                         $content .= '<td style="text-align: center">'.$share['brought'].'</td>';
                         $content .= '<td style="text-align: center">'.$share['sold'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['total_share'].'</td>';
+                        $content .= '<td style="text-align: center">'.$share['cf'].'</td>';
                         $content .= '</tr>';
                     }
                 }
@@ -512,10 +486,12 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>';
             foreach ($company['directors'] as $director) {
+                $lastChange = $director->changes()->whereNotNull('address_line1')->orderByDesc('effective_date')->first();
+                $address = $lastChange?->full_address;
                 $content .= '<td>';
                 $content .= '<p><b>'.$director->name.'</b></p>';
-                $content .= '<p>DIRECTORS</p>';
-                $content .= '<p>'.$director->town.', '.$director->state.'</p>';
+                $content .= '<p>Director</p>';
+                $content .= '<p>'.$address.'</p>';
                 $content .= '<p>Dated: '.Carbon::parse(Carbon::now())->format('d F Y').'</p>';
                 $content .= '</td>';
             }

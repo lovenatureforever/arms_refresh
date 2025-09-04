@@ -52,11 +52,7 @@ class CompanyAddress extends Component
     {
         $this->addressAtStart = $this->company->addressAtStart();
         $this->addressChanges = $this->company->addressChangesCurrentYear();
-        if ($this->company->reportSetting && $this->company->reportSetting->report_date) {
-            $this->addressAtLast = $this->company->addressAtLast($this->company->reportSetting->report_date);
-        } else {
-            $this->addressAtLast = $this->company->addressAtLast();
-        }
+        $this->addressAtLast = $this->company->addressAtLast($this->company->end_date_report);
         return view('livewire.tenant.pages.corporate-info.company-address');
     }
 
