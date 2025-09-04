@@ -125,7 +125,7 @@
 </head>
 
 <body>
-    <header><b>Company No.: {{ $company->company_registration_no }} {{ $company->company_registration_no_old ? '('.$company->company_registration_no_old.')' : '' }}</b></header>
+    <header><b>Company No.: {{ $company->registration_no_old }} {{ $company->registration_no_old ? '('.$company->registration_no_old.')' : '' }}</b></header>
     <footer>
         <div class="pagenum-container"><span class="pagenum"></span></div>
     </footer>
@@ -134,7 +134,7 @@
             @if ($signed_by)
                 <table style="width: 40%; padding-left: 20px;">
                     <tr>
-                        <td style="text-align: justify;">These financial statements and reports of the Company with Qualified / <strike>Unqualified</strike> Auditors' Report for the financial year ended {{ Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y') }} were circulated on</td>
+                        <td style="text-align: justify;">These financial statements and reports of the Company with Qualified / <strike>Unqualified</strike> Auditors' Report for the financial year ended {{ Carbon\Carbon::parse($company['current_year_to'])->format('d F Y') }} were circulated on</td>
                     </tr>
                     <tr><br><br><br><br></tr>
                     <tr>
@@ -147,15 +147,15 @@
                 </table>
             @endif
             <div id="page1-div">
-               <div><b>{{ $company->company_name }}</b></div>
+               <div><b>{{ $company->name }}</b></div>
                 {{-- <p><b>Registration No. {{ $company->company_registration_no }} ({{ $company->company_registration_no_old }})</b></p> --}}
                 @if ($prior_company_name)
-                    <p><b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b></p>
+                    <p><b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b></p>
                 @endif
                 <div><b>(Incorporated in Malaysia)</b></div>
                 <br/>
-                @if ($current_year_end)
-                    <h4><b>REPORTS AND FINANCIAL STATEMENTS<br/> FOR THE FINANCIAL PERIOD ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></h4>
+                @if ($company->current_year_to)
+                    <h4><b>REPORTS AND FINANCIAL STATEMENTS<br/> FOR THE FINANCIAL PERIOD ENDED {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</b></h4>
                 @endif
                 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                 <div>
@@ -170,9 +170,9 @@
         <div class="page-div">
             <div style="margin-bottom: 10px">
                 <div>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                         @if ($prior_company_name)
-                            <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b>
+                            <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b>
                         @endif
                     </b>
                 </div>
@@ -186,7 +186,7 @@
                 @endif
                 {{-- <p>The {{ count($directors) > 1 ? 'directors' : 'director' }} hereby submit {{ count($directors) > 1 ? 'their' : 'his' }} report together with the audited financial statements of the
                     @if ($current_year_end)
-                        Company for the financial year ended {{ Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y') }}
+                        Company for the financial year ended {{ Carbon\Carbon::parse($company->current_year_to)->format('d F Y') }}
                     @endif
                 </p> --}}
             </div>
@@ -198,9 +198,9 @@
         <div class="page-div">
             <div style="margin-bottom: 10px">
                 <p>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                         @if ($prior_company_name)
-                            <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b>
+                            <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b>
                         @endif
                     </b>
                 </p>
@@ -211,7 +211,7 @@
                 <h3><b>STATEMENT BY {{ count($directors) > 1 ? 'DIRECTORS' : 'DIRECTOR' }} </b></h3>
                 <h4>Pursuant to Section 251 (2) of the Companies Act 2016</h4>
 
-                <p>In the opinion of the {{ count($directors) > 1 ? 'directors' : 'director' }}, the financial statements are drawn up in accordance with Malaysian Private Entities Reporting Standard and the requirements of the Companies Act 2016 in Malaysia so as to give a true and fair view of the financial position of the Company as of {{ Str::ucfirst(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }} and of its financial performance and cash flows for the financial year then ended. </p>
+                <p>In the opinion of the {{ count($directors) > 1 ? 'directors' : 'director' }}, the financial statements are drawn up in accordance with Malaysian Private Entities Reporting Standard and the requirements of the Companies Act 2016 in Malaysia so as to give a true and fair view of the financial position of the Company as of {{ Str::ucfirst(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }} and of its financial performance and cash flows for the financial year then ended. </p>
                 <p>
                     @if (count($directors) == 1)
                         Signed in accordance with a resolution of
@@ -231,20 +231,20 @@
                             <td>
                                 <p><b>{{ $director }}</b></p>
                                 <p>DIRECTORS</p>
-                                <p>{{ $statement_info->location }}</p>
-                                <p>Dated: {{ Carbon\Carbon::parse($statement_info->report_date)->format('d F Y') }}</p>
+                                <p>{{ $report_setting->statement_location }}</p>
+                                <p>Dated: {{ Carbon\Carbon::parse($report_setting->statement_date)->format('d F Y') }}</p>
                             </td>
                         @endforeach
 
                     </tr>
                 </table>
             </div>
-            @if ($statutory_director_name && $statutory_info)
+            @if ($statutory_director_name && $report_setting)
                 <div>
                     <h3>STATUTORY DECLARATION</h3>
                     <h4>Pursuant to Section 251 (1) (b) of the Companies Act 2016</h4>
 
-                    <p>I, {{ $statutory_director_name[0] }}@if (isset($statutory_director_name[1])) ({{ $statutory_director_name[1] }})@endif, the person primarily responsible for the financial management of {{ $company->company_name }}, do solemnly and sincerely declare that the financial statements are to the best of my knowledge and belief, correct and I make this solemn declaration conscientiously believing the same to be true, and by virtue of the provisions of the Statutory Declarations Act, 1960. </p>
+                    <p>I, {{ $statutory_director_name[0] }}@if (isset($statutory_director_name[1])) ({{ $statutory_director_name[1] }})@endif, the person primarily responsible for the financial management of {{ $company->name }}, do solemnly and sincerely declare that the financial statements are to the best of my knowledge and belief, correct and I make this solemn declaration conscientiously believing the same to be true, and by virtue of the provisions of the Statutory Declarations Act, 1960. </p>
 
                     <table style="width: 100%">
                         <tr>
@@ -256,11 +256,11 @@
                             <td style="width: 50%">)</td>
                         </tr>
                         <tr>
-                            <td>at {{ $statutory_info->location }}</td>
+                            <td>at {{ $report_setting->statutory_location }}</td>
                             <td style="width: 50%">)</td>
                         </tr>
                         <tr>
-                            <td>on this date of {{ Carbon\Carbon::parse($statutory_info->report_date)->format('d M Y') }} </td>
+                            <td>on this date of {{ Carbon\Carbon::parse($report_setting->statutory_date)->format('d M Y') }} </td>
                             <td style="width: 50%">)</td>
                         </tr>
                         <tr>
@@ -292,9 +292,9 @@
             <hr style="margin-top: 30px;margin-bottom: 40px;">
 
             <div>
-                <h3>INDEPENDENT AUDITORS' REPORT TO THE {{ $shareholders_count > 1 ? 'MEMBERS' : 'MEMBER' }} OF {{ $company->company_name }}</h3>
+                <h3>INDEPENDENT AUDITORS' REPORT TO THE {{ $shareholders_count > 1 ? 'MEMBERS' : 'MEMBER' }} OF {{ $company->name }}</h3>
                 @if ($prior_company_name)
-                    <h4>(formerly known as {{ $prior_company_name['company_name'] }})</h4>
+                    <h4>(formerly known as {{ $prior_company_name }})</h4>
                 @endif
                 <div>(Incorporated in Malaysia)</div>
             </div>
@@ -305,14 +305,14 @@
 
             <div>
                 <h4>Qualified Opinion </h4>
-                <p>We have audited the financial statements of {{ $company->company_name }}
+                <p>We have audited the financial statements of {{ $company->name }}
                     @if ($prior_company_name)
-                        (formerly known as {{ $prior_company_name['company_name'] }})
+                        (formerly known as {{ $prior_company_name }})
                     @endif,
-                    which comprise the statement of financial position as at 31 December 2023, and the statement of comprehensive income, statement of changes in equity and statement of cash flows for the financial {{ $company->current_year_period_type == 'full year' ? 'year' : 'period' }} then ended, and notes to the financial statements, including a summary of significant accounting policies
+                    which comprise the statement of financial position as at 31 December 2023, and the statement of comprehensive income, statement of changes in equity and statement of cash flows for the financial {{ $company->current_year_type == 'full year' ? 'year' : 'period' }} then ended, and notes to the financial statements, including a summary of significant accounting policies
                 </p>
                 <p>
-                    In our opinion, except for the effects of the matter described in the Basis for Qualified Opinion section of our report, the accompanying financial statements give a true and fair view of the financial position of the Company as at 31 December 2023, and of its financial performance and its cash flows for the financial {{ $company->current_year_period_type == 'full year' ? 'year' : 'period' }} then ended in accordance with Malaysian Private Entities Reporting Standard and the requirements of the Companies Act 2016 in Malaysia.
+                    In our opinion, except for the effects of the matter described in the Basis for Qualified Opinion section of our report, the accompanying financial statements give a true and fair view of the financial position of the Company as at 31 December 2023, and of its financial performance and its cash flows for the financial {{ $company->current_year_type == 'full year' ? 'year' : 'period' }} then ended in accordance with Malaysian Private Entities Reporting Standard and the requirements of the Companies Act 2016 in Malaysia.
                 </p>
             </div>
 
@@ -369,7 +369,7 @@
             <div>
                 <h4>Other Matters</h4>
                 <ol type="I">
-                    <li>The financial statements of the Company for the financial {{ $company->current_year_period_type == 'full year' ? 'year' : 'period' }} ended 31 December 2021 was audited by another firm of Chartered Accountants whose report thereon dated 13 June 2022 expressed an unmodified opinion on those financial statements. </li>
+                    <li>The financial statements of the Company for the financial {{ $company->current_year_type == 'full year' ? 'year' : 'period' }} ended 31 December 2021 was audited by another firm of Chartered Accountants whose report thereon dated 13 June 2022 expressed an unmodified opinion on those financial statements. </li>
                     <li>This report is made solely to the members of the Company, as a body, in accordance with Section 266 of the Companies Act 2016 in Malaysia and for no other purpose. We do not assume responsibility to any other person for the content of this report.</li>
                 </ol>
             </div>
@@ -403,9 +403,9 @@
         <div class="page-fnc-div">
             <div style="width: 100%;text-align: center">
                 <p>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                     @if ($prior_company_name)
-                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b>
+                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b>
                     @endif
                     </b>
                 </p>
@@ -413,14 +413,14 @@
             </div>
             <br/>
             <p><b>STATEMENT OF FINANCIAL POSITION </b></p>
-            <p><b>AS AT {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></p>
+            <p><b>AS AT {{ Str::upper(Carbon\Carbon::parse($company['current_year_to'])->format('d F Y')) }}</b></p>
             <br/>
             <table class="center" style="width: 80%">
                 <tr>
                     <th></th>
                     <th width="10%">Note</th>
-                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                    <th width="15%" class="right">{{ Str::upper($company->current_year) }}<br/>RM</th>
+                    <th width="15%" class="right">{{ Str::upper($company->last_year) }}<br/>RM</th>
                 </tr>
 
                 @foreach ($sofp as $sofp_item)
@@ -465,9 +465,9 @@
         <div class="page-fnc-div">
             <div style="width: 100%;text-align: center">
                 <p>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                     @if ($prior_company_name)
-                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b>
+                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b>
                     @endif
                     </b>
                 </p>
@@ -475,14 +475,14 @@
             </div>
             <br/>
             <p><b>STATEMENT OF COMPREHENSIVE INCOME </b></p>
-            <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></p>
+            <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</b></p>
             <br/>
             <table class="center" style="width: 80%">
                 <tr>
                     <th></th>
                     <th width="10%">Note</th>
-                    <th width="20%" class="center">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                    <th width="20%" class="center">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_opening_date'])->format('d.m.Y')) }}<br/> to<br/> {{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('d.m.Y')) }}<br/>RM</th>
+                    <th width="20%" class="center">{{ Str::upper($company->current_year) }}<br/>RM</th>
+                    <th width="20%" class="center">{{ Str::upper(Carbon\Carbon::parse($company->last_year_from)->format('d.m.Y')) }}<br/> to<br/> {{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('d.m.Y')) }}<br/>RM</th>
                 </tr>
                 @foreach ($soci as $soci_item)
                     <tr>
@@ -506,9 +506,9 @@
         <div class="page-fnc-div">
             <div style="width: 100%;text-align: center">
                 <p>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                         @if ($prior_company_name)
-                            <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b>
+                            <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b>
                         @endif
                         </b>
                 </p>
@@ -517,7 +517,7 @@
 
             <div style="width: 100%;text-align: center">
                 <p><b>STATEMENT OF CHANGES IN EQUITY</b></p>
-                <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></p>
+                <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</b></p>
             </div>
 
             <table class="center" style="width: 80%">
@@ -539,7 +539,7 @@
                     </th>
                 </tr>
                 <tr>
-                    <td>At {{ Carbon\Carbon::parse($prior_year_end['account_opening_date'])->format('d F Y') }}</td>
+                    <td>At {{ Carbon\Carbon::parse($company->last_year_from)->format('d F Y') }}</td>
                     <td class="cell-center">{{ format_number($last_sc_value) }}</td>
                     <td class="cell-center">({{ format_number($last_rp_value) }})</td>
                     <td class="cell-center">({{ format_number($total_last_last_year) }})</td>
@@ -551,7 +551,7 @@
                     <td class="cell-center">{{ format_number($soci_total_profit['last_year_amount']) }}</td>
                 </tr>
                 <tr>
-                    <td>At {{ Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('d F Y') }} / {{ Carbon\Carbon::parse($current_year_end['account_opening_date'])->format('d F Y') }}</td>
+                    <td>At {{ Carbon\Carbon::parse($company->last_year_to)->format('d F Y') }} / {{ Carbon\Carbon::parse($company->last_year_from)->format('d F Y') }}</td>
                     <td class="cell-center">{{ format_number($last_sc_sum) }}</td>
                     <td class="cell-center">({{ format_number($last_rp_sum) }})</td>
                     <td class="cell-center">({{ format_number($total_last_year) }})</td>
@@ -563,7 +563,7 @@
                     <td class="cell-center">{{ format_number($soci_total_profit['this_year_amount']) }}</td>
                 </tr>
                 <tr>
-                    <td><b>At {{ Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y') }}</b></td>
+                    <td><b>At {{ Carbon\Carbon::parse($company->current_year_to)->format('d F Y') }}</b></td>
                     <td class="cell-center">{{ format_number($this_sc_sum) }}</td>
                     <td class="cell-center">{{ format_number($this_rp_value) }}</td>
                     <td class="cell-center">{{ format_number($total_this_year) }}</td>
@@ -576,9 +576,9 @@
         <div class="page-fnc-div">
             <div style="width: 100%;text-align: center">
                 <p>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                     @if ($prior_company_name)
-                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b>
+                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b>
                     @endif
                     </b>
                 </p>
@@ -586,14 +586,14 @@
             </div>
 
             <p><b>STATEMENT OF CASH FLOWS </b></p>
-            <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></p>
+            <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</b></p>
 
             <table class="center" style="width: 80%">
                 <tr>
                     <th></th>
                     <th width="8%">Note</th>
-                    <th width="15%" class="center">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                    <th width="15%" class="center">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_opening_date'])->format('d.m.Y')) }}<br/> to<br/> {{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('d.m.Y')) }}<br/>RM</th>
+                    <th width="15%" class="center">{{ Str::upper($company->current_year) }}<br/>RM</th>
+                    <th width="15%" class="center">{{ Str::upper(Carbon\Carbon::parse($company->last_year_from)->format('d.m.Y')) }}<br/> to<br/> {{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('d.m.Y')) }}<br/>RM</th>
                 </tr>
                 @foreach ($socf as $socf_item)
                     @if (str_contains(strtoupper($socf_item->item), 'CASH AND BANK BALANCES'))
@@ -612,10 +612,10 @@
                         <th></th>
                         <th width="8%">Note</th>
                         <th width="15%" class="center">{{
-                            Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br />RM</th>
+                            Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br />RM</th>
                         <th width="15%" class="center">{{
-                            Str::upper(Carbon\Carbon::parse($prior_year_end['account_opening_date'])->format('d.m.Y')) }}<br /> to<br /> {{
-                            Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('d.m.Y')) }}<br />RM</th>
+                            Str::upper(Carbon\Carbon::parse($company->last_year_from)->format('d.m.Y')) }}<br /> to<br /> {{
+                            Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('d.m.Y')) }}<br />RM</th>
                     </tr>
                     @endif
                     @if ($socf_item->type == 'group')
@@ -665,9 +665,9 @@
         <div class="page-div">
             <div style="width: 100%;">
                 <p>
-                    <b>{{ $company->company_name }}<br />
+                    <b>{{ $company->name }}<br />
                     @if ($prior_company_name)
-                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name['company_name'] }})</b><br />
+                        <b>(formerly&#160;known&#160;as&#160;{{ $prior_company_name }})</b><br />
                     @endif
                     </b>
                     (Incorporated in Malaysia)
@@ -675,7 +675,7 @@
             </div>
 
             <div style="width: 100%;">
-                <h3>NOTES TO THE FINANCIAL STATEMENTS <br/>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</h3>
+                <h3>NOTES TO THE FINANCIAL STATEMENTS <br/>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</h3>
             </div>
 
             <ol class="level_0">
@@ -704,8 +704,8 @@
                         <table style="width: 100%">
                             <tr>
                                 <td></td>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                             </tr>
                             @foreach ($ppe as $ppe_data)
                                 <tr>
@@ -725,8 +725,8 @@
                             <table style="width: 100%;">
                                 <tr style="text-align: center;">
                                     <td></td>
-                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                                 </tr>
                                 @foreach ($trade_receiveables as $tr_data)
                                     <tr>
@@ -742,8 +742,8 @@
                             <table style="width: 100%; margin-top: 6px;">
                                 <tr style="text-align: center;">
                                     <td></td>
-                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                    <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                                 </tr>
                                 @foreach ($other_receiveables as $or_data)
                                     <tr>
@@ -768,8 +768,8 @@
                         <table style="width: 100%; margin-top: 6px;">
                             <tr style="text-align: center;">
                                 <td></td>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                             </tr>
                             @foreach ($cce as $cce_data)
                                 <tr>
@@ -787,10 +787,10 @@
                         <tr style="text-align: center;">
                             <td></td>
                             <td colspan="2">
-                                <b>{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</b>
+                                <b>{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</b>
                             </td>
                             <td colspan="2">
-                                <b>{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</b>
+                                <b>{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</b>
                             </td>
                         </tr>
                         <tr style="text-align: center">
@@ -852,8 +852,8 @@
                         <table style="width: 100%; margin-top: 6px;">
                             <tr style="text-align: center;">
                                 <td></td>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                             </tr>
                             @foreach ($bb as $bb_data)
                                 <tr>
@@ -871,8 +871,8 @@
                         <table style="width: 100%; margin-top: 6px;">
                             <tr style="text-align: center;">
                                 <td></td>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                             </tr>
                             @foreach ($lease as $lease_data)
                                 <tr>
@@ -890,8 +890,8 @@
                         <table style="width: 100%; margin-top: 6px;">
                             <tr style="text-align: center;">
                                 <td></td>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}<br/>RM</th>
                             </tr>
                             @foreach ($other_py as $other_py_data)
                                     <tr>
@@ -918,8 +918,8 @@
                     <table style="width: 100%; margin-top: 6px;">
                         <tr style="text-align: center;">
                             <td></td>
-                            <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                            <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                            <th width="15%" class="right">{{ Str::upper($company->current_year) }}<br/>RM</th>
+                            <th width="15%" class="right">{{ Str::upper($company->last_year) }}<br/>RM</th>
                         </tr>
                         <tr>
                             <td style="text-align: left">Audit fee</td>
@@ -934,8 +934,8 @@
                         <table style="width: 100%; margin-top: 6px;">
                             <tr style="text-align: center;">
                                 <td></td>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                                <th width="15%" class="right">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper($company->current_year) }}<br/>RM</th>
+                                <th width="15%" class="right">{{ Str::upper($company->last_year) }}<br/>RM</th>
                             </tr>
                             @foreach ($tax_expenses as $tax_data)
                                 <tr>
@@ -963,7 +963,7 @@
                             @if ($declared_dividends)
                                 @foreach ($declared_dividends as $declared_dividend)
                                     <tr>
-                                        <td style="width:80%">{{ $declared_dividend->dividend_type }} dividend of {{ $declared_dividend->rate_unit . $declared_dividend->rate }} per {{ $declared_dividend->dividend_type }} in respect of financial year end {{ Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y') }}</td>
+                                        <td style="width:80%">{{ $declared_dividend->dividend_type }} dividend of {{ $declared_dividend->rate_unit . $declared_dividend->rate }} per {{ $declared_dividend->dividend_type }} in respect of financial year end {{ Carbon\Carbon::parse($company->current_year_to)->format('d F Y') }}</td>
                                         <td style="text-align:center">{{ $declared_dividend->amount }}</td>
                                     </tr>
                                 @endforeach
@@ -975,7 +975,7 @@
                         </table>
                         @if ($proposed_dividends)
                             @foreach ($proposed_dividends as $proposed_dividend)
-                                <p>The directors have recommended a {{ $proposed_dividend->dividend_type }} of RM{{ $proposed_dividend->rate }} per ordinary share amounting to RM{{ $proposed_dividend->amount }} in respect of the financial year ended {{ Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y') }}.</p>
+                                <p>The directors have recommended a {{ $proposed_dividend->dividend_type }} of RM{{ $proposed_dividend->rate }} per ordinary share amounting to RM{{ $proposed_dividend->amount }} in respect of the financial year ended {{ Carbon\Carbon::parse($company->current_year_to)->format('d F Y') }}.</p>
                             @endforeach
                         @endif
                     </li>
@@ -995,12 +995,12 @@
                                     <tr style="text-align: center;">
                                         <td></td>
                                         <td>
-                                            {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}
+                                            {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}
                                             <br>
                                             RM
                                         </td>
                                         <td>
-                                            {{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}
+                                            {{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}
                                             <br>RM
                                         </td>
                                     </tr>
@@ -1021,12 +1021,12 @@
                                     <tr style="text-align: center;">
                                         <td></td>
                                         <td>
-                                            {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}
+                                            {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('Y')) }}
                                             <br>
                                             RM
                                         </td>
                                         <td>
-                                            {{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('Y')) }}
+                                            {{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('Y')) }}
                                             <br>RM
                                         </td>
                                     </tr>
@@ -1055,18 +1055,18 @@
         <div class="page-break"></div>
         <!-- STSOO -->
         <div class="page-fnc-div">
-            <p><b>{{ $company->company_name }}</b></p>
+            <p><b>{{ $company->name }}</b></p>
             <p>(Incorporated in Malaysia)</p>
             <br/>
             <p><b>SCHEDULE TO STATEMENT OF OPERATIONS</b></p>
-            <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('d F Y')) }}</b></p>
+            <p><b>FOR THE FINANCIAL YEAR ENDED {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</b></p>
             <br/>
             <table class="center" style="width: 80%">
                 <tr>
                     <th></th>
                     <th width="8%">Note</th>
-                    <th width="15%" class="center">{{ Str::upper(Carbon\Carbon::parse($current_year_end['account_closing_date'])->format('Y')) }}<br/>RM</th>
-                    <th width="15%" class="center">{{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_opening_date'])->format('d.m.Y')) }}<br/> to<br/> {{ Str::upper(Carbon\Carbon::parse($prior_year_end['account_closing_date'])->format('d.m.Y')) }}<br/>RM</th>
+                    <th width="15%" class="center">{{ Str::upper($company->current_year) }}<br/>RM</th>
+                    <th width="15%" class="center">{{ Str::upper(Carbon\Carbon::parse($company->last_year_from)->format('d.m.Y')) }}<br/> to<br/> {{ Str::upper(Carbon\Carbon::parse($company->last_year_to)->format('d.m.Y')) }}<br/>RM</th>
                 </tr>
 
                 @foreach ($stsoo as $stsoo_item)

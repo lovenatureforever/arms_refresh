@@ -73,8 +73,8 @@ class ReportInfo extends Component
     public $coverSignaturePosition;
     public $coverSignSecretaryNo;
 
-    public $selectedDirectorId;
-    public $selectedSecretaryId;
+    // public $selectedDirectorId;
+    // public $selectedSecretaryId;
 
     public function mount($id)
     {
@@ -87,6 +87,14 @@ class ReportInfo extends Component
         $this->reportSetting = CompanyReportSetting::where('company_id', $this->id)->first();
         $alternate_ids = CompanyDirector::where('alternate_id', '!=', null)->where('is_active', true)->pluck('alternate_id')->toArray();
         $this->directors = CompanyDirector::where('company_id', $this->id)->where('is_active', true)->whereNotIn('id', $alternate_ids)->get();
+        $date = $this->company->end_date_report;
+        $this->activeDirectors = CompanyDirector::where('company_id', $this->id)
+            ->whereHas('changes', function($query) use ($date) {
+                $query->where('effective_date', '<=', $date)
+                    ->latest('effective_date');
+            })
+            ->orderBy('sort')
+            ->get();
 
         $this->isAlternateSignings = $this->directors->pluck('is_alternate_signing', 'id')->toArray();
         $this->isRepresentatives = $this->directors->pluck('is_rep_statement', 'id')->toArray();
@@ -125,8 +133,8 @@ class ReportInfo extends Component
         $this->coverSignName = $this->reportSetting->cover_sign_name ?? '';
         $this->coverSignaturePosition = $this->reportSetting->cover_signature_position ?? '';
         $this->coverSignSecretaryNo = $this->reportSetting->cover_sign_secretary_no ?? '';
-        $this->selectedDirectorId = $this->reportSetting->selected_director_id ?? null;
-        $this->selectedSecretaryId = $this->reportSetting->selected_secretary_id ?? null;
+        // $this->selectedDirectorId = $this->reportSetting->selected_director_id ?? null;
+        // $this->selectedSecretaryId = $this->reportSetting->selected_secretary_id ?? null;
     }
 
     public function render()
@@ -191,8 +199,8 @@ class ReportInfo extends Component
                 'auditor_remuneration' => readNumber($this->auditorRemuneration),
                 'is_declaration_officer' => $this->isDeclarationOfficer,
                 'is_declaration_mia' => $this->isDeclarationMia,
-                'selected_director_id' => $this->selectedDirectorId,
-                'selected_secretary_id' => $this->selectedSecretaryId,
+                // 'selected_director_id' => $this->selectedDirectorId,
+                // 'selected_secretary_id' => $this->selectedSecretaryId,
                 'cover_sign_position' => $this->coverSignPosition,
                 'cover_sign_name' => $this->coverSignName,
                 'cover_signature_position' => $this->coverSignaturePosition,

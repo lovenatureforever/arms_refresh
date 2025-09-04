@@ -36,8 +36,6 @@ class CompanyReportSetting extends Model
         'auditor_remuneration',
         'is_declaration_officer',
         'is_declaration_mia',
-        'selected_director_id',
-        'selected_secretary_id',
         'is_approved_application',
         'is_exempt',
     ];

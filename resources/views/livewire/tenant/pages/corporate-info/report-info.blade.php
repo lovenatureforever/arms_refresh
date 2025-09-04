@@ -307,7 +307,7 @@
                                         @else
                                             <select class="form-input" id="signIdChange" name="signIdChange" wire:model.live="coverSignName" {{ $this->coverSignPosition == null || $this->coverSignPosition == '' ? 'disabled' : '' }}>
                                                 <option value="">--Select--</option>
-                                                @foreach ($this->directors as $nameList)
+                                                @foreach ($this->activeDirectors as $nameList)
                                                     <option value="{{ $nameList['id'] }}">{{ $nameList['name'] }}</option>
                                                 @endforeach
                                             </select>

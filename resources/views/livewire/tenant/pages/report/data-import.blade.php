@@ -59,7 +59,7 @@
                                                         <a class="text-white rounded-lg btn btn-sm bg-success" href="{{ route('downloadexcel', [$report->id]) }}" target="_blank">Download Excel</a>
                                                     @endif
                                                     <a class="text-white bg-orange-700 rounded-lg btn btn-sm" href="{{ route('datamigration.sofp', [$report->id]) }}" target="_blank">Data Migration</a>
-                                                    {{-- <a class="text-white rounded-lg btn btn-sm bg-primary" href="{{ route('datamigration.pdf', $report->id) }}" target="_blank">View Report</a> --}}
+                                                    <a class="text-white rounded-lg btn btn-sm bg-primary" href="{{ route('reportpdf', [$report->id]) }}" target="_blank">View Report</a>
                                                 </td>
                                             </tr>
                                         @endforeach
