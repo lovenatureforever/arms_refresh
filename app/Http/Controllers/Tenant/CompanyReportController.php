@@ -401,7 +401,7 @@ class CompanyReportController extends Controller
                     $total_shares = $share_capital->fully_paid_shares + $share_capital->partly_paid_shares;
                     $total_amount = $share_capital->fully_paid_amount + $share_capital->partly_paid_amount;
                     $content .= '<tr>';
-                    $content .= '<td>' . $share_capital->effective_date->format('Y-m-d') . '</td>';
+                    $content .= '<td>' . $share_capital->effective_date->format('d.m.Y') . '</td>';
                     $content .= '<td>' . explode(" ", $share_capital->share_type)[0] . '</td>';
                     $content .= '<td>' . displayNumber($total_shares) . '</td>';
                     $content .= '<td>' . displayNumber($total_amount) . '</td>';
@@ -421,7 +421,7 @@ class CompanyReportController extends Controller
                 $d = [];
                 foreach ($director_changes_current as $change) {
                     // Director appointed on 29/04/2024, Director resigned on 20/08/2024
-                    $d[] = $change->change_nature . ' on ' . $change->effective_date->format('Y-m-d');
+                    $d[] = $change->change_nature . ' on ' . $change->effective_date->format('d.m.Y');
                 }
                 $director->changes_current = implode(', ', $d);
             }
@@ -452,20 +452,20 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center">At ' . $companyData['company']['current_year_from'] . '</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_from']->format('d.m.Y') . '</td>
                     <td style="text-align: center">Bought</td>
                     <td style="text-align: center">Sold</td>
-                    <td style="text-align: center">At ' . $companyData['company']['current_year_to'] . '</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_to']->format('d.m.Y') . '</td>
                 </tr>';
             if (isset($companyData['shareholders_data']['Ordinary shares'])) {
                 foreach ($companyData['shareholders_data']['Ordinary shares'] as $type => $share) {
                     // if ($share['total_share'] > 0) {
                     $content .= '<tr>';
                     $content .= '<td style=""><b>' . $share['name'] . '</b></td>';
-                    $content .= '<td style="text-align: center">' . $share['bf'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['bought'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['sold'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['cf'] . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['bf']) . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['bought']) . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['sold']) . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['cf']) . '</td>';
                     $content .= '</tr>';
                     // }
                 }
@@ -477,20 +477,20 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center">At ' . $companyData['company']['current_year_from'] . '</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_from']->format('d.m.Y') . '</td>
                     <td style="text-align: center">Bought</td>
                     <td style="text-align: center">Sold</td>
-                    <td style="text-align: center">At ' . $companyData['company']['current_year_to'] . '</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_to']->format('d.m.Y') . '</td>
                 </tr>';
             if (isset($companyData['shareholders_data']['Preference shares'])) {
                 foreach ($companyData['shareholders_data']['Preference shares'] as $type => $share) {
                     // if ($share['total_share'] > 0) {
                     $content .= '<tr>';
                     $content .= '<td style="width: 35%">' . $share['name'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['bf'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['bought'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['sold'] . '</td>';
-                    $content .= '<td style="text-align: center">' . $share['cf'] . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['bf']) . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['bought']) . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['sold']) . '</td>';
+                    $content .= '<td style="text-align: center">' . displayNumber($share['cf']) . '</td>';
                     $content .= '</tr>';
                     // }
                 }
