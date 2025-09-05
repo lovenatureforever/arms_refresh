@@ -125,7 +125,7 @@
 </head>
 
 <body>
-    <header><b>Company No.: {{ $company->registration_no_old }} {{ $company->registration_no_old ? '('.$company->registration_no_old.')' : '' }}</b></header>
+    <header><b>Company No.: {{ $company->registration_no }} {{ $company->registration_no_old ? '('.$company->registration_no_old.')' : '' }}</b></header>
     <footer>
         <div class="pagenum-container"><span class="pagenum"></span></div>
     </footer>

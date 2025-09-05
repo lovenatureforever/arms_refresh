@@ -42,7 +42,7 @@ class CompanyReportController extends Controller
             ->where('is_declared', false)
             ->whereBetween('effective_date', [$company->current_year_from, $company->end_date_report])
             ->get();
-        $share_capitals = $company->sharecapitalChanges;
+        $share_capitals = $company->sharecapitalChangesCurrentYear();
         $date = $company->end_date_report;
         $directors = CompanyDirector::with([
             'changes' => function ($query) use ($date) {
@@ -69,7 +69,7 @@ class CompanyReportController extends Controller
         $statement_directors = CompanyDirector::where('company_id', $company->id)
             ->where('is_active', true)
             ->where('is_rep_statement', true)
-            ->whereHas('changes', function($query) use ($company) {
+            ->whereHas('changes', function ($query) use ($company) {
                 $query->where('effective_date', '<=', $company->end_date_report);
             })
             ->orderBy('sort')
@@ -78,7 +78,7 @@ class CompanyReportController extends Controller
         $statutory_director = CompanyDirector::where('company_id', $company->id)
             ->where('is_active', true)
             ->where('is_rep_statutory', true)
-            ->whereHas('changes', function($query) use ($company) {
+            ->whereHas('changes', function ($query) use ($company) {
                 $query->where('effective_date', '<=', $company->end_date_report);
             })
             ->first();
@@ -259,24 +259,24 @@ class CompanyReportController extends Controller
         $company_data['ntfs_config_est_uncertainties'] = $this->estimationUncertainty($company_data);
 
 
-        return view('livewire.tenant.pages.report.index', $company_data);
+        // return view('livewire.tenant.pages.report.index', $company_data);
 
-        // $pdf = Pdf::loadView('livewire.tenant.pages.report.index', $company_data)
-        //         ->setOption(['dpi' => 96, 'defaultFontSize' => '11px', 'defaultFont' => 'sans-serif', 'defaultPaperSize' => 'a4']);
-        // $pdf->render();
-        // $canvas = $pdf->getCanvas();
-        // $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-        //     if ($pageNumber > 1) {
-        //         $text = $pageNumber - 1;
-        //         $font = $fontMetrics->getFont('sans-serif');
-        //         $pageWidth = $canvas->get_width();
-        //         $pageHeight = $canvas->get_height();
-        //         $size = 12;
-        //         $width = $fontMetrics->getTextWidth($text, $font, $size);
-        //         $canvas->text($pageWidth - $width - 60, $pageHeight - 50, $text, $font, $size);
-        //     }
-        // });
-        // return $pdf->stream();
+        $pdf = Pdf::loadView('livewire.tenant.pages.report.index', $company_data)
+            ->setOption(['dpi' => 96, 'defaultFontSize' => '11px', 'defaultFont' => 'sans-serif', 'defaultPaperSize' => 'a4']);
+        $pdf->render();
+        $canvas = $pdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            if ($pageNumber > 1) {
+                $text = $pageNumber - 1;
+                $font = $fontMetrics->getFont('sans-serif');
+                $pageWidth = $canvas->get_width();
+                $pageHeight = $canvas->get_height();
+                $size = 12;
+                $width = $fontMetrics->getTextWidth($text, $font, $size);
+                $canvas->text($pageWidth - $width - 60, $pageHeight - 50, $text, $font, $size);
+            }
+        });
+        return $pdf->stream();
 
     }
 
@@ -287,7 +287,8 @@ class CompanyReportController extends Controller
         return Storage::download($report->file_path);
     }
 
-    private function replaceTerms(&$content, $companyData) {
+    private function replaceTerms(&$content, $companyData)
+    {
         $content = str_replace('#ToDate#', Carbon::parse($companyData['company']->current_year_to)->format('d F Y'), $content);
         $content = str_replace('#AuditorName#', $companyData['tenant']->firmName, $content);
         $content = str_replace('#AuditFee#', $companyData['company']->audit_fee, $content);
@@ -295,7 +296,8 @@ class CompanyReportController extends Controller
         $content = str_replace('#RegisteredAddress#', $companyData['registered_address'], $content);
     }
 
-    private function adjustWords(&$content, $companyData) {
+    private function adjustWords(&$content, $companyData)
+    {
         if (count($companyData['directors']) > 1) {
             $content = str_replace('{director}', 'directors', $content);
             // Director's
@@ -342,7 +344,8 @@ class CompanyReportController extends Controller
         }
     }
 
-    private function renderTables(&$content, $companyData) {
+    private function renderTables(&$content, $companyData)
+    {
         if ($content == '-- Content of Principal activity --') {
             if ($companyData['business_nature']) {
                 $content = '<p>' . $companyData['business_nature']['paragraph1'] . '</p>';
@@ -350,15 +353,15 @@ class CompanyReportController extends Controller
             }
         } elseif ($content == '-- Content of Financial results --') {
             $content =
-            '<table style="width: 100%">
+                '<table style="width: 100%">
                 <tr>
                     <td>Profit for the financial year</td>
-                    <td>RM '.format_number($companyData['soci']->firstWhere('item', 'Profit for the financial year representing total comprehensive income for the financial year')?->this_year_amount).'</td>
+                    <td>RM ' . format_number($companyData['soci']->firstWhere('item', 'Profit for the financial year representing total comprehensive income for the financial year')?->this_year_amount) . '</td>
                 </tr>
             </table>';
         } elseif ($content == '-- Content of Dividends --') {
             $content =
-            '<table>
+                '<table>
                 <tr>
                     <th style="width:70%, text-align: left;">During the financial year</th>
                     <th style="text-align:center">RM</th>
@@ -366,7 +369,7 @@ class CompanyReportController extends Controller
             if ($companyData['declared_dividends']) {
                 foreach ($companyData['declared_dividends'] as $declared_dividend) {
                     $content .= '<tr>';
-                    $content .= '<td style="width:70%">' . $declared_dividend->dividend_type . ' dividend of ' . $declared_dividend->rate_unit . $declared_dividend->rate . ' per ' . $declared_dividend->dividend_type . ' in respect of financial year end ' . Carbon::parse($companyData['company']['current_year_to'])->format('d F Y').'</td>';
+                    $content .= '<td style="width:70%">' . $declared_dividend->dividend_type . ' dividend of ' . $declared_dividend->rate_unit . $declared_dividend->rate . ' per ' . $declared_dividend->dividend_type . ' in respect of financial year end ' . Carbon::parse($companyData['company']['current_year_to'])->format('d F Y') . '</td>';
                     $content .= '<td style="text-align:center">' . $declared_dividend->amount . '</td>';
                     $content .= '</tr>';
                 }
@@ -379,10 +382,10 @@ class CompanyReportController extends Controller
 
             if ($companyData['proposed_dividends']) {
                 foreach ($companyData['proposed_dividends'] as $proposed_dividend) {
-                    $content .= '<p>The directors have recommended a ' . $proposed_dividend->dividend_type . ' of RM' . $proposed_dividend->rate . ' per ordinary share amounting to RM'.$proposed_dividend->amount . ' in respect of the financial year ended ' . Carbon::parse($companyData['company']['current_year_to'])->format('d F Y').'</p>';
+                    $content .= '<p>The directors have recommended a ' . $proposed_dividend->dividend_type . ' of RM' . $proposed_dividend->rate . ' per ordinary share amounting to RM' . $proposed_dividend->amount . ' in respect of the financial year ended ' . Carbon::parse($companyData['company']['current_year_to'])->format('d F Y') . '</p>';
                 }
             }
-        } elseif ($content =='-- Content of Issues of shares and debentures --') {
+        } elseif ($content == '-- Content of Issues of shares and debentures --') {
             $content = '<table style="text-align: center">
                 <tr>
                     <th>Date of Issue</th>
@@ -398,23 +401,23 @@ class CompanyReportController extends Controller
                     $total_shares = $share_capital->fully_paid_shares + $share_capital->partly_paid_shares;
                     $total_amount = $share_capital->fully_paid_amount + $share_capital->partly_paid_amount;
                     $content .= '<tr>';
-                    $content .= '<td>'.$share_capital->effective_date.'</td>';
-                    $content .= '<td>'.$share_capital->share_type.'</td>';
-                    $content .= '<td>'.$total_shares.'</td>';
-                    $content .= '<td>'.$total_amount.'</td>';
+                    $content .= '<td>' . $share_capital->effective_date->format('Y-m-d') . '</td>';
+                    $content .= '<td>' . explode(" ", $share_capital->share_type)[0] . '</td>';
+                    $content .= '<td>' . displayNumber($total_shares) . '</td>';
+                    $content .= '<td>' . displayNumber($total_amount) . '</td>';
                     $content .= '<td></td>';
-                    $content .= '<td>'.$share_capital->issuance_term.'</td>';
-                    $content .= '<td>'.$share_capital->issuance_purpose.'</td>';
+                    $content .= '<td>' . $share_capital->issuance_term . '</td>';
+                    $content .= '<td>' . $share_capital->issuance_purpose . '</td>';
                     $content .= '</tr>';
                 }
             }
             $content .= '</table>';
-        } elseif ($content =='-- Content of Directors --') {
+        } elseif ($content == '-- Content of Directors --') {
             $content = '<div style="margin-left: 20px">';
             foreach ($companyData['directors'] as $director) {
                 $director_changes_current = $director->changes()->whereBetween('effective_date', [$companyData['company']['current_year_from'], $companyData['company']['end_date_report']])
-                                                                ->orderBy('effective_date')
-                                                                ->get();
+                    ->orderBy('effective_date')
+                    ->get();
                 $d = [];
                 foreach ($director_changes_current as $change) {
                     // Director appointed on 29/04/2024, Director resigned on 20/08/2024
@@ -427,7 +430,7 @@ class CompanyReportController extends Controller
 
             }
             $content .= '</div>';
-        } elseif ($content =='-- Content of Directors\' remunerations --') {
+        } elseif ($content == '-- Content of Directors\' remunerations --') {
             $content = '<table style="width: 100%">
                 <tr style="text-align: center">
                     <th></th>
@@ -436,12 +439,12 @@ class CompanyReportController extends Controller
             foreach ($companyData['director_renumerations'] as $director_renumeration) {
                 Log::debug("director_renumeration ->", [$director_renumeration['show_display']]);
                 $content .= '<tr>';
-                $content .= '<td>'.($director_renumeration['show_display'] ? $director_renumeration['display'] : $director_renumeration['item']).'</td>';
-                $content .= '<td style="text-align: center">'.format_number($director_renumeration['this_year_amount']).'</td>';
+                $content .= '<td>' . ($director_renumeration['show_display'] ? $director_renumeration['display'] : $director_renumeration['item']) . '</td>';
+                $content .= '<td style="text-align: center">' . format_number($director_renumeration['this_year_amount']) . '</td>';
                 $content .= '</tr>';
             }
             $content .= '</table>';
-        } elseif ($content =='-- Content of Directors\' interests --') {
+        } elseif ($content == '-- Content of Directors\' interests --') {
             $content = '<table style="width: 100%">
                 <tr>
                     <td></td>
@@ -449,21 +452,21 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center">At '.$companyData['company']['current_year_from'].'</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_from'] . '</td>
                     <td style="text-align: center">Bought</td>
                     <td style="text-align: center">Sold</td>
-                    <td style="text-align: center">At '.$companyData['company']['current_year_to'].'</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_to'] . '</td>
                 </tr>';
             if (isset($companyData['shareholders_data']['Ordinary shares'])) {
                 foreach ($companyData['shareholders_data']['Ordinary shares'] as $type => $share) {
                     // if ($share['total_share'] > 0) {
-                        $content .= '<tr>';
-                        $content .= '<td style=""><b>'.$share['name'].'</b></td>';
-                        $content .= '<td style="text-align: center">'.$share['bf'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['bought'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['sold'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['cf'].'</td>';
-                        $content .= '</tr>';
+                    $content .= '<tr>';
+                    $content .= '<td style=""><b>' . $share['name'] . '</b></td>';
+                    $content .= '<td style="text-align: center">' . $share['bf'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['bought'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['sold'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['cf'] . '</td>';
+                    $content .= '</tr>';
                     // }
                 }
             }
@@ -474,21 +477,21 @@ class CompanyReportController extends Controller
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center">At '.$companyData['company']['current_year_from'].'</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_from'] . '</td>
                     <td style="text-align: center">Bought</td>
                     <td style="text-align: center">Sold</td>
-                    <td style="text-align: center">At '.$companyData['company']['current_year_to'].'</td>
+                    <td style="text-align: center">At ' . $companyData['company']['current_year_to'] . '</td>
                 </tr>';
             if (isset($companyData['shareholders_data']['Preference shares'])) {
                 foreach ($companyData['shareholders_data']['Preference shares'] as $type => $share) {
                     // if ($share['total_share'] > 0) {
-                        $content .= '<tr>';
-                        $content .= '<td style="width: 35%">'.$share['name'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['bf'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['bought'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['sold'].'</td>';
-                        $content .= '<td style="text-align: center">'.$share['cf'].'</td>';
-                        $content .= '</tr>';
+                    $content .= '<tr>';
+                    $content .= '<td style="width: 35%">' . $share['name'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['bf'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['bought'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['sold'] . '</td>';
+                    $content .= '<td style="text-align: center">' . $share['cf'] . '</td>';
+                    $content .= '</tr>';
                     // }
                 }
             }
@@ -503,17 +506,18 @@ class CompanyReportController extends Controller
                 $lastChange = $director->changes()->whereNotNull('address_line1')->orderByDesc('effective_date')->first();
                 $address = $lastChange?->full_address;
                 $content .= '<td>';
-                $content .= '<p><b>'.$director->name.'</b></p>';
+                $content .= '<p><b>' . $director->name . '</b></p>';
                 $content .= '<p>Director</p>';
-                $content .= '<p>'.$address.'</p>';
-                $content .= '<p>Dated: '.Carbon::parse(Carbon::now())->format('d F Y').'</p>';
+                $content .= '<p>' . $address . '</p>';
+                $content .= '<p>Dated: ' . Carbon::parse(Carbon::now())->format('d F Y') . '</p>';
                 $content .= '</td>';
             }
             $content .= '</tr></table>';
         }
     }
 
-    private function renderDirectorReport($companyId, $company) {
+    private function renderDirectorReport($companyId, $company)
+    {
         $directorReportConfigs = DirectorReportConfig::where('company_id', $companyId)->where('display', 1)->orderBy('order_no')->get();
         $renderContent = '';
         $bulletFlag = false;
@@ -523,35 +527,34 @@ class CompanyReportController extends Controller
             $this->replaceTerms($content, $company);
             $this->adjustWords($content, $company);
             if (strcasecmp($config->template_type, 'Title') == 0) {
-                $content = '<h4><b style="text-transform: uppercase;">'.$content.'</b></h4>';
+                $content = '<h4><b style="text-transform: uppercase;">' . $content . '</b></h4>';
                 if ($bulletFlag) {
-                    $content = '</ol>'.$content;
+                    $content = '</ol>' . $content;
                     $bulletFlag = false;
                 }
             } elseif (strcasecmp($config->template_type, 'Paragraph') == 0) {
-                $content = '<p>'.$content.'</p>';
+                $content = '<p>' . $content . '</p>';
                 if ($bulletFlag) {
-                    $content = '</ol>'.$content;
+                    $content = '</ol>' . $content;
                     $bulletFlag = false;
                 }
             } elseif (strcasecmp($config->template_type, 'Paragraph with bullet') == 0) {
                 if ($bulletFlag) {
-                    $content = '<li>'.$content.'</li>';
+                    $content = '<li>' . $content . '</li>';
                 } else {
-                    $content = '<ol type="I"><li>'.$content.'</li>';
+                    $content = '<ol type="I"><li>' . $content . '</li>';
                     $bulletFlag = true;
                 }
             } elseif (strcasecmp($config->template_type, 'Paragraph with indent') == 0) {
-                $content = '<p>'.$content.'</p>';
+                $content = '<p>' . $content . '</p>';
                 if ($bulletFlag) {
-                    $content = '</ol>'.$content;
+                    $content = '</ol>' . $content;
                     $bulletFlag = false;
                 }
-            }
-            elseif (strcasecmp($config->template_type, 'Table') == 0) {
+            } elseif (strcasecmp($config->template_type, 'Table') == 0) {
                 $this->renderTables($content, $company);
                 if ($bulletFlag) {
-                    $content = '</ol>'.$content;
+                    $content = '</ol>' . $content;
                     $bulletFlag = false;
                 }
             }
@@ -565,7 +568,8 @@ class CompanyReportController extends Controller
     // $company_data['ntfs_config_sig_acc_policies'] = $ntfs_config_sig_acc_policies;
     // $company_data['ntfs_config_est_uncertainties'] = $ntfs_config_est_uncertainties;
 
-    private function generalInformation($company) {
+    private function generalInformation($company)
+    {
         $ntfs_config_gen_info = NtfsConfigItem::where('company_id', $company['company']->id)->where('section', 'gi')->where('is_active', 1)->orderBy('order')->get();
         $renderContent = '';
         foreach ($ntfs_config_gen_info as $config) {
@@ -588,7 +592,8 @@ class CompanyReportController extends Controller
         return $renderContent;
     }
 
-    private function estimationUncertainty($company) {
+    private function estimationUncertainty($company)
+    {
         $ntfs_config_est_uncertainties = NtfsConfigItem::where('company_id', $company['company']->id)->where('section', 'eu')->where('is_active', 1)->orderBy('order')->get();
         $renderContent = '';
         $prevLevel = 0;
@@ -605,11 +610,9 @@ class CompanyReportController extends Controller
                         $content = '<ol type="I">' . $content;
                     }
 
-                }
-                elseif ($prevLevel == $currentLevel) { // Title with Decimal bullet
+                } elseif ($prevLevel == $currentLevel) { // Title with Decimal bullet
                     $content .= '</li>';
-                }
-                elseif ($prevLevel > $currentLevel) {
+                } elseif ($prevLevel > $currentLevel) {
                     $content .= '</li></ol></li>';
                 }
 
@@ -637,7 +640,8 @@ class CompanyReportController extends Controller
         return $renderContent;
     }
 
-    private function significantAccountingPolices($company) {
+    private function significantAccountingPolices($company)
+    {
         $ntfs_config_est_uncertainties = NtfsConfigItem::where('company_id', $company['company']->id)->where('section', 'sap')->where('is_active', 1)->orderBy('order')->get();
         $renderContent = '';
         $prevLevel = 0;
@@ -654,11 +658,9 @@ class CompanyReportController extends Controller
                         $content = '<ol type="I">' . $content;
                     }
 
-                }
-                elseif ($prevLevel == $currentLevel) { // Title with Decimal bullet
+                } elseif ($prevLevel == $currentLevel) { // Title with Decimal bullet
                     $content .= '</li>';
-                }
-                elseif ($prevLevel > $currentLevel) {
+                } elseif ($prevLevel > $currentLevel) {
                     $content .= '</li></ol></li>';
                 }
 
