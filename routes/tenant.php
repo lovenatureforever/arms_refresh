@@ -129,6 +129,7 @@ Route::middleware([
         Route::get('/companies/{id}/reports', DataImport::class)->name('datamigration.index');
         Route::get('/reports/{id}/download-excel', [CompanyReportController::class, 'downloadExcel'])->name('downloadexcel');
         Route::get('/reports/{id}/generate', [CompanyReportController::class, 'viewFinancialReport'])->name('reportpdf');
+        Route::get('/reports/test', [CompanyReportController::class, 'test'])->name('test');
         // Data Migration Tabs
         Route::get('/reports/{id}/migration/sofp', SofpDataMigration::class)->name('datamigration.sofp');
         Route::get('/reports/{id}/migration/soci', SociDataMigration::class)->name('datamigration.soci');

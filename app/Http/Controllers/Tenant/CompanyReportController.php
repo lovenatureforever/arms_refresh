@@ -27,6 +27,10 @@ use App\Models\Tenant\CompanyShareholderChange;
 
 class CompanyReportController extends Controller
 {
+    public function test()
+    {
+        return view('livewire.tenant.pages.report.test');
+    }
     public function viewFinancialReport($id)
     {
         $report = CompanyReport::find($id);
@@ -57,15 +61,6 @@ class CompanyReportController extends Controller
         $current_preference_shares = CompanyShareCapitalChange::whereBetween('effective_date', [$company->current_year_from, $company->current_year_to])->where('share_type', CompanyShareCapitalChange::SHARETYPE_PREFERENCE)->get();
         $business_address = $company->bizAddressAtLast($company->end_date_report);
         $prior_business_address = $company->bizAddressAtStart();
-        // $prior_directors = CompanyDirectorChange::with(['companyDirector' => function($query) use ($company) {
-        //         $query->where('company_id', $company->id);
-        //     }])
-        //     ->whereHas('companyDirector', function($query) use ($company) {
-        //         $query->where('company_id', $company->id);
-        //     }, '=', 1) // Explicit count for better performance
-        //     ->where('effective_date', '<', $company->current_year_from)
-        //     ->latest('effective_date')
-        //     ->get();
         $statement_directors = CompanyDirector::where('company_id', $company->id)
             ->where('is_active', true)
             ->where('is_rep_statement', true)
@@ -144,8 +139,6 @@ class CompanyReportController extends Controller
             }
             $tmp['cf'] = $tmp['bf'] + $tmp['bought'] - $tmp['sold'];
         }
-
-        /////////////////
 
         # Report data
         // DRY loading for report types
@@ -259,24 +252,24 @@ class CompanyReportController extends Controller
         $company_data['ntfs_config_est_uncertainties'] = $this->estimationUncertainty($company_data);
 
 
-        // return view('livewire.tenant.pages.report.index', $company_data);
+        return view('livewire.tenant.pages.report.index', $company_data);
 
-        $pdf = Pdf::loadView('livewire.tenant.pages.report.index', $company_data)
-            ->setOption(['dpi' => 96, 'defaultFontSize' => '11px', 'defaultFont' => 'sans-serif', 'defaultPaperSize' => 'a4']);
-        $pdf->render();
-        $canvas = $pdf->getCanvas();
-        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-            if ($pageNumber > 1) {
-                $text = $pageNumber - 1;
-                $font = $fontMetrics->getFont('sans-serif');
-                $pageWidth = $canvas->get_width();
-                $pageHeight = $canvas->get_height();
-                $size = 12;
-                $width = $fontMetrics->getTextWidth($text, $font, $size);
-                $canvas->text($pageWidth - $width - 60, $pageHeight - 50, $text, $font, $size);
-            }
-        });
-        return $pdf->stream();
+        // $pdf = Pdf::loadView('livewire.tenant.pages.report.index', $company_data)
+        //     ->setOption(['dpi' => 96, 'defaultFontSize' => '11px', 'defaultFont' => 'sans-serif', 'defaultPaperSize' => 'a4']);
+        // $pdf->render();
+        // $canvas = $pdf->getCanvas();
+        // $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        //     if ($pageNumber > 1) {
+        //         $text = $pageNumber - 1;
+        //         $font = $fontMetrics->getFont('sans-serif');
+        //         $pageWidth = $canvas->get_width();
+        //         $pageHeight = $canvas->get_height();
+        //         $size = 12;
+        //         $width = $fontMetrics->getTextWidth($text, $font, $size);
+        //         $canvas->text($pageWidth - $width - 60, $pageHeight - 50, $text, $font, $size);
+        //     }
+        // });
+        // return $pdf->stream();
 
     }
 
@@ -506,7 +499,7 @@ class CompanyReportController extends Controller
                 $lastChange = $director->changes()->whereNotNull('address_line1')->orderByDesc('effective_date')->first();
                 $address = $lastChange?->full_address;
                 $content .= '<td>';
-                $content .= '<p><b>' . $director->name . '</b></p>';
+                $content .= '<p class="text-bold">' . $director->name . '</p>';
                 $content .= '<p>Director</p>';
                 $content .= '<p>' . $address . '</p>';
                 $content .= '<p>Dated: ' . Carbon::parse(Carbon::now())->format('d F Y') . '</p>';
@@ -527,7 +520,7 @@ class CompanyReportController extends Controller
             $this->replaceTerms($content, $company);
             $this->adjustWords($content, $company);
             if (strcasecmp($config->template_type, 'Title') == 0) {
-                $content = '<h4><b style="text-transform: uppercase;">' . $content . '</b></h4>';
+                $content = '<div class="section text-bold uppercase">' . $content . '</div>';
                 if ($bulletFlag) {
                     $content = '</ol>' . $content;
                     $bulletFlag = false;
@@ -574,11 +567,11 @@ class CompanyReportController extends Controller
         $renderContent = '';
         foreach ($ntfs_config_gen_info as $config) {
             $content = '<li>';
-            $content .= '<p><b style="text-transform: uppercase;">' . $config->title . '</b></p>';
+            $content .= '<div class="text-bold uppercase">' . $config->title . '</div>';
             $text = $config->is_default_content ? $config->default_content : $config->content;
             if ($config->default_title == 'Basis of preparation') {
                 $subContent = "<ol class='level_1'><li>
-                                <p><b>Going Concern</b></p>
+                                <p class=\"text-bold\">Going Concern</p>
                                 <p>As at 31 December 2023, the current liabilities of the Company exceeded its current assets by RM3,748. This indicates the existence of an uncertainty which may cast significant doubt in the ability of the Company to continue as going concern. The validity of the going concern assumption is dependent upon the continuous financial support from the shareholders and the ability of the Company to generate sufficient cash from its operations to enable the Company to fulfill its obligations as and when they fall due.</p>
                             </li></ol>";
             }
@@ -619,7 +612,7 @@ class CompanyReportController extends Controller
                 $content .= '<li>';
                 $text = $config->content;
                 $this->replaceTerms($text, $company);
-                $content .= '<p><b>' . nl2br(e($text)) . '</b></p>';
+                $content .= '<p class="text-bold">' . nl2br(e($text)) . '</p>';
 
                 $prevLevel = $currentLevel;
             }
@@ -667,7 +660,7 @@ class CompanyReportController extends Controller
                 $content .= '<li>';
                 $text = $config->content;
                 $this->replaceTerms($text, $company);
-                $content .= '<p><b>' . nl2br(e($text)) . '</b></p>';
+                $content .= '<p class="text-bold">' . nl2br(e($text)) . '</p>';
 
                 $prevLevel = $currentLevel;
             }
