@@ -1,77 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Report</title>
-    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
-    <link href="/assets/report.css" rel="stylesheet">
-    <link href="/assets/interface.css" rel="stylesheet" type="text/css">
-    <style>
-    @page {
-        @top-left {
-            content: "Company No. {{ $company->registration_no }} @if($company->registration_no_old) ({{ $company->registration_no_old }}) @endif";
-        }
-    }
-    </style>
-</head>
-
-<body>
-    <div class="cover-page">
-        @if ($signed_by)
-        <div style="width: 35%;">
-            <div style="text-align: justify; padding-bottom: 96px; border-bottom: 1px solid black;">
-                These financial statements and reports of the Company with Qualified / <strike>Unqualified</strike>
-                Auditors' Report for the financial year ended {{ Carbon\Carbon::parse($company['current_year_to'])->format('d F Y') }}
-                were circulated on
-            </div>
-            <div class="text-center">
-                <div class="text-bold uppercase">{{ Str::upper($signed_by['name']) }}</div>
-                {{ $signed_by['type'] == "Secretary" ? $signed_by['id_no'] : '' }}<br/>
-                {{ $signed_by['title'] }}
-            </div>
-        </div>
-        @endif
-
-        <div class="text-center m-auto" style="margin-top: 30mm; width: 70%;">
-            <div class="text-title uppercase">{{ $company->name }}</div>
-            @if ($prior_company_name)
-                <div class="text-title">(formerly known as <span class="uppercase">{{ $prior_company_name }})</span></div>
-            @endif
-            <div>(Incorporated in Malaysia)</div>
-
-            @if ($company->current_year_to)
-                <div class="text-title" style="margin-top: 20mm;">REPORTS AND FINANCIAL STATEMENTS<br/> FOR THE FINANCIAL PERIOD FROM {{ Str::upper(Carbon\Carbon::parse($company->current_year_from)->format('d F Y')) }} TO {{ Str::upper(Carbon\Carbon::parse($company->current_year_to)->format('d F Y')) }}</div>
-            @endif
-
-            <div class="text-bold" style="margin-top: 90mm;">
-                {{ $tenant->firmName }}({{ $tenant->firmNo }})
-                <br/>
-                Chartered Accountants
-            </div>
-        </div>
-    </div>
-
-    <div class="report-page page-break">
-        <div class="ignore">
-            <div class="text-title uppercase">{{ $company->name }}</div>
-            @if ($prior_company_name)
-            <div class="text-title">(formerly known as <span class="uppercase">{{ $prior_company_name }}</span>)</div>
-            @endif
-            <div>(Incorporated in Malaysia)</div>
-        </div>
-
-        @if (count($directors) == 1)
-            <div class="text-title chapter-title">DIRECTOR’ S REPORT</div>
-        @elseif (count($directors) > 1)
-            <div class="text-title chapter-title">DIRECTORS’ REPORT</div>
-        @endif
-
-        {!! $director_report !!}
-
-    </div>
-
-    <div class="report-page page-break">
+<div class="report-page page-break">
         <div class="ignore">
             <div class="text-title uppercase">{{ $company->name }}</div>
             @if ($prior_company_name)
@@ -154,7 +81,7 @@
         @endif
     </div>
 
-    <div class="report-page page-break">
+    <div class="report-page">
         <div class="ignore">
             <div class="text-h1">{{ $tenant->firmName }}</div><span>({{ $tenant->firmNo }})</span>
             <p>{{ $tenant->firmTitle }}</p>
@@ -273,7 +200,7 @@
     </div>
 
     <!-- SOFP -->
-    <div class="report-page page-break">
+    <div class="report-page">
         <div style="width: 100%;text-align: center">
             <p>
                 <b>{{ $company->name }}<br />
@@ -300,33 +227,33 @@
                 @if ($sofp_item->type == 'group')
                 <tr class="no-line">
                     <td colspan="4">
-                        <b>{{ $sofp_item->show_display ? $sofp_item->display : $sofp_item->item }}</b>
+                        <p><b>{{ $sofp_item->show_display ? $sofp_item->display : $sofp_item->item }}</b></p>
                     </td>
                 </tr>
                 @elseif ($sofp_item->type == 'value')
                 <tr class="no-line">
                     <td>
-                        {{ $sofp_item->show_display ? $sofp_item->display : $sofp_item->item }}
+                        <p>{{ $sofp_item->show_display ? $sofp_item->display : $sofp_item->item }}</p>
                     </td>
                     <td></td>
                     <td width="15%" class="right">
-                        {{ format_number($sofp_item->this_year_amount) }}
+                        <p>{{ format_number($sofp_item->this_year_amount) }}</p>
                     </td>
                         <td width="15%" class="right">
-                        {{ format_number($sofp_item->last_year_amount) }}
+                        <p>{{ format_number($sofp_item->last_year_amount) }}</p>
                     </td>
                 </tr>
                 @elseif($sofp_item->type == 'total')
                 <tr class="no-line">
                     <td>
-                        <b>{{ $sofp_item->show_display ? $sofp_item->display : $sofp_item->item }}</b>
+                        <p><b>{{ $sofp_item->show_display ? $sofp_item->display : $sofp_item->item }}</b></p>
                     </td>
                     <td></td>
                     <td width="15%" class="right">
-                        <b>{{ format_number($sofp_item->this_year_amount) }}</b>
+                        <p><b>{{ format_number($sofp_item->this_year_amount) }}</b></p>
                     </td>
                     <td width="15%" class="right">
-                        <b>{{ format_number($sofp_item->last_year_amount) }}</b>
+                        <p><b>{{ format_number($sofp_item->last_year_amount) }}</b></p>
                     </td>
                 </tr>
                 @endif
@@ -335,7 +262,7 @@
     </div>
 
     <!-- SOCI -->
-    <div class="report-page page-break">
+    <div class="report-page">
         <div style="width: 100%;text-align: center">
             <p>
                 <b>{{ $company->name }}<br />
@@ -376,7 +303,7 @@
 
     <!-- SOCE  -->
 
-    <div class="report-page page-break">
+    <div class="report-page">
         <div style="width: 100%;text-align: center">
             <p>
                 <b>{{ $company->name }}<br />
@@ -446,7 +373,7 @@
 
 
     <!-- SOCF -->
-    <div class="report-page page-break">
+    <div class="report-page">
         <div style="width: 100%;text-align: center">
             <p>
                 <b>{{ $company->name }}<br />
@@ -494,20 +421,20 @@
                 @if ($socf_item->type == 'group')
                 <tr class="no-line">
                     <td colspan="4">
-                        <b>{{ $socf_item->show_display ? $socf_item->display : $socf_item->item }}</b>
+                        <p><b>{{ $socf_item->show_display ? $socf_item->display : $socf_item->item }}</b></p>
                     </td>
                 </tr>
                 @elseif ($socf_item->type == 'value')
                 <tr class="no-line">
                     <td>
-                        {{ $socf_item->show_display ? $socf_item->display : $socf_item->item }}
+                        <p>{{ $socf_item->show_display ? $socf_item->display : $socf_item->item }}</p>
                     </td>
                     <td></td>
                     <td width="15%" class="right">
-                        {{ format_number($socf_item->this_year_amount) }}
+                        <p>{{ format_number($socf_item->this_year_amount) }}</p>
                     </td>
                     <td width="15%" class="right">
-                        {{ format_number($socf_item->last_year_amount) }}
+                        <p>{{ format_number($socf_item->last_year_amount) }}</p>
                     </td>
                 </tr>
                 @elseif($socf_item->type == 'total')
@@ -526,7 +453,7 @@
                 @elseif($socf_item->type == 'label')
                 <tr class="no-line">
                     <td>
-                        {{ $socf_item->show_display ? $socf_item->display : $socf_item->item }}
+                        <p>{{ $socf_item->show_display ? $socf_item->display : $socf_item->item }}</p>
                     </td>
                 </tr>
                 @endif
@@ -535,7 +462,7 @@
     </div>
 
     <!-- FINANCIAL NOTES / PENDING -> DIRECTOR -->
-    <div class="report-page page-break">
+    <div class="report-page">
         <div style="width: 100%;">
             <p>
                 <b>{{ $company->name }}<br />
@@ -927,7 +854,7 @@
     </div>
 
     <!-- STSOO -->
-    <div class="report-page page-break">
+    <div class="report-page">
         <p><b>{{ $company->name }}</b></p>
         <p>(Incorporated in Malaysia)</p>
         <br/>
@@ -946,20 +873,20 @@
                 @if ($stsoo_item->type == 'group')
                 <tr class="no-line">
                     <td colspan="4">
-                        <b>{{ $stsoo_item['show_display'] ? $stsoo_item['display'] : $stsoo_item['item'] }}</b>
+                        <p><b>{{ $stsoo_item['show_display'] ? $stsoo_item['display'] : $stsoo_item['item'] }}</b></p>
                     </td>
                 </tr>
                 @elseif ($stsoo_item->type == 'value')
                 <tr class="no-line">
                     <td>
-                        {{ $stsoo_item['show_display'] ? $stsoo_item['display'] : $stsoo_item['item'] }}
+                        <p>{{ $stsoo_item['show_display'] ? $stsoo_item['display'] : $stsoo_item['item'] }}</p>
                     </td>
                     <td></td>
                     <td width="15%" class="right">
-                        {{ format_number($stsoo_item['this_year_amount']) }}
+                        <p>{{ format_number($stsoo_item['this_year_amount']) }}</p>
                     </td>
                     <td width="15%" class="right">
-                        {{ format_number($stsoo_item['last_year_amount']) }}
+                        <p>{{ format_number($stsoo_item['last_year_amount']) }}</p>
                     </td>
                 </tr>
                 @elseif($sofp_item->type == 'total')
@@ -979,49 +906,3 @@
             @endforeach
         </table>
     </div>
-</body>
-
-<script>
-
-class PrePageContentModifier extends Paged.Handler {
-    constructor(chunker, polisher, caller) {
-        super(chunker, polisher, caller);
-    }
-    afterPageLayout(pageFragment, page) {
-    const content = pageFragment.querySelector('.pagedjs_page_content > div');
-    if (!content) return;
-    // if (content.children[0].tagName !== "H1") {
-
-        let insertBeforeNode = content.children[0];
-
-        if (this.lastChapter) {
-            const h1clone = document.createElement("div");
-            h1clone.textContent = this.lastChapter + " (Cont’d)";
-            h1clone.classList.add("continued-chapter");
-            h1clone.style.marginTop = "0";
-            content.insertBefore(h1clone, insertBeforeNode);
-        }
-
-        if (this.lastSection) {
-            // if (!((content.children[0].tagName === "H1" && content.children[1].tagName === "H2") || (content.children[0].tagName === "H2"))) {
-                const h2clone = document.createElement("div");
-                h2clone.textContent = this.lastSection + " (Cont’d)";
-                h2clone.classList.add("continued-section");
-                h2clone.style.marginTop = "0.15em";
-                content.insertBefore(h2clone, insertBeforeNode);
-            // }
-        }
-    // }
-
-    const foundH1 = content.querySelector(".chapter-title");
-    const foundH2 = content.querySelector(".section");
-    if (foundH1) this.lastChapter = foundH1.textContent.trim();
-    if (foundH2) this.lastSection = foundH2.textContent.trim();
-  }
-}
-
-// Register the handler
-Paged.registerHandlers(PrePageContentModifier);
-
-</script>
-</html>
