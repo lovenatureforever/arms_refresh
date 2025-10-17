@@ -14,6 +14,7 @@ use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
 use Livewire\Livewire;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomainOrSubdomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use App\Jobs\CreateFrameworkDirectoriesForTenant;
 use Livewire\Features\SupportFileUploads\FilePreviewController;
 
@@ -126,7 +127,8 @@ class TenancyServiceProvider extends ServiceProvider
                 );
         });
 
-        FilePreviewController::$middleware = ['web', InitializeTenancyByDomainOrSubdomain::class]; // specify the right identification middleware
+        FilePreviewController::$middleware = ['web', 'universal', InitializeTenancyByDomainOrSubdomain::class]; // specify the right identification middleware
+        // FilePreviewController::$middleware = ['web', 'universal', InitializeTenancyByDomain::class];
 
     }
 

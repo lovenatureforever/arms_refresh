@@ -20,6 +20,7 @@ use App\Livewire\Tenant\Pages\Cosec\AdminCosecIndex;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecReport;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecService;
 use App\Livewire\Tenant\Pages\Cosec\CartCosec;
+use App\Livewire\Tenant\Pages\Cosec\DirectorSignatures;
 use App\Livewire\Tenant\Pages\Cosec\IndexCosec;
 use App\Livewire\Tenant\Pages\Cosec\OrderCosec;
 use App\Livewire\Tenant\Pages\Cosec\ViewCosec;
@@ -42,6 +43,7 @@ use App\Livewire\Tenant\Pages\Company\CreateCompany;
 use App\Livewire\Tenant\Pages\Company\ShowCompany;
 use App\Livewire\Tenant\Pages\Report\DataImport;
 use App\Http\Controllers\Tenant\CompanyReportController;
+use App\Http\Middleware\IsAdmin;
 use App\Livewire\Tenant\Pages\Report\DataMigration;
 use App\Livewire\Tenant\Pages\Report\DataMigration\SofpDataMigration;
 use App\Livewire\Tenant\Pages\Report\DataMigration\SociDataMigration;
@@ -143,12 +145,13 @@ Route::middleware([
         Route::get('/reports/{id}', [CompanyReportController::class, 'viewFinancialReport'])->name('financialreport');
 
 
-        Route::prefix('/admin/cosec')->group(function () {
+        Route::prefix('/admin/cosec')->middleware(['is_admin'])->group(function () {
             Route::get('/', AdminCosecIndex::class)->name('admin.cosec.index');
             // Route::get('/{id}', AdminCosecIndex::class)->name('admin.cosec.show');
             Route::get('/report/{id}', AdminCosecReport::class)->name('admin.cosec.report');
             Route::get('/services', AdminCosecService::class)->name('admin.cosec.services');
             Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits');
+            Route::get('/{companyId}/director-signature', DirectorSignatures::class)->name('admin.cosec.signature');
         });
 
         Route::prefix('/cosec')->group(function () {

@@ -55,6 +55,22 @@ class CompanyDirector extends Model
         return $this->hasMany(CompanyDirectorChange::class);
     }
 
+    /**
+     * Get director signatures.
+     */
+    public function signatures()
+    {
+        return $this->hasMany(DirectorSignature::class, 'director_id');
+    }
+
+    /**
+     * Get default signature.
+     */
+    public function defaultSignature()
+    {
+        return $this->hasOne(DirectorSignature::class, 'director_id')->where('is_default', true);
+    }
+
     public function isInactive()
     {
         $inactiveStatuses = [
