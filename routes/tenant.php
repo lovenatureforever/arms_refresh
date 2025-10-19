@@ -151,7 +151,7 @@ Route::middleware([
             Route::get('/report/{id}', AdminCosecReport::class)->name('admin.cosec.report');
             Route::get('/services', AdminCosecService::class)->name('admin.cosec.services');
             Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits');
-            Route::get('/{companyId}/director-signature', DirectorSignatures::class)->name('admin.cosec.signature');
+            Route::get('signatures/{companyId}', DirectorSignatures::class)->name('admin.cosec.signature');
         });
 
         Route::prefix('/cosec')->group(function () {

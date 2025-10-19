@@ -11,7 +11,7 @@ class OrderService
             "itemID" => $this->generateOrderNumber(), // unique id for each item for each company
             "itemType" => $serviceType,
             "itemName" => $serviceName,
-            "modifiedAt" => date('Y-m-d'),
+            "modifiedAt" => now()->format('Y-m-d'),
             "cost" => $serviceCost,
             "data" => $data
         ];

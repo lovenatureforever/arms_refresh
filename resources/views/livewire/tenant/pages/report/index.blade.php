@@ -987,37 +987,6 @@ class PrePageContentModifier extends Paged.Handler {
     constructor(chunker, polisher, caller) {
         super(chunker, polisher, caller);
     }
-    afterPageLayout(pageFragment, page) {
-    const content = pageFragment.querySelector('.pagedjs_page_content > div');
-    if (!content) return;
-    // if (content.children[0].tagName !== "H1") {
-
-        let insertBeforeNode = content.children[0];
-
-        if (this.lastChapter) {
-            const h1clone = document.createElement("div");
-            h1clone.textContent = this.lastChapter + " (Cont’d)";
-            h1clone.classList.add("continued-chapter");
-            h1clone.style.marginTop = "0";
-            content.insertBefore(h1clone, insertBeforeNode);
-        }
-
-        if (this.lastSection) {
-            // if (!((content.children[0].tagName === "H1" && content.children[1].tagName === "H2") || (content.children[0].tagName === "H2"))) {
-                const h2clone = document.createElement("div");
-                h2clone.textContent = this.lastSection + " (Cont’d)";
-                h2clone.classList.add("continued-section");
-                h2clone.style.marginTop = "0.15em";
-                content.insertBefore(h2clone, insertBeforeNode);
-            // }
-        }
-    // }
-
-    const foundH1 = content.querySelector(".chapter-title");
-    const foundH2 = content.querySelector(".section");
-    if (foundH1) this.lastChapter = foundH1.textContent.trim();
-    if (foundH2) this.lastSection = foundH2.textContent.trim();
-  }
 }
 
 // Register the handler

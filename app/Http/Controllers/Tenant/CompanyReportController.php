@@ -441,7 +441,7 @@ class CompanyReportController extends Controller
             $content = '<table style="width: 100%">
                 <tr>
                     <td></td>
-                    <td style="text-align: center" class="text-bold" colspan="4">Number of Ordinary Shares</td>
+                    <td style="text-align: center" colspan="4"><b>Number of Ordinary Shares</b></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -454,7 +454,7 @@ class CompanyReportController extends Controller
                 foreach ($companyData['shareholders_data']['Ordinary shares'] as $type => $share) {
                     // if ($share['total_share'] > 0) {
                     $content .= '<tr>';
-                    $content .= '<td class="text-bold">' . $share['name'] . '</td>';
+                    $content .= '<td style=""><b>' . $share['name'] . '</b></td>';
                     $content .= '<td style="text-align: center">' . displayNumber($share['bf']) . '</td>';
                     $content .= '<td style="text-align: center">' . displayNumber($share['bought']) . '</td>';
                     $content .= '<td style="text-align: center">' . displayNumber($share['sold']) . '</td>';
@@ -466,7 +466,7 @@ class CompanyReportController extends Controller
             $content .= '<tr><td colspan="5" style="height: 20px"></td></tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: center" class="text-bold" colspan="4">Number of Preference Shares</td>
+                    <td style="text-align: center" colspan="4"><b>Number of Preference Shares</b></td>
                 </tr>
                 <tr>
                     <td></td>
