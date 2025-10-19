@@ -123,7 +123,7 @@
                         </div>
 
                         <div class="flex items-center">
-                            <a class="btn w-full bg-primary text-white" href="{{ route('admin.cosec.signature', ['companyId' => $id]) }}">Signatures</a>
+                            <a class="btn w-full bg-primary text-white" href="{{-- {{ route('admin.cosec.signature', ['companyId' => $id]) }} --}}">Signatures</a>
                         </div>
                     </div>
                 </div>
