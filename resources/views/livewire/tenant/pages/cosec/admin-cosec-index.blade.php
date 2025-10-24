@@ -23,7 +23,7 @@
                                 Resolution Option
                             </th>
                             <th class="p-3.5 text-sm text-start text-black font-semibold min-w-[10rem]">
-                                Cost of Order
+                                Effective Cost
                             </th>
                             <th class="p-3.5 text-sm text-start text-black font-semibold min-w-[10rem]">
                                 Status
@@ -49,7 +49,7 @@
                                 {{ $order->form_name }}
                             </td>
                             <th class="p-3.5 text-sm text-start text-black font-semibold min-w-[10rem]">
-                                {{ $order->cost }}
+                                {{ $order->getEffectiveCost() }}
                             </th>
                             <td class="p-3.5 text-sm text-gray-700 dark:text-gray-400">
                                 {{
@@ -59,6 +59,9 @@
                             <td class="p-3.5 text-sm text-black font-semibold min-w-[10rem] text-center">
                                 <a href="{{ route('admin.cosec.report', $order->id) }}" class="btn bg-primary text-white">
                                     View
+                                </a>
+                                <a href="{{ route('admin.cosec.order.edit', $order->id) }}" class="btn bg-secondary text-white">
+                                    Edit
                                 </a>
                                 @if ($order->status == 0)
                                     <button wire:click="approve({{ $order->id }})" class="btn bg-success text-white">

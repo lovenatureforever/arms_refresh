@@ -23,7 +23,7 @@
                                 Resolution Option
                             </th>
                             <th class="p-3.5 text-sm text-start text-black font-semibold min-w-[10rem]">
-                                Cost of Order
+                                Effective Cost
                             </th>
                             <th class="p-3.5 text-sm text-start text-black font-semibold min-w-[10rem]">
                                 Status
@@ -49,7 +49,7 @@
                                 {{ $order->form_name }}
                             </td>
                             <th class="p-3.5 text-sm text-start text-black font-semibold min-w-[10rem]">
-                                {{ $order->cost }}
+                                {{ $order->getEffectiveCost() }}
                             </th>
                             <td class="p-3.5 text-sm text-gray-700 dark:text-gray-400">
                                 {{

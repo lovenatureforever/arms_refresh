@@ -23,7 +23,7 @@ class AdminCosecIndex extends Component
     public function approve($id) {
 
         $order = CosecOrder::find($id);
-        $cost = $order->cost;
+        $cost = $order->getEffectiveCost();
         $userId = $order->tenant_user_id;
         // $tenantId = $order->tenant_id;
         $order->update(['status' => 1]);

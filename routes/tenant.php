@@ -19,6 +19,9 @@ use App\Livewire\Tenant\Pages\Cosec\AdminCosecCredit;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecIndex;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecReport;
 use App\Livewire\Tenant\Pages\Cosec\AdminCosecService;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecTemplate;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecSignature;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecOrderEdit;
 use App\Livewire\Tenant\Pages\Cosec\CartCosec;
 use App\Livewire\Tenant\Pages\Cosec\DirectorSignatures;
 use App\Livewire\Tenant\Pages\Cosec\IndexCosec;
@@ -149,9 +152,11 @@ Route::middleware([
             Route::get('/', AdminCosecIndex::class)->name('admin.cosec.index');
             // Route::get('/{id}', AdminCosecIndex::class)->name('admin.cosec.show');
             Route::get('/report/{id}', AdminCosecReport::class)->name('admin.cosec.report');
+            Route::get('/order/edit/{id}', AdminCosecOrderEdit::class)->name('admin.cosec.order.edit');
             Route::get('/services', AdminCosecService::class)->name('admin.cosec.services');
+            Route::get('/templates', AdminCosecTemplate::class)->name('admin.cosec.templates');
+            Route::get('/signatures/{companyId}', AdminCosecSignature::class)->name('admin.cosec.signature');
             Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits');
-            // Route::get('signatures/{companyId}', DirectorSignatures::class)->name('admin.cosec.signature');
         });
 
         Route::prefix('/cosec')->group(function () {

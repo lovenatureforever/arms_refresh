@@ -21,9 +21,9 @@ class IndexCosec extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $services = \App\Models\Tenant\CosecService::all();
-        $this->services = $services->pluck('name')->toArray();
-        $this->serviceCost = $services->pluck('cost')->toArray();
+        $templates = \App\Models\Tenant\CosecTemplate::where('is_active', true)->get();
+        $this->services = $templates->pluck('name')->toArray();
+        $this->serviceCost = $templates->pluck('credit_cost')->toArray();
     }
 
     public function requestData()

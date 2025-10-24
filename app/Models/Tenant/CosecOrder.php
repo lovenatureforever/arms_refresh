@@ -23,14 +23,17 @@ class CosecOrder extends Model
         'template_id',
         'requested_at',
         'data',
+        'document_content',
         'cost',
+        'custom_credit_cost',
         'status',
         'signature_status'
     ];
 
     protected $casts = [
         'data' => 'json',
-        'requested_at' => 'datetime'
+        'requested_at' => 'datetime',
+        'document_content' => 'string'
     ];
 
     // Status constants
@@ -78,12 +81,17 @@ class CosecOrder extends Model
 
         $required = $this->signatures()->count();
         $signed = $this->signatures()->where('signature_status', CosecOrderSignature::STATUS_SIGNED)->count();
-        
+
         return [
             'required' => $required,
             'signed' => $signed,
             'complete' => $required > 0 && $signed === $required
         ];
+    }
+
+    public function getEffectiveCost()
+    {
+        return $this->custom_credit_cost ?? $this->cost;
     }
 
 }

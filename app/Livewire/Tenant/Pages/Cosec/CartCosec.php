@@ -65,6 +65,7 @@ class CartCosec extends Component
         $userName = auth()->user()->name;
 
         foreach ($orders as $order)
+            $template = \App\Models\Tenant\CosecTemplate::where('form_type', $order['itemType'])->first();
             CosecOrder::create([
                 // 'tenant_id' => $tenantId,
                 'tenant_company_id' => $this->id,
@@ -76,8 +77,10 @@ class CartCosec extends Component
                 'uuid' => $order['itemID'],
                 'form_type' => $order['itemType'],
                 'form_name' => $order['itemName'],
+                'template_id' => $template ? $template->id : null,
                 'user' => $userName,
                 'data' => json_encode($order['data']),
+                'document_content' => $template ? $template->content : null,
                 'requested_at' => $order['modifiedAt'],
                 'cost' => $order['cost'],
                 'status' => 0

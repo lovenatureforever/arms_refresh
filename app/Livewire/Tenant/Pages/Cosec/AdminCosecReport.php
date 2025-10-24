@@ -33,7 +33,7 @@ class AdminCosecReport extends Component
         $order = CosecOrder::find($this->id);
         $order->update(['status' => 1]);
 
-        $cost = $order->cost;
+        $cost = $order->getEffectiveCost();
         // $tenantId = $order->tenant_id;
         $userId = $order->tenant_user_id;
 
@@ -60,7 +60,7 @@ class AdminCosecReport extends Component
         $order = CosecOrder::find($this->id);
         $order->update(['status' => 2]);
 
-        $cost = $order->cost;
+        $cost = $order->getEffectiveCost();
         // $tenantId = $order->tenant_id;
         $userId = $order->tenant_user_id;
 
