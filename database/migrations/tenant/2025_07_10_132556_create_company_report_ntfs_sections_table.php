@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_report_ntfs_sections', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->tinyInteger('type')->default(2);
-            $table->json('columns')->nullable();
-            $table->foreignId('company_report_item_id')->constrained();
-            $table->foreignId('company_report_id')->constrained();
-            $table->integer('sort')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('company_report_ntfs_sections', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name')->nullable();
+        //     $table->tinyInteger('type')->default(2);
+        //     $table->json('columns')->nullable();
+        //     $table->foreignId('company_report_item_id')->constrained();
+        //     $table->foreignId('company_report_id')->constrained();
+        //     $table->integer('sort')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('default_ntfs_config_items', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->nullable();
-            $table->text('content')->nullable();
-            $table->string('type')->nullable();
-            $table->string('section')->nullable();
-            $table->string('position')->nullable();
-            $table->integer('order')->default(0);
-            $table->string('remark')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('default_ntfs_config_items', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('title')->nullable();
+        //     $table->text('content')->nullable();
+        //     $table->string('type')->nullable();
+        //     $table->string('section')->nullable();
+        //     $table->string('position')->nullable();
+        //     $table->integer('order')->default(0);
+        //     $table->string('remark')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

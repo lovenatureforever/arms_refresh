@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('report_groups', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('report_account_id')->constrained()->onDelete('cascade');
-            $table->string('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('report_groups', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('report_account_id')->constrained()->onDelete('cascade');
+        //     $table->string('description')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

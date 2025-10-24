@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('report_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->string('full_name')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('report_types', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name')->nullable();
+        //     $table->string('full_name')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

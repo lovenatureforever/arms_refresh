@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_report_types', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
-            $table->string('name')->nullable();
-            $table->string('full_name')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('company_report_types', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
+        //     $table->string('name')->nullable();
+        //     $table->string('full_name')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

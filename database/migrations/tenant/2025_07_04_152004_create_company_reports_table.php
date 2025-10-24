@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_reports', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('company_id')->constrained();
-            $table->string('file_path')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('company_reports', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('company_id')->constrained();
+        //     $table->string('file_path')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**
