@@ -14,6 +14,7 @@ class CosecTemplate extends Model
         'form_type',
         'template_path',
         'content',
+        'template_file',
         'signature_type',
         'default_signatory_id',
         'credit_cost',

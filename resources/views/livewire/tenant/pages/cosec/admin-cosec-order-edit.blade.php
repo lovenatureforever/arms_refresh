@@ -25,13 +25,3 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-<script>
-document.addEventListener('livewire:loaded', function () {
-    CKEDITOR.replace('document-content-editor');
-    CKEDITOR.instances['document-content-editor'].on('change', function() {
-        @this.set('documentContent', CKEDITOR.instances['document-content-editor'].getData());
-    });
-});
-</script>

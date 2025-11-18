@@ -11,22 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('company_report_items', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
-        //     $table->foreignId('company_report_type_id')->nullable()->constrained()->cascadeOnDelete();
-        //     $table->foreignId('company_report_account_id')->nullable()->constrained()->onDelete('cascade');
-        //     $table->string('item')->nullable();
-        //     $table->string('display')->nullable();
-        //     $table->decimal('this_year_amount', 8, 2)->nullable();
-        //     $table->decimal('last_year_amount', 8, 2)->nullable();
-        //     $table->enum('type', ['value', 'total', 'label', 'group', 'grandtotal'])->default('value');
-        //     $table->string('sort')->nullable();
-        //     $table->boolean('is_report')->default(false);
-        //     $table->boolean('show_display')->default(false);
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
+        Schema::create('company_report_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('company_report_type_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('company_report_account_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('item')->nullable();
+            $table->string('display')->nullable();
+            $table->decimal('this_year_amount', 8, 2)->nullable();
+            $table->decimal('last_year_amount', 8, 2)->nullable();
+            $table->enum('type', ['value', 'total', 'label', 'group', 'grandtotal'])->default('value');
+            $table->string('sort')->nullable();
+            $table->boolean('is_report')->default(false);
+            $table->boolean('show_display')->default(false);
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**

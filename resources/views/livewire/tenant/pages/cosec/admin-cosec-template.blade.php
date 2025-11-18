@@ -12,6 +12,8 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Form Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Template File</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Signature Type</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Credit Cost</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Active</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Actions</th>
@@ -22,6 +24,20 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $template->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $template->form_type }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                    @if($template->template_file)
+                                        <a href="{{ asset($template->template_file) }}" class="text-blue-600 hover:underline" download>Download</a>
+                                    @else
+                                        <span class="text-gray-400">No file</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                    @if($template->signature_type === 'all_directors')
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">All Directors</span>
+                                    @else
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Default Signer</span>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $template->credit_cost }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                     @if($template->is_active)
@@ -31,7 +47,12 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                    <button wire:click="edit({{ $template->id }})" class="btn border-primary text-primary hover:bg-primary hover:text-white">Edit</button>
+                                    <button wire:click="edit({{ $template->id }})" class="btn border-primary text-primary hover:bg-primary hover:text-white mr-2">Edit</button>
+                                    @if($template->template_file)
+                                        <button wire:click="showPreview({{ $template->id }})" class="btn bg-info text-white hover:bg-blue-700 mr-2">
+                                            Preview
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -47,424 +68,88 @@
             <h3 class="card-title">Edit Template</h3>
         </div>
         <div class="card-body">
-            <div class="mb-4">
+            <div class="m-4">
                 <label class="mb-2 inline-block text-sm font-medium text-gray-800">Name</label>
-                <input type="text" class="form-input" wire:model="name">
+                <input type="text" class="form-input" wire:model.live="name">
                 @error('name') <span class="text-red-500">{{ $message }}</span> @enderror
             </div>
 
-            <div class="mb-4">
-                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Content</label>
-                <div wire:ignore>
-                    {{-- <div class="editor-container editor-container_document-editor editor-container_include-fullscreen" id="editor-container">
-                        <div class="editor-container__toolbar" id="editor-toolbar"></div>
-                        <div class="editor-container__editor-wrapper">
-                            <div class="editor-container__editor">
-                                <textarea id="content" name="content" class="form-input" wire:model="content" rows="10"></textarea>
-                            </div>
-                        </div>
-                    </div> --}}
-                    <textarea id="content" name="content" class="form-input" wire:model="content" rows="10"></textarea>
-                </div>
-                {{-- <livewire:quill-text-editor class="form-input" wire:model="content" theme="snow" /> --}}
-                @error('content') <span class="text-red-500">{{ $message }}</span> @enderror
+            <div class="m-4">
+                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Template File (DOCX)</label>
+                <input type="file" class="form-input" wire:model="templateFile" accept=".docx">
+                <div wire:loading wire:target="templateFile">Uploading...</div>
+                @error('templateFile') <span class="text-red-500">{{ $message }}</span> @enderror
+                <small class="text-gray-600">Upload a DOCX template with placeholders.</small>
             </div>
 
-            <div class="mb-4">
+            <div class="m-4">
                 <label class="mb-2 inline-block text-sm font-medium text-gray-800">Credit Cost</label>
-                <input type="number" class="form-input" wire:model="credit_cost" min="0">
+                <input type="number" class="form-input" wire:model.live="credit_cost" min="0">
                 @error('credit_cost') <span class="text-red-500">{{ $message }}</span> @enderror
             </div>
 
-            <div class="mb-4">
+            <div class="m-4">
+                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Signature Type</label>
+                <select class="form-input" wire:model.live="signature_type">
+                    <option value="default">Default Signer</option>
+                    <option value="all_directors">All Directors</option>
+                </select>
+                @error('signature_type') <span class="text-red-500">{{ $message }}</span> @enderror
+                <small class="text-gray-600">Choose who should sign this template</small>
+            </div>
+
+            <div class="m-4">
                 <label class="inline-flex items-center">
-                    <input type="checkbox" wire:model="is_active" class="form-checkbox">
+                    <input type="checkbox" wire:model.live="is_active" class="form-checkbox">
                     <span class="ml-2 text-sm font-medium text-gray-800">Active</span>
                 </label>
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex gap-2 m-4">
                 <button wire:click="save" class="btn bg-success text-white" id="ckeditor-save">Save</button>
                 <button wire:click="cancel" class="btn bg-gray-500 text-white">Cancel</button>
+            </div>
+
+            @php
+                $template = $templates->find($editingId);
+            @endphp
+            @if($template && $template->template_file)
+            <div class="m-4">
+                <h4 class="text-lg font-medium text-gray-800 mb-2">Template Preview</h4>
+                <iframe src="{{ route('admin.cosec.template.preview', $editingId) }}"
+                        width="100%"
+                        height="600"
+                        style="border: 1px solid #ddd;">
+                </iframe>
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    <!-- Preview Modal -->
+    @if($showPreviewModal)
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-8" wire:click="closePreview">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl h-4/5 flex flex-col p-6" wire:click.stop style="aspect-ratio: 3/4;">
+            <div class="flex justify-between items-center pb-4 border-b mb-4">
+                <h3 class="text-xl font-semibold text-gray-900">Template Preview</h3>
+                <button wire:click="closePreview" class="text-gray-500 hover:text-gray-700 p-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 relative -m-6 mt-0 rounded-b-lg overflow-hidden">
+                <div wire:loading wire:target="showPreview" class="absolute inset-0 flex items-center justify-center bg-white z-10">
+                    <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+                </div>
+                @if($previewTemplateId)
+                <iframe src="{{ route('admin.cosec.template.preview', $previewTemplateId) }}"
+                        class="w-full h-full rounded-b-lg">
+                </iframe>
+                @endif
             </div>
         </div>
     </div>
     @endif
 </div>
-
-
-@livewireScripts
-<script>
-const {
-    ClassicEditor,
-    Autosave,
-    Essentials,
-    Paragraph,
-    Bold,
-    Italic,
-    Autoformat,
-    TextTransformation,
-    Underline,
-    Strikethrough,
-    Subscript,
-    Superscript,
-    FontBackgroundColor,
-    FontColor,
-    FontFamily,
-    FontSize,
-    Highlight,
-    Heading,
-    BlockQuote,
-    HorizontalLine,
-    Indent,
-    IndentBlock,
-    Alignment,
-    List,
-    Table,
-    TableToolbar,
-    ShowBlocks,
-    SourceEditing,
-    GeneralHtmlSupport,
-    HtmlComment
-} = window.CKEDITOR;
-
-const LICENSE_KEY =
-    'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NjIyMTQzOTksImp0aSI6ImFkZGJlZDIzLTIyNDItNDc2Ny1iMmQ2LWYxMGU3ZTQyODFlZSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6ImFmZWI1Yjc3In0.cYrK1D-ygTkL6sr3P_eBmc7XbivWZKGq4m6mDP73EclQNn9-oDlG56w2YnxG0HdvBQ7IPpSnCUcqdpAI9bGaNA';
-
-const editorConfig = {
-    toolbar: {
-        items: [
-            'undo',
-            'redo',
-            '|',
-            'sourceEditing',
-            'showBlocks',
-            '|',
-            'heading',
-            '|',
-            'fontSize',
-            'fontFamily',
-            'fontColor',
-            'fontBackgroundColor',
-            '|',
-            'bold',
-            'italic',
-            'underline',
-            'strikethrough',
-            'subscript',
-            'superscript',
-            '|',
-            'horizontalLine',
-            'insertTable',
-            'highlight',
-            'blockQuote',
-            '|',
-            'alignment',
-            '|',
-            'bulletedList',
-            'numberedList',
-            'outdent',
-            'indent'
-        ],
-        shouldNotGroupWhenFull: false
-    },
-    plugins: [
-        Alignment,
-        Autoformat,
-        Autosave,
-        BlockQuote,
-        Bold,
-        Essentials,
-        FontBackgroundColor,
-        FontColor,
-        FontFamily,
-        FontSize,
-        GeneralHtmlSupport,
-        Heading,
-        Highlight,
-        HorizontalLine,
-        HtmlComment,
-        Indent,
-        IndentBlock,
-        Italic,
-        List,
-        Paragraph,
-        ShowBlocks,
-        SourceEditing,
-        Strikethrough,
-        Subscript,
-        Superscript,
-        Table,
-        TableToolbar,
-        TextTransformation,
-        Underline
-    ],
-    fontFamily: {
-        supportAllValues: true
-    },
-    fontSize: {
-        options: [10, 12, 14, 'default', 18, 20, 22],
-        supportAllValues: true
-    },
-    heading: {
-        options: [
-            {
-                model: 'paragraph',
-                title: 'Paragraph',
-                class: 'ck-heading_paragraph'
-            },
-            {
-                model: 'heading1',
-                view: 'h1',
-                title: 'Heading 1',
-                class: 'ck-heading_heading1'
-            },
-            {
-                model: 'heading2',
-                view: 'h2',
-                title: 'Heading 2',
-                class: 'ck-heading_heading2'
-            },
-            {
-                model: 'heading3',
-                view: 'h3',
-                title: 'Heading 3',
-                class: 'ck-heading_heading3'
-            },
-            {
-                model: 'heading4',
-                view: 'h4',
-                title: 'Heading 4',
-                class: 'ck-heading_heading4'
-            },
-            {
-                model: 'heading5',
-                view: 'h5',
-                title: 'Heading 5',
-                class: 'ck-heading_heading5'
-            },
-            {
-                model: 'heading6',
-                view: 'h6',
-                title: 'Heading 6',
-                class: 'ck-heading_heading6'
-            }
-        ]
-    },
-    htmlSupport: {
-        allow: [
-            {
-                name: /^.*$/,
-                styles: true,
-                attributes: true,
-                classes: true
-            }
-        ]
-    },
-    licenseKey: LICENSE_KEY,
-    table: {
-        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-    }
-};
-
-ClassicEditor.create(document.querySelector('#content'), editorConfig);
-</script>
-
-{{-- <script>
-const {
-    DecoupledEditor,
-    Autosave,
-    Essentials,
-    Paragraph,
-    Autoformat,
-    TextTransformation,
-    ImageUtils,
-    ImageEditing,
-    Heading,
-    Bold,
-    Italic,
-    Underline,
-    Strikethrough,
-    Subscript,
-    Superscript,
-    Code,
-    FontBackgroundColor,
-    FontColor,
-    FontFamily,
-    FontSize,
-    Indent,
-    IndentBlock,
-    Alignment,
-    Link,
-    AutoLink,
-    HorizontalLine,
-    List,
-    TodoList,
-    Table,
-    TableToolbar,
-    Fullscreen,
-    BlockQuote,
-    HtmlComment
-} = window.CKEDITOR;
-
-const LICENSE_KEY =
-    'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NjIyMTQzOTksImp0aSI6ImFkZGJlZDIzLTIyNDItNDc2Ny1iMmQ2LWYxMGU3ZTQyODFlZSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6ImFmZWI1Yjc3In0.cYrK1D-ygTkL6sr3P_eBmc7XbivWZKGq4m6mDP73EclQNn9-oDlG56w2YnxG0HdvBQ7IPpSnCUcqdpAI9bGaNA';
-
-const editorConfig = {
-    toolbar: {
-        items: [
-            'undo',
-            'redo',
-            '|',
-            'fullscreen',
-            '|',
-            'heading',
-            '|',
-            'fontSize',
-            'fontFamily',
-            'fontColor',
-            'fontBackgroundColor',
-            '|',
-            'bold',
-            'italic',
-            'underline',
-            'strikethrough',
-            'subscript',
-            'superscript',
-            'code',
-            '|',
-            'horizontalLine',
-            'link',
-            'insertTable',
-            'blockQuote',
-            '|',
-            'alignment',
-            '|',
-            'bulletedList',
-            'numberedList',
-            'todoList',
-            'outdent',
-            'indent'
-        ],
-        shouldNotGroupWhenFull: false
-    },
-    plugins: [
-        Alignment,
-        Autoformat,
-        AutoLink,
-        Autosave,
-        BlockQuote,
-        Bold,
-        Code,
-        Essentials,
-        FontBackgroundColor,
-        FontColor,
-        FontFamily,
-        FontSize,
-        Fullscreen,
-        Heading,
-        HorizontalLine,
-        HtmlComment,
-        ImageEditing,
-        ImageUtils,
-        Indent,
-        IndentBlock,
-        Italic,
-        Link,
-        List,
-        Paragraph,
-        Strikethrough,
-        Subscript,
-        Superscript,
-        Table,
-        TableToolbar,
-        TextTransformation,
-        TodoList,
-        Underline
-    ],
-    fontFamily: {
-        supportAllValues: true
-    },
-    fontSize: {
-        options: [10, 12, 14, 'default', 18, 20, 22],
-        supportAllValues: true
-    },
-    fullscreen: {
-        onEnterCallback: container =>
-            container.classList.add(
-                'editor-container',
-                'editor-container_document-editor',
-                'editor-container_include-fullscreen',
-                'main-container'
-            )
-    },
-    heading: {
-        options: [
-            {
-                model: 'paragraph',
-                title: 'Paragraph',
-                class: 'ck-heading_paragraph'
-            },
-            {
-                model: 'heading1',
-                view: 'h1',
-                title: 'Heading 1',
-                class: 'ck-heading_heading1'
-            },
-            {
-                model: 'heading2',
-                view: 'h2',
-                title: 'Heading 2',
-                class: 'ck-heading_heading2'
-            },
-            {
-                model: 'heading3',
-                view: 'h3',
-                title: 'Heading 3',
-                class: 'ck-heading_heading3'
-            },
-            {
-                model: 'heading4',
-                view: 'h4',
-                title: 'Heading 4',
-                class: 'ck-heading_heading4'
-            },
-            {
-                model: 'heading5',
-                view: 'h5',
-                title: 'Heading 5',
-                class: 'ck-heading_heading5'
-            },
-            {
-                model: 'heading6',
-                view: 'h6',
-                title: 'Heading 6',
-                class: 'ck-heading_heading6'
-            }
-        ]
-    },
-    licenseKey: LICENSE_KEY,
-    link: {
-        addTargetToExternalLinks: true,
-        defaultProtocol: 'https://',
-        decorators: {
-            toggleDownloadable: {
-                mode: 'manual',
-                label: 'Downloadable',
-                attributes: {
-                    download: 'file'
-                }
-            }
-        }
-    },
-    table: {
-        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-    }
-};
-
-DecoupledEditor.create(document.querySelector('#content'), editorConfig).then(editor => {
-    document.querySelector('#editor-toolbar').appendChild(editor.ui.view.toolbar.element);
-
-    return editor;
-});
-</script> --}}

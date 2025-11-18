@@ -32,7 +32,7 @@
 
     quill.on('text-change', function () {
         let value = quill.root.innerHTML;
-        @this.set('value', value);
+        @this.set('content', value);
     });
 </script>
 @endscript

@@ -88,6 +88,7 @@ Route::middleware([
             Route::get('/', IndexUser::class)->name('index');
             Route::get('/create', CreateUser::class)->name('create');
             Route::get('/{id}', ShowUser::class)->name('show');
+            Route::get('/{id}/credit-history', \App\Livewire\Tenant\Pages\User\CreditHistory::class)->name('credit-history');
         });
 
         Route::group(['prefix' => 'audit-partners', 'as' => 'auditpartners.'], function () {
@@ -155,6 +156,7 @@ Route::middleware([
             Route::get('/order/edit/{id}', AdminCosecOrderEdit::class)->name('admin.cosec.order.edit');
             Route::get('/services', AdminCosecService::class)->name('admin.cosec.services');
             Route::get('/templates', AdminCosecTemplate::class)->name('admin.cosec.templates');
+            Route::get('/template/preview/{id}', [\App\Http\Controllers\Tenant\CosecTemplateController::class, 'preview'])->name('admin.cosec.template.preview');
             Route::get('/signatures/{companyId}', AdminCosecSignature::class)->name('admin.cosec.signature');
             Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits');
         });
@@ -164,6 +166,8 @@ Route::middleware([
             Route::get('/{id}/cart', CartCosec::class)->name('cosec.cart');
             Route::get('/order/{id}', ViewCosec::class)->name('cosec.view');
             Route::get('/{id}/order', OrderCosec::class)->name('cosec.order');
+            Route::get('/print-word/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printWord'])->name('cosec.print-word');
+            Route::get('/print-pdf/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printPdf'])->name('cosec.print-pdf');
         });
     });
 });

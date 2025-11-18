@@ -58,10 +58,10 @@
                             </td>
                             <td class="p-3.5 text-sm text-black font-semibold min-w-[10rem] text-center">
                                 @if($order->status == 1)
-                                <a href="{{ route('cosec.view', $order->id) }}" class="btn bg-primary text-white">
+                                <a href="{{ route('cosec.view', $order->id) }}" class="btn bg-primary text-white mr-2">
                                     View
                                 </a>
-                                <button wire:click="printForm({{ $order->id }})" class="btn bg-primary text-white">
+                                <button wire:click="{{ route('cosec.print-pdf', $order->id) }}" class="btn bg-primary text-white mr-2">
                                     Print PDF
                                 </button>
                                 @endif

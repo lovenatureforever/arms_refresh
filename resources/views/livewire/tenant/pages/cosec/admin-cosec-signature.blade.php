@@ -44,14 +44,27 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($directors as $director)
                 <div class="border rounded p-4">
-                    <h4 class="font-medium">{{ $director->name }}</h4>
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-medium">{{ $director->name }}</h4>
+                        @if($director->is_default_signer_cosec)
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Default Signer</span>
+                        @endif
+                    </div>
                     @if($director->defaultSignature)
                         <img src="{{tenant_asset('' . $director->defaultSignature->signature_path) }}"
                              alt="Signature" class="mt-2 max-w-full object-contain border">
                         <p class="text-sm text-gray-500 mt-1">
                             Uploaded: {{ $director->defaultSignature->created_at->format('Y-m-d') }}
                         </p>
-                        {{-- <button wire:click="deleteSignature({{ $director->id }})" class="btn bg-danger text-white text-sm">Delete</button> --}}
+                        <div class="mt-2 space-x-2">
+                            @if(!$director->is_default_signer_cosec)
+                                <button wire:click="setDefaultSigner({{ $director->id }})" 
+                                        class="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600">
+                                    Set as Default
+                                </button>
+                            @endif
+                            {{-- <button wire:click="deleteSignature({{ $director->id }})" class="btn bg-danger text-white text-sm">Delete</button> --}}
+                        </div>
                     @else
                         <p class="text-gray-500 mt-2">No signature uploaded</p>
                     @endif

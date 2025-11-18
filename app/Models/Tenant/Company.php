@@ -102,6 +102,14 @@ class Company extends Model
     }
 
     /**
+     * The default COSEC signer for this company.
+     */
+    public function defaultCosecSigner()
+    {
+        return $this->hasOne(CompanyDirector::class)->where('is_default_signer_cosec', true)->where('is_active', true);
+    }
+
+    /**
      * The company director changes.
      */
     public function directorChanges()

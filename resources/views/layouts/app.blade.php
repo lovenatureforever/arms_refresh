@@ -15,11 +15,11 @@
     @vite(['resources/js/head.js', 'resources/js/config.js'])
     @livewireStyles
 
-    {{-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> --}}
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/47.1.0/ckeditor5.css" crossorigin>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    {{-- <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/47.1.0/ckeditor5.css" crossorigin> --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     {{-- <x-livewire-alert::scripts /> --}}
-    <script src="https://cdn.ckeditor.com/ckeditor5/47.1.0/ckeditor5.umd.js" crossorigin></script>
+    {{-- <script src="https://cdn.ckeditor.com/ckeditor5/47.1.0/ckeditor5.umd.js" crossorigin></script> --}}
     <style>
     .editor-container__editor-wrapper {
         display: flex;
@@ -113,7 +113,7 @@
 
     @vite(['resources/js/app.js', 'resources/js/pages/form-inputmask.js'])
     @livewire('wire-elements-modal')
-    {{-- <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script> --}}
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cleave.js"></script>
     <script src="https://unpkg.com/@wotz/livewire-sortablejs@1.0.0/dist/livewire-sortable.js"></script>

@@ -63,14 +63,9 @@
                                 <a href="{{ route('admin.cosec.order.edit', $order->id) }}" class="btn bg-secondary text-white">
                                     Edit
                                 </a>
-                                @if ($order->status == 0)
-                                    <button wire:click="approve({{ $order->id }})" class="btn bg-success text-white">
-                                        Approve
-                                    </button>
-                                    <button class="btn bg-danger text-white">
-                                        Deny
-                                    </button>
-                                @endif
+                                <button wire:click="printPdf({{ $order->id }})" class="btn bg-info text-white">
+                                    Print Pdf
+                                </button>
                             </td>
                         </tr>
                         @endforeach

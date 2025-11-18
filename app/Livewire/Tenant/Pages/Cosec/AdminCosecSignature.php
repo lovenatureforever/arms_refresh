@@ -8,6 +8,7 @@ use App\Models\Tenant\DirectorSignature;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Locked;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 
 class AdminCosecSignature extends Component
@@ -63,6 +64,26 @@ class AdminCosecSignature extends Component
             'position' => 'top-end',
             'icon' => 'success',
             'title' => 'Signature uploaded successfully',
+            'timer' => 1500
+        ])->show();
+    }
+
+    public function setDefaultSigner($directorId)
+    {
+        DB::transaction(function () use ($directorId) {
+            // Remove default signer from all directors in this company
+            CompanyDirector::where('company_id', $this->companyId)
+                ->update(['is_default_signer_cosec' => false]);
+            
+            // Set new default signer
+            CompanyDirector::where('id', $directorId)
+                ->update(['is_default_signer_cosec' => true]);
+        });
+
+        LivewireAlert::withOptions([
+            'position' => 'top-end',
+            'icon' => 'success',
+            'title' => 'Default signer updated successfully',
             'timer' => 1500
         ])->show();
     }

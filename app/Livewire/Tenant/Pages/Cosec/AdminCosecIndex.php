@@ -41,4 +41,14 @@ class AdminCosecIndex extends Component
     public function deny($id) {
         CosecOrder::find($id)->update(['status' => 'approved']);
     }
+
+    public function printWord($id)
+    {
+        return redirect()->route('cosec.print-word', $id);
+    }
+
+    public function printPdf($id)
+    {
+        return redirect()->route('cosec.print-pdf', $id);
+    }
 }

@@ -26,6 +26,7 @@ class CompanyDirector extends Model
         // 'cover_page_title',
         'sort',
         'is_active',
+        'is_default_signer_cosec',
     ];
 
     protected $casts = [
@@ -37,6 +38,7 @@ class CompanyDirector extends Model
         'is_rep_statement' => 'boolean',
         // 'is_cover_page' => 'boolean',
         'is_active' => 'boolean',
+        'is_default_signer_cosec' => 'boolean',
     ];
 
     /**
@@ -102,4 +104,15 @@ class CompanyDirector extends Model
         self::ID_TYPE_MYKAD,
         self::ID_TYPE_PASSPORT,
     ];
+
+    /**
+     * Get the default COSEC signer for a company.
+     */
+    public static function getDefaultSignerForCompany($companyId)
+    {
+        return static::where('company_id', $companyId)
+            ->where('is_default_signer_cosec', true)
+            ->where('is_active', true)
+            ->first();
+    }
 }

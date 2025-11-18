@@ -66,6 +66,11 @@ class User extends Authenticatable
         $this->hasOne(Auditor::class);
     }
 
+    public function cosecOrders()
+    {
+        return $this->hasMany(\App\Models\Tenant\CosecOrder::class, 'tenant_user_id');
+    }
+
     public const ROLE_INTERNAL_ADMIN = 'internal_admin';
     public const ROLE_INTERNAL_REVIEWER = 'internal_reviewer';
     public const ROLE_INTERNAL_EXECUTOR = 'internal_executor';

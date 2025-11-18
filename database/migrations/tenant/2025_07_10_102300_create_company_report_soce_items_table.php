@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('company_report_soce_items', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('row_id')->constrained('company_report_soce_rows')->cascadeOnDelete();
-        //     $table->foreignId('col_id')->constrained('company_report_soce_cols')->cascadeOnDelete();
-        //     $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
-        //     $table->string('value')->nullable(); // Store the value as a string for flexibility
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
+        Schema::create('company_report_soce_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('row_id')->constrained('company_report_soce_rows')->cascadeOnDelete();
+            $table->foreignId('col_id')->constrained('company_report_soce_cols')->cascadeOnDelete();
+            $table->foreignId('company_report_id')->constrained()->cascadeOnDelete();
+            $table->string('value')->nullable(); // Store the value as a string for flexibility
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**

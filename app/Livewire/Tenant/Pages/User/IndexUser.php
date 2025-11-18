@@ -7,6 +7,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 
 class IndexUser extends Component
 {
@@ -42,5 +43,10 @@ class IndexUser extends Component
     public function showUser($id)
     {
         redirect()->route('users.show', $id);
+    }
+
+    public function showCreditHistory($userId)
+    {
+        return redirect()->route('users.credit-history', $userId);
     }
 }

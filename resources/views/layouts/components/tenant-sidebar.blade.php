@@ -102,8 +102,8 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="{{ route('admin.cosec.services') }}" class="menu-link">
-                            <span class="menu-text">COSEC Forms</span>
+                        <a href="{{ route('admin.cosec.templates') }}" class="menu-link">
+                            <span class="menu-text">COSEC Templates</span>
                         </a>
                     </li>
                 </ul>

@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::create('cosec_services', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name')->nullable();
-        //     $table->integer('cost')->nullable();
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
+        Schema::create('cosec_services', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->integer('cost')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
