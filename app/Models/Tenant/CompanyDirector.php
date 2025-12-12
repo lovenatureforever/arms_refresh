@@ -4,6 +4,7 @@ namespace App\Models\Tenant;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\User;
 
 class CompanyDirector extends Model
 {
@@ -11,6 +12,7 @@ class CompanyDirector extends Model
 
     protected $fillable = [
         'company_id',
+        'user_id',
         // 'is_year_start',
         'name',
         'designation',
@@ -71,6 +73,14 @@ class CompanyDirector extends Model
     public function defaultSignature()
     {
         return $this->hasOne(DirectorSignature::class, 'director_id')->where('is_default', true);
+    }
+
+    /**
+     * Get the user linked to this director.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function isInactive()

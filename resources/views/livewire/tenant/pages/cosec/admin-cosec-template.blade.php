@@ -2,153 +2,131 @@
     <div class="">
         <div class="card">
             <div class="card-header">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-2">
                     <h3 class="card-title">Manage Cosec Templates</h3>
+                    @if(auth()->user()->canManageCompanies())
+                    <button wire:click="create" class="btn bg-primary text-white text-sm">
+                        <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Create Template
+                    </button>
+                    @endif
                 </div>
             </div>
-            <div class="card-body">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Form Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Template File</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Signature Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Credit Cost</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Active</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($templates as $template)
+            <div class="card-body p-0 sm:p-4">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $template->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $template->form_type }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                    @if($template->template_file)
-                                        <a href="{{ asset($template->template_file) }}" class="text-blue-600 hover:underline" download>Download</a>
-                                    @else
-                                        <span class="text-gray-400">No file</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                    @if($template->signature_type === 'all_directors')
-                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">All Directors</span>
-                                    @else
-                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Default Signer</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $template->credit_cost }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                    @if($template->is_active)
-                                        <span class="text-green-600">Yes</span>
-                                    @else
-                                        <span class="text-red-600">No</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                    <button wire:click="edit({{ $template->id }})" class="btn border-primary text-primary hover:bg-primary hover:text-white mr-2">Edit</button>
-                                    @if($template->template_file)
-                                        <button wire:click="showPreview({{ $template->id }})" class="btn bg-info text-white hover:bg-blue-700 mr-2">
-                                            Preview
-                                        </button>
-                                    @endif
-                                </td>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Name</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400 hidden md:table-cell">Description</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400 hidden sm:table-cell">Signature</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Cost</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400 hidden sm:table-cell">Active</th>
+                                <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Actions</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    @if($editingId)
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Edit Template</h3>
-        </div>
-        <div class="card-body">
-            <div class="m-4">
-                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Name</label>
-                <input type="text" class="form-input" wire:model.live="name">
-                @error('name') <span class="text-red-500">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="m-4">
-                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Template File (DOCX)</label>
-                <input type="file" class="form-input" wire:model="templateFile" accept=".docx">
-                <div wire:loading wire:target="templateFile">Uploading...</div>
-                @error('templateFile') <span class="text-red-500">{{ $message }}</span> @enderror
-                <small class="text-gray-600">Upload a DOCX template with placeholders.</small>
-            </div>
-
-            <div class="m-4">
-                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Credit Cost</label>
-                <input type="number" class="form-input" wire:model.live="credit_cost" min="0">
-                @error('credit_cost') <span class="text-red-500">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="m-4">
-                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Signature Type</label>
-                <select class="form-input" wire:model.live="signature_type">
-                    <option value="default">Default Signer</option>
-                    <option value="all_directors">All Directors</option>
-                </select>
-                @error('signature_type') <span class="text-red-500">{{ $message }}</span> @enderror
-                <small class="text-gray-600">Choose who should sign this template</small>
-            </div>
-
-            <div class="m-4">
-                <label class="inline-flex items-center">
-                    <input type="checkbox" wire:model.live="is_active" class="form-checkbox">
-                    <span class="ml-2 text-sm font-medium text-gray-800">Active</span>
-                </label>
-            </div>
-
-            <div class="flex gap-2 m-4">
-                <button wire:click="save" class="btn bg-success text-white" id="ckeditor-save">Save</button>
-                <button wire:click="cancel" class="btn bg-gray-500 text-white">Cancel</button>
-            </div>
-
-            @php
-                $template = $templates->find($editingId);
-            @endphp
-            @if($template && $template->template_file)
-            <div class="m-4">
-                <h4 class="text-lg font-medium text-gray-800 mb-2">Template Preview</h4>
-                <iframe src="{{ route('admin.cosec.template.preview', $editingId) }}"
-                        width="100%"
-                        height="600"
-                        style="border: 1px solid #ddd;">
-                </iframe>
-            </div>
-            @endif
-        </div>
-    </div>
-    @endif
-
-    <!-- Preview Modal -->
-    @if($showPreviewModal)
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-8" wire:click="closePreview">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl h-4/5 flex flex-col p-6" wire:click.stop style="aspect-ratio: 3/4;">
-            <div class="flex justify-between items-center pb-4 border-b mb-4">
-                <h3 class="text-xl font-semibold text-gray-900">Template Preview</h3>
-                <button wire:click="closePreview" class="text-gray-500 hover:text-gray-700 p-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="flex-1 relative -m-6 mt-0 rounded-b-lg overflow-hidden">
-                <div wire:loading wire:target="showPreview" class="absolute inset-0 flex items-center justify-center bg-white z-10">
-                    <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @forelse($templates as $template)
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="px-3 py-3 text-sm text-gray-800 dark:text-gray-200">
+                                        <div class="font-medium">{{ $template->name }}</div>
+                                        <!-- Show description on mobile -->
+                                        <div class="text-xs text-gray-500 md:hidden mt-1">{{ Str::limit($template->description, 30) ?? '-' }}</div>
+                                    </td>
+                                    <td class="px-3 py-3 text-sm text-gray-800 dark:text-gray-200 hidden md:table-cell">
+                                        <div class="max-w-xs truncate" title="{{ $template->description }}">{{ $template->description ?? '-' }}</div>
+                                    </td>
+                                    <td class="px-3 py-3 whitespace-nowrap text-sm hidden sm:table-cell">
+                                        @if($template->signature_type === 'all_directors')
+                                            <span class="inline-flex items-center py-1 px-2 rounded text-xs font-medium text-white" style="background-color: #3b82f6;">All</span>
+                                        @else
+                                            <span class="inline-flex items-center py-1 px-2 rounded text-xs font-medium text-white" style="background-color: #22c55e;">Default</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                        <span class="font-medium">RM {{ number_format($template->credit_cost, 0) }}</span>
+                                    </td>
+                                    <td class="px-3 py-3 whitespace-nowrap text-sm hidden sm:table-cell">
+                                        @if($template->is_active)
+                                            <span class="inline-flex items-center py-1 px-2 rounded text-xs font-medium text-white" style="background-color: #22c55e;">Yes</span>
+                                        @else
+                                            <span class="inline-flex items-center py-1 px-2 rounded text-xs font-medium text-white" style="background-color: #ef4444;">No</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <!-- View Button -->
+                                            <button wire:click="showPreview({{ $template->id }})"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded border border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-white transition-colors"
+                                                    title="View Template">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                            </button>
+                                            @if(auth()->user()->canManageCompanies())
+                                            <!-- Edit Button -->
+                                            <button wire:click="edit({{ $template->id }})"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
+                                                    title="Edit Template">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                            <!-- Delete Button -->
+                                            <button wire:click="delete({{ $template->id }})"
+                                                    wire:confirm="Are you sure you want to delete this template?"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                                                    title="Delete Template">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-3 py-8 text-center text-gray-500">
+                                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        No templates found. Click "Create Template" to add one.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-                @if($previewTemplateId)
-                <iframe src="{{ route('admin.cosec.template.preview', $previewTemplateId) }}"
-                        class="w-full h-full rounded-b-lg">
-                </iframe>
-                @endif
             </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal - Full Screen -->
+    @if($showPreviewModal)
+    <div class="fixed inset-0 bg-black bg-opacity-75 z-50 flex flex-col">
+        <!-- Header -->
+        <div class="flex justify-between items-center px-4 py-3 bg-gray-900 text-white">
+            <h3 class="text-lg font-semibold">Template Preview</h3>
+            <button wire:click="closePreview" class="p-2 hover:bg-gray-700 rounded-lg transition-colors" title="Close (Esc)">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <!-- Content -->
+        <div class="flex-1 relative bg-white overflow-hidden">
+            <div wire:loading wire:target="showPreview" class="absolute inset-0 flex items-center justify-center bg-white z-10">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+            </div>
+            @if($previewTemplateId)
+            <iframe src="{{ route('admin.cosec.template.preview', $previewTemplateId) }}"
+                    class="w-full h-full border-0">
+            </iframe>
+            @endif
         </div>
     </div>
     @endif

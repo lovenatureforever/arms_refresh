@@ -23,10 +23,13 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $user->email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                     @if($editId === $user->id)
-                                        <input type="number" min="0" step="0.01" wire:model="credit" class="form-input" />
+                                        <div class="space-y-2">
+                                            <input type="number" min="0" step="1" wire:model="credit" class="form-input w-32" placeholder="Credits" />
+                                            <input type="text" wire:model="adjustmentReason" class="form-input w-full text-xs" placeholder="Reason for adjustment (optional)" />
+                                        </div>
                                     @else
                                         <div class="flex items-center gap-2">
-                                            ${{ number_format($user->credit ?? 0, 2) }}
+                                            RM {{ number_format($user->credit ?? 0, 0) }}
                                             <button wire:click="showCreditHistory({{ $user->id }})" class="btn border-info text-info hover:bg-info hover:text-info group" title="View Order History">
                                                 <svg class="w-4 h-4 group-hover:text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>

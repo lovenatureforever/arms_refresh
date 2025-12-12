@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Stancl\JobPipeline\JobPipeline;
 use Stancl\Tenancy\Events;
@@ -91,6 +92,12 @@ class TenancyServiceProvider extends ServiceProvider
                 function (Events\TenancyBootstrapped $event) {
                     $permissionRegistrar = app(\Spatie\Permission\PermissionRegistrar::class);
                     $permissionRegistrar->cacheKey = 'spatie.permission.cache.tenant.' . $event->tenancy->tenant->getTenantKey();
+
+                    // Force URL generator to use current request's domain for multi-tenancy
+                    if (app()->runningInConsole() === false) {
+                        $request = request();
+                        URL::forceRootUrl($request->getSchemeAndHttpHost());
+                    }
                 }
             ],
             Events\RevertingToCentralContext::class => [],
@@ -120,11 +127,11 @@ class TenancyServiceProvider extends ServiceProvider
 
         Livewire::setUpdateRoute(function ($handle) {
             return Route::post('/livewire/update', $handle)
-                ->middleware(
+                ->middleware([
                     'web',
                     'universal',
-                    InitializeTenancyByDomainOrSubdomain::class, // or whatever tenancy middleware you use
-                );
+                    InitializeTenancyByDomainOrSubdomain::class,
+                ]);
         });
 
         FilePreviewController::$middleware = ['web', 'universal', InitializeTenancyByDomainOrSubdomain::class]; // specify the right identification middleware

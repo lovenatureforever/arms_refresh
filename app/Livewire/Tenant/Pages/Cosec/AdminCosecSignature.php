@@ -3,6 +3,7 @@
 namespace App\Livewire\Tenant\Pages\Cosec;
 
 use Livewire\Component;
+use App\Models\Tenant\Company;
 use App\Models\Tenant\CompanyDirector;
 use App\Models\Tenant\DirectorSignature;
 use Livewire\WithFileUploads;
@@ -22,6 +23,15 @@ class AdminCosecSignature extends Component
 
     public function mount($companyId)
     {
+        // Authorization check: subscribers can only access signatures for companies they created
+        $user = auth()->user();
+        if ($user->isCosecSubscriber()) {
+            $company = Company::find($companyId);
+            if (!$company || $company->created_by !== $user->id) {
+                abort(403, 'You do not have permission to manage signatures for this company');
+            }
+        }
+
         $this->companyId = $companyId;
     }
 

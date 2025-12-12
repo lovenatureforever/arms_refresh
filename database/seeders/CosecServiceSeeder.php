@@ -22,7 +22,10 @@ class CosecServiceSeeder extends Seeder
         ];
 
         foreach ($services as $service) {
-            CosecService::create($service);
+            CosecService::updateOrCreate(
+                ['name' => $service['name']],
+                ['cost' => $service['cost']]
+            );
         }
     }
 }

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Increase Paid Up Capital - Director's Circular Resolution</title>
+</head>
+<body>
+    <div class="document">
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="title">
+            <h2>DIRECTOR'S CIRCULAR RESOLUTION</h2>
+        </div>
+
+        <div class="content">
+            <p class="preamble">I, the undersigned being the Sole Director of the Company for the time being, do and hereby RESOLVE the following resolutions in writing pursuant to Paragraph 15 of the Third Schedule of the Companies Act 2016:-</p>
+
+            <div class="resolution-section">
+                <h3>MEMBER'S WRITTEN RESOLUTION</h3>
+                <p>THAT pursuant to Section 290(1) of the Companies Act, 2016, a Meeting of Member be convened and held by way of a Member's Written Resolution for the purpose of considering and, if thought fit, passing the following resolution:-</p>
+            </div>
+
+            <div class="resolution-section">
+                <h3 class="ordinary">ORDINARY RESOLUTION</h3>
+                <h4>ALLOTMENT AND ISSUANCE OF {{total_new_shares}} NEW ORDINARY SHARES</h4>
+                <p>THAT the Company be and is hereby authorised to allot and issue {{total_new_shares}} new Ordinary Shares in the share capital of the Company at the issue price of RM{{share_price}} each to the following allottees, for a total consideration of RM{{total_consideration}} only</p>
+
+                <table class="allotment-table">
+                    <thead>
+                        <tr>
+                            <th>Name of Allottees</th>
+                            <th>NRIC/Passport No.</th>
+                            <th>Address</th>
+                            <th>Number of shares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{allottee_name_1}}</td>
+                            <td>{{allottee_nric_1}}</td>
+                            <td>{{allottee_address_1}}</td>
+                            <td>{{allottee_shares_1}}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3"><strong>Total Shares</strong></td>
+                            <td><strong>{{total_new_shares}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>THAT the new Ordinary Shares when allotted shall be subject to the Companies Act 2016 and will rank for dividends to be declared as from the date of allotment thereof and in all respects pari passu with the existing Ordinary Shares of the Company.</p>
+            </div>
+
+            <div class="resolution-section">
+                <h3>EXECUTION AND SUBMISSION OF DOCUMENTS</h3>
+                <p>AND THAT the Company Secretaries be authorised to execute, sign and submit all necessary forms with the Companies Commission of Malaysia electronically or otherwise and to do all such acts, deeds and things as may be necessary to give effect to the above transactions and indemnified for any costs incurred by them in respect of any proceedings that relates to the liability for any act or omission in their capacity as an officer and in which judgment is given in their favour or in which they are acquitted or in which they are granted relief under the Companies Act 2016 or where proceedings are discontinued or not pursued.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+        </div>
+
+        <div class="signatures-section">
+            <p class="signature-title">SOLE DIRECTOR / BOARD OF DIRECTOR</p>
+            <div class="signatures-grid single">
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_1}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Member's Resolution Page -->
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="member-resolution">
+            <div class="resolution-section">
+                <h3 class="ordinary">ORDINARY RESOLUTION</h3>
+                <h4>ALLOTMENT AND ISSUANCE OF {{total_new_shares}} NEW ORDINARY SHARES</h4>
+                <p>THAT the Company be and is hereby authorised to allot and issue {{total_new_shares}} new Ordinary Shares in the share capital of the Company at the issue price of RM{{share_price}} each to the following allottees, for a total consideration of RM{{total_consideration}} only</p>
+
+                <table class="allotment-table">
+                    <thead>
+                        <tr>
+                            <th>Name of Allottees</th>
+                            <th>NRIC/Passport No.</th>
+                            <th>Address</th>
+                            <th>Number of shares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{allottee_name_1}}</td>
+                            <td>{{allottee_nric_1}}</td>
+                            <td>{{allottee_address_1}}</td>
+                            <td>{{allottee_shares_1}}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3"><strong>Total Shares</strong></td>
+                            <td><strong>{{total_new_shares}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>THAT the new Ordinary Shares when allotted shall be subject to the Companies Act 2016 and will rank for dividends to be declared as from the date of allotment thereof and in all respects pari passu with the existing Ordinary Shares of the Company.</p>
+            </div>
+
+            <div class="resolution-section">
+                <h3>EXECUTION AND SUBMISSION OF DOCUMENTS</h3>
+                <p>AND THAT the Company Secretaries be authorised to execute, sign and submit all necessary forms with the Companies Commission of Malaysia electronically or otherwise and to do all such acts, deeds and things as may be necessary to give effect to the above transactions and indemnified for any costs incurred by them in respect of any proceedings that relates to the liability for any act or omission in their capacity as an officer and in which judgment is given in their favour or in which they are acquitted or in which they are granted relief under the Companies Act 2016 or where proceedings are discontinued or not pursued.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+
+            <p class="member-label">MEMBER:-</p>
+
+            <div class="member-signature">
+                <div class="signature-block">
+                    <div class="signature-area">{{member_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-name">{{member_name_1}}</p>
+                    <p class="signer-shares">[Number of shares held: {{member_shares_1}} ({{member_percentage_1}}%)]</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Notes Page -->
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="notes-section">
+            <h3>Notes to the Member's Written Resolution pursuant to Section 290 of the Companies Act 2016</h3>
+
+            <ol class="notes-list">
+                <li>This resolution in writing has been proposed by the Director of the Company.</li>
+                <li>Please signify your agreement by signing the members' written resolution at the place indicated.</li>
+                <li>If you signed the document and return it to the Company without indicating whether you agree to the resolution being passed, it will be assumed by the Company that you agreed to the resolution being passed.</li>
+                <li>If you return the document signed but without a date, it will be assumed by the Company that you have signed the document on the day preceding the day the document was received by the Company.</li>
+                <li>If not passed by the requisite majority of the total voting rights of eligible member(s), this resolution in writing shall lapse within 28 days from the date of circulation.</li>
+                <li>As the resolution is ordinary / special resolution, the requisite majority needed to pass the resolution is a simple majority / three-fourth of the total voting rights of all eligible member(s).</li>
+                <li>Once this resolution has been signed and return to the Company, your agreement to them may not be revoked.</li>
+            </ol>
+
+            <div class="return-instructions">
+                <p><strong>Please return the signed document to the Company using one of the following methods:-</strong></p>
+                <ul>
+                    <li>deliver it by hand or send it by post to {{secretary_company}} of {{secretary_address}}; or</li>
+                    <li>attach a scanned copy of the signed document to the following emails, enter "Written Resolution" in the subject line and send it to:-<br>{{secretary_email}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Certified Extract Page -->
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="certified-extract">
+            <p class="extract-intro">Certified Extract of the Director's Circular Resolution passed pursuant to Paragraph 15 of the Third Schedule of the Companies Act 2016:-</p>
+
+            <div class="resolution-section">
+                <h3 class="ordinary">ORDINARY RESOLUTION</h3>
+                <h4>ALLOTMENT AND ISSUANCE OF {{total_new_shares}} NEW ORDINARY SHARES</h4>
+                <p>THAT the Company be and is hereby authorised to allot and issue {{total_new_shares}} new Ordinary Shares in the share capital of the Company at the issue price of RM{{share_price}} each to the following allottees, for a total consideration of RM{{total_consideration}} only</p>
+
+                <table class="allotment-table">
+                    <thead>
+                        <tr>
+                            <th>Name of Allottees</th>
+                            <th>NRIC/Passport No.</th>
+                            <th>Address</th>
+                            <th>Number of shares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{allottee_name_1}}</td>
+                            <td>{{allottee_nric_1}}</td>
+                            <td>{{allottee_address_1}}</td>
+                            <td>{{allottee_shares_1}}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3"><strong>Total Shares</strong></td>
+                            <td><strong>{{total_new_shares}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>THAT the new Ordinary Shares when allotted shall be subject to the Companies Act 2016 and will rank for dividends to be declared as from the date of allotment thereof and in all respects pari passu with the existing Ordinary Shares of the Company.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+
+            <p class="certified-label">CERTIFIED TRUE COPY:-</p>
+
+            <div class="certification-signatures">
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_1}}</p>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-area">{{secretary_signature}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Company Secretary</p>
+                    <p class="signer-name">{{secretary_name}}</p>
+                    <p class="signer-license">{{secretary_license}}</p>
+                    <p class="signer-ssm">SSM PC NO. {{secretary_ssm_no}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

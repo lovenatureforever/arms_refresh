@@ -95,6 +95,30 @@
                         </div>
                     @endif
 
+                    @if ($changeNature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED)
+                        <div>
+                            <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="gender">Gender</label>
+                            <select class="form-input" id="gender" name="gender" wire:model="gender">
+                                <option value="">Select Gender</option>
+                                <option value="1">Male</option>
+                                <option value="0">Female</option>
+                            </select>
+                        </div>
+                    @endif
+
+                    @if ($changeNature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED || $id)
+                        <div>
+                            <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="email">Email @if(!$id)<span class="text-red-500">*</span>@endif</label>
+                            <input class="form-input {{ $id ? 'bg-gray-100' : '' }}" id="email" type="email" wire:model="email" placeholder="director@example.com" {{ $id ? 'disabled' : '' }}>
+                            <p class="text-xs text-gray-500 mt-1">{{ $id ? 'Email cannot be changed' : 'Required for COSEC login access' }}</p>
+                        </div>
+                        <div>
+                            <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="password">Password</label>
+                            <input class="form-input" id="password" type="password" wire:model="password" placeholder="{{ $id ? 'Leave blank to keep current' : 'Leave blank for default' }}">
+                            <p class="text-xs text-gray-500 mt-1">{{ $id ? 'Only fill to change password' : 'Default: password123' }}</p>
+                        </div>
+                    @endif
+
                     @if ($changeNature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_CHANGED_OF_ADDRESS || $changeNature == App\Models\Tenant\CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED)
                         <div>
                             <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="addressLine1">Address Line 1</label>

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Tenant\CosecTemplate;
+use Illuminate\Support\Facades\File;
 
 class CosecTemplateSeeder extends Seeder
 {
@@ -12,80 +13,123 @@ class CosecTemplateSeeder extends Seeder
         $templates = [
             [
                 'name' => 'Appointment of Director',
+                'description' => 'Director\'s Circular Resolution for appointing new director with consent form (Section 201)',
                 'form_type' => 1,
-                'signature_type' => CosecTemplate::SIGNATURE_DEFAULT,
+                'signature_type' => 'all_directors',
                 'credit_cost' => 100,
-                'content' => '<p><strong>APPOINTMENT OF DIRECTOR</strong></p><p>This is the default template content for director appointment. Please customize as needed.</p>',
+                'template_file' => 'appointment-of-director',
                 'is_active' => true
             ],
             [
                 'name' => 'Resignation of Director',
+                'description' => 'Director\'s Circular Resolution for accepting director resignation (Paragraph 15)',
                 'form_type' => 2,
-                'signature_type' => CosecTemplate::SIGNATURE_ALL_DIRECTORS,
+                'signature_type' => 'all_directors',
+                'credit_cost' => 100,
+                'template_file' => 'resignation-of-director',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Appointment & Resignation of Director',
+                'description' => 'Combined Director\'s Circular Resolution for appointing new director and accepting resignation',
+                'form_type' => 3,
+                'signature_type' => 'all_directors',
                 'credit_cost' => 150,
-                'content' => '<p><strong>RESIGNATION OF DIRECTOR</strong></p><p>This is the default template content for director resignation. Please customize as needed.</p>',
+                'template_file' => 'appointment-resignation-of-director',
                 'is_active' => true
             ],
             [
                 'name' => 'Transfer of Shares',
-                'form_type' => 3,
-                'signature_type' => CosecTemplate::SIGNATURE_ALL_DIRECTORS,
-                'credit_cost' => 200,
-                'content' => '<p><strong>TRANSFER OF SHARES</strong></p><p>This is the default template content for share transfer. Please customize as needed.</p>',
-                'is_active' => true
-            ],
-            [
-                'name' => 'Increase Paid-up Capital',
+                'description' => 'Director\'s Circular Resolution for approving share transfer (Section 105)',
                 'form_type' => 4,
-                'signature_type' => CosecTemplate::SIGNATURE_ALL_DIRECTORS,
-                'credit_cost' => 250,
-                'content' => '<p><strong>INCREASE OF PAID-UP CAPITAL</strong></p><p>This is the default template content for capital increase. Please customize as needed.</p>',
+                'signature_type' => 'all_directors',
+                'credit_cost' => 200,
+                'template_file' => 'transfer-of-shares',
                 'is_active' => true
             ],
             [
-                'name' => 'Change Business Address',
+                'name' => 'Increase Paid Up Capital',
+                'description' => 'Director\'s Circular Resolution for allotment and issuance of new ordinary shares (Section 290)',
                 'form_type' => 5,
-                'signature_type' => CosecTemplate::SIGNATURE_DEFAULT,
-                'credit_cost' => 100,
-                'content' => '<p><strong>CHANGE BUSINESS ADDRESS</strong></p><p>This is the default template content for business address change. Please customize as needed.</p>',
+                'signature_type' => 'all_directors',
+                'credit_cost' => 250,
+                'template_file' => 'increase-paid-up-capital',
                 'is_active' => true
             ],
             [
-                'name' => 'Register Branch Address',
+                'name' => 'Change of Business Address',
+                'description' => 'Directors\' Circular Resolution for changing business address and accounting records location (Section 245)',
                 'form_type' => 6,
-                'signature_type' => CosecTemplate::SIGNATURE_DEFAULT,
+                'signature_type' => 'all_directors',
                 'credit_cost' => 100,
-                'content' => '<p><strong>REGISTER BRANCH ADDRESS</strong></p><p>This is the default template content for branch address registration. Please customize as needed.</p>',
+                'template_file' => 'change-business-address',
                 'is_active' => true
             ],
             [
-                'name' => 'Bank Account Opening',
+                'name' => 'Closure of Branch Address',
+                'description' => 'Directors\' Circular Resolution for closing branch office address (Clause 121)',
                 'form_type' => 7,
-                'signature_type' => CosecTemplate::SIGNATURE_ALL_DIRECTORS,
-                'credit_cost' => 150,
-                'content' => '<p><strong>BANK ACCOUNT OPENING</strong></p><p>This is the default template content for bank account opening. Please customize as needed.</p>',
-                'is_active' => true
-            ],
-            [
-                'name' => 'Bank Signatories',
-                'form_type' => 8,
-                'signature_type' => CosecTemplate::SIGNATURE_ALL_DIRECTORS,
-                'credit_cost' => 150,
-                'content' => '<p><strong>CHANGE OF BANK SIGNATORIES</strong></p><p>This is the default template content for bank signatories change. Please customize as needed.</p>',
-                'is_active' => true
-            ],
-            [
-                'name' => 'Maker or Checker',
-                'form_type' => 9,
-                'signature_type' => CosecTemplate::SIGNATURE_DEFAULT,
+                'signature_type' => 'all_directors',
                 'credit_cost' => 100,
-                'content' => '<p><strong>CHANGE OF MAKER OR CHECKER</strong></p><p>This is the default template content for maker/checker change. Please customize as needed.</p>',
+                'template_file' => 'closure-of-branch-address',
                 'is_active' => true
-            ]
+            ],
+            [
+                'name' => 'Registration of Branch Address',
+                'description' => 'Directors\' Circular Resolution for registering new branch office address (Clause 121)',
+                'form_type' => 8,
+                'signature_type' => 'all_directors',
+                'credit_cost' => 100,
+                'template_file' => 'registration-of-branch-address',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Registration of Business Address & Financial Records',
+                'description' => 'Director\'s Circular Resolution for registering business address and accounting records location (Section 245)',
+                'form_type' => 9,
+                'signature_type' => 'default',
+                'credit_cost' => 100,
+                'template_file' => 'registration-business-address-financial-records',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Change of Registered Office Address',
+                'description' => 'Directors\' Circular Resolution for changing registered office address (Clause 45)',
+                'form_type' => 10,
+                'signature_type' => 'all_directors',
+                'credit_cost' => 100,
+                'template_file' => 'change-registered-address',
+                'is_active' => true
+            ],
         ];
 
+        $templatePath = resource_path('templates/cosec');
+
         foreach ($templates as $template) {
-            CosecTemplate::create($template);
+            $htmlFile = $templatePath . '/' . $template['template_file'] . '.html';
+            $cssFile = $templatePath . '/' . $template['template_file'] . '.css';
+
+            $htmlContent = File::exists($htmlFile) ? File::get($htmlFile) : '';
+            $cssContent = File::exists($cssFile) ? File::get($cssFile) : '';
+
+            // Combine CSS and HTML into content
+            $content = '';
+            if ($cssContent) {
+                $content = "<style>\n{$cssContent}\n</style>\n";
+            }
+            $content .= $htmlContent;
+
+            CosecTemplate::updateOrCreate(
+                ['form_type' => $template['form_type']],
+                [
+                    'name' => $template['name'],
+                    'description' => $template['description'],
+                    'signature_type' => $template['signature_type'],
+                    'credit_cost' => $template['credit_cost'],
+                    'content' => $content,
+                    'is_active' => $template['is_active']
+                ]
+            );
         }
     }
 }

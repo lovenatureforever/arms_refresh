@@ -16,6 +16,13 @@ class CompanySecretary extends Model
         'id_type',
         'id_no',
         'secretary_no',
+        'license_no',
+        'ssm_no',
+        'email',
+        'phone',
+        'company_name',
+        'address',
+        'signature_path',
         'is_active',
     ];
 

@@ -45,6 +45,28 @@
         </div>
     </div>
     <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mt-4">
+        <!-- Directors Management Card -->
+        @if(auth()->user()->canManageCompanies())
+        <div class="card">
+            <div class="flex flex-col">
+                <div class="px-6 py-3">
+                    <h5 class="my-2">
+                        <a class="text-slate-900 dark:text-slate-200" href="#">Directors</a>
+                    </h5>
+                    <p class="mb-9 text-sm text-gray-500">Manage company directors for COSEC orders</p>
+                </div>
+
+                <div class="border-t border-gray-300 p-5 dark:border-gray-700">
+                    <div class="grid gap-4 lg:grid-cols-2">
+                        <div class="flex items-center gap-2">
+                            <a class="btn w-full bg-primary text-white" href="{{ route('companies.directors', ['id' => $id]) }}">Manage</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="card">
             <div class="flex flex-col">
                 <div class="px-6 py-3">
@@ -122,9 +144,11 @@
                             <a class="btn w-full bg-primary text-white" href="{{ route('cosec.order', ['id' => $id]) }}">View</a>
                         </div>
 
+                        @if(auth()->user()->canManageCompanies())
                         <div class="flex items-center">
-                            <a class="btn w-full bg-primary text-white" href="{{ route('admin.cosec.signature', ['companyId' => $id]) }}">Signatures</a>
+                            <a class="btn w-full bg-primary text-white" href="/cosec/admin/signatures/{{ $id }}">Signatures</a>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

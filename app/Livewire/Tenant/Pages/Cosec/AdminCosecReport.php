@@ -3,9 +3,6 @@
 namespace App\Livewire\Tenant\Pages\Cosec;
 
 use App\Models\Tenant\CosecOrder;
-use App\Models\Central\Tenant;
-use App\Models\User;
-use Illuminate\Support\Facades\Log;
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use Livewire\Component;
 use Livewire\Attributes\Locked;
@@ -31,20 +28,9 @@ class AdminCosecReport extends Component
 
     public function approve() {
         $order = CosecOrder::find($this->id);
-        $order->update(['status' => 1]);
 
-        $cost = $order->getEffectiveCost();
-        // $tenantId = $order->tenant_id;
-        $userId = $order->tenant_user_id;
-
-        // $tenant = Tenant::find($tenantId);
-        // tenancy()->initialize($tenant);
-
-        $user = User::find($userId);
-        $credit = $user->credit - $cost;
-        $user->update(['credit' => $credit]);
-
-        // tenancy()->end();
+        // Only update status - credits are already deducted when director places the order
+        $order->update(['status' => CosecOrder::STATUS_APPROVED]);
 
         LivewireAlert::withOptions([
             "position" => "top-end",
@@ -58,25 +44,14 @@ class AdminCosecReport extends Component
 
     public function deny() {
         $order = CosecOrder::find($this->id);
-        $order->update(['status' => 2]);
+        $order->update(['status' => CosecOrder::STATUS_REJECTED]);
 
-        $cost = $order->getEffectiveCost();
-        // $tenantId = $order->tenant_id;
-        $userId = $order->tenant_user_id;
-
-        // $tenant = Tenant::find($tenantId);
-        // tenancy()->initialize($tenant);
-
-        $user = User::find($userId);
-        $credit = $user->credit - $cost;
-        $user->update(['credit' => $credit]);
-
-        // tenancy()->end();
+        // Note: Credits are NOT refunded when order is denied (already deducted on order placement)
 
         LivewireAlert::withOptions([
             "position" => "top-end",
-            "icon" => "success",
-            "title" => "Denied successfully!",
+            "icon" => "warning",
+            "title" => "Order denied!",
             "showConfirmButton" => false,
             "timer" => 1500
         ])->show();

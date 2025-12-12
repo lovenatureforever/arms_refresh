@@ -62,6 +62,27 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-6">
+                    <div class="mt-6">
+                        <label class="mb-2 inline-block text-sm font-medium text-gray-800">User Type (COSEC)</label>
+                        <div class="flex flex-row flex-wrap gap-5">
+                            <div>
+                                <input class="form-radio text-danger" id="type_admin" type="radio" value="admin" wire:model="userType">
+                                <label class="ms-1.5" for="type_admin">Admin</label>
+                            </div>
+                            <div>
+                                <input class="form-radio text-primary" id="type_subscriber" type="radio" value="subscriber" wire:model="userType">
+                                <label class="ms-1.5" for="type_subscriber">Subscriber (Company Secretary)</label>
+                            </div>
+                            <div>
+                                <input class="form-radio text-info" id="type_director" type="radio" value="director" wire:model="userType">
+                                <label class="ms-1.5" for="type_director">Director</label>
+                            </div>
+                        </div>
+                        @error('userType')
+                            <div class="pristine-error text-help" role="alert">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     {{-- <div class="mt-9">
                         <label class="mb-2 inline-block text-sm font-medium text-gray-600" for="role">Internal Role</label>
                         <div class="flex flex-row flex-wrap gap-5">
@@ -134,6 +155,71 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Director-specific fields --}}
+                    @if ($userType === 'director')
+                    <div class="mt-9 p-4 border border-info rounded-lg bg-info/5">
+                        <h5 class="text-sm font-semibold text-info mb-4">Director Profile Settings</h5>
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Select Company <span class="text-danger">*</span></label>
+                                <select class="form-select" wire:model.live="selectedCompany">
+                                    <option value="">-- Select Company --</option>
+                                    @foreach ($companies as $company)
+                                        <option value="{{ $company->id }}">{{ $company->name }} ({{ $company->registration_no }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            @if ($selectedCompany)
+                            <div>
+                                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Link to Director</label>
+                                <select class="form-select" wire:model.live="selectedDirector" @if($createNewDirector) disabled @endif>
+                                    <option value="">-- Select Existing Director --</option>
+                                    @foreach ($availableDirectors as $director)
+                                        <option value="{{ $director->id }}">{{ $director->name }} ({{ $director->designation }})</option>
+                                    @endforeach
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Only unlinked directors are shown</p>
+                            </div>
+                            @endif
+                        </div>
+
+                        @if ($selectedCompany)
+                        <div class="mt-4">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="form-checkbox text-info rounded" wire:model.live="createNewDirector">
+                                <span class="ms-2 text-sm">Create new director profile</span>
+                            </label>
+                        </div>
+
+                        @if ($createNewDirector)
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3 mt-4">
+                            <div>
+                                <label class="mb-2 inline-block text-sm font-medium text-gray-800">Designation</label>
+                                <select class="form-select" wire:model="directorDesignation">
+                                    <option value="Director">Director</option>
+                                    <option value="Alternate Director">Alternate Director</option>
+                                    <option value="Managing Director">Managing Director</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="mb-2 inline-block text-sm font-medium text-gray-800">ID Type</label>
+                                <select class="form-select" wire:model="directorIdType">
+                                    <option value="Mykad">Mykad</option>
+                                    <option value="Passport">Passport</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="mb-2 inline-block text-sm font-medium text-gray-800">ID Number <span class="text-danger">*</span></label>
+                                <input class="form-input" type="text" wire:model="directorIdNo" placeholder="Enter ID number">
+                            </div>
+                        </div>
+                        @endif
+                        @endif
+                    </div>
+                    @endif
                 </div>
 
                 <div class="mt-9">

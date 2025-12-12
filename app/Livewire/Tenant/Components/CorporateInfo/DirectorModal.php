@@ -7,6 +7,7 @@ use App\Livewire\Tenant\Pages\CorporateInfo\Director;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\CompanyDirector;
 use App\Models\Tenant\CompanyDirectorChange;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
@@ -73,6 +74,14 @@ class DirectorModal extends ModalComponent
 
     public $remarks;
 
+    // User account fields for COSEC access
+    #[Validate('required_if:changeNature,"Director appointed"|email')]
+    public $email;
+
+    public $password;
+
+    public $gender = null;
+
     public $directors;
 
     #[Locked]
@@ -87,7 +96,7 @@ class DirectorModal extends ModalComponent
         $this->designation = CompanyDirector::DESIGNATION_DIRECTOR;
         if ($id) {
             $this->id = $id;
-            $this->directorChange = CompanyDirectorChange::with('companyDirector')->find($id);
+            $this->directorChange = CompanyDirectorChange::with('companyDirector.user')->find($id);
             $this->changeNature = $this->directorChange->change_nature;
             $this->name = $this->directorChange->companyDirector->name;
             $this->selectedDirector = $this->directorChange->company_director_id;
@@ -95,6 +104,7 @@ class DirectorModal extends ModalComponent
             $this->alternateTo = $this->directorChange->companyDirector->alternate_id;
             $this->idType = $this->directorChange->companyDirector->id_type;
             $this->idNo = $this->directorChange->companyDirector->id_no;
+            $this->gender = $this->directorChange->companyDirector->gender;
             $this->addressLine1 = $this->directorChange->address_line1;
             $this->addressLine2 = $this->directorChange->address_line2;
             $this->addressLine3 = $this->directorChange->address_line3;
@@ -104,6 +114,10 @@ class DirectorModal extends ModalComponent
             $this->country = $this->directorChange->country;
             $this->effectiveDate = $this->directorChange->effective_date->format('Y-m-d');
             $this->remarks = $this->directorChange->remarks;
+            // Load email from linked user account
+            if ($this->directorChange->companyDirector->user) {
+                $this->email = $this->directorChange->companyDirector->user->email;
+            }
         }
         $this->companyId = $companyId;
         $this->isStart = $isStart;
@@ -130,6 +144,29 @@ class DirectorModal extends ModalComponent
                 if ($this->designation !== CompanyDirector::DESIGNATION_ALTERNATEDIRECTOR) {
                     $this->alternateTo = null;
                 }
+
+                // Create or find user account for the director
+                $linkedUserId = null;
+                if ($this->email) {
+                    $existingUser = User::where('email', $this->email)->first();
+                    if ($existingUser) {
+                        $linkedUserId = $existingUser->id;
+                        if ($this->password) {
+                            $existingUser->update(['password' => $this->password]);
+                        }
+                    } else {
+                        $newUser = User::create([
+                            'name' => $this->name,
+                            'username' => $this->email,
+                            'email' => $this->email,
+                            'password' => $this->password ?: 'password123',
+                            'user_type' => User::USER_TYPE_DIRECTOR,
+                        ]);
+                        $newUser->assignRole(User::ROLE_COSEC_DIRECTOR);
+                        $linkedUserId = $newUser->id;
+                    }
+                }
+
                 $new_director = CompanyDirector::create([
                     'company_id' => $this->companyId,
                     'name' => $this->name,
@@ -137,6 +174,9 @@ class DirectorModal extends ModalComponent
                     'alternate_id' => $this->alternateTo,
                     'id_type' => $this->idType,
                     'id_no' => $this->idNo,
+                    'gender' => $this->gender,
+                    'user_id' => $linkedUserId,
+                    'is_active' => true,
                 ]);
 
                 CompanyDirectorChange::create([
@@ -213,6 +253,13 @@ class DirectorModal extends ModalComponent
         }
         // Updating an existing director
         else {
+            // Update password for linked user if provided
+            if ($this->password && $this->directorChange->companyDirector->user) {
+                $this->directorChange->companyDirector->user->update([
+                    'password' => $this->password,
+                ]);
+            }
+
             if ($this->changeNature === CompanyDirectorChange::CHANGE_NATURE_DIRECTOR_APPOINTED) {
                 if ($this->designation !== CompanyDirector::DESIGNATION_ALTERNATEDIRECTOR) {
                     $this->alternateTo = null;

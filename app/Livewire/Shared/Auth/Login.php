@@ -15,8 +15,8 @@ class Login extends Component
 
     public function mount()
     {
-        $this->email = "admin@auditapp.com";
-        $this->password = "password";
+        $this->email = "";
+        $this->password = "";
     }
 
     #[Layout('layouts.auth')]

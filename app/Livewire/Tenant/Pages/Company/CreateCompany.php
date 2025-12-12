@@ -142,7 +142,8 @@ class CreateCompany extends Component
                 'last_year' => $this->lastYear,
                 'last_year_from' => $this->lastYearFrom,
                 'last_year_to' => $this->lastYearTo,
-                'audit_fee' => readNumber($this->auditFee)
+                'audit_fee' => readNumber($this->auditFee),
+                'created_by' => auth()->id(),
             ]);
 
             CompanyDetailChange::create([
@@ -221,7 +222,7 @@ class CreateCompany extends Component
                 'remarks' => '',
             ]);
 
-            // Auditor settings
+            // Auditor settings (with defaults for missing tenant settings)
             CompanyAuditorSetting::create([
                 'company_id' => $company->id,
                 'auditor_id' => null,
@@ -229,19 +230,19 @@ class CreateCompany extends Component
                 'prior_audit_firm' => null,
                 'prior_report_date' => null,
                 'prior_report_opinion' => null,
-                'with_breakline' => tenant()->withBreakline ?? false, // Audit license no. position
-                'audit_firm_description' => tenant()->auditFirmDescription,
+                'with_breakline' => tenant()->withBreakline ?? false,
+                'audit_firm_description' => tenant()->auditFirmDescription ?? '',
                 'is_default_letterhead' => tenant()->isDefaultLetterhead ?? true,
                 'is_letterhead_repeat' => tenant()->isLetterheadRepeat ?? false,
-                'blank_header_spacing' => tenant()->blankHeaderSpacing,
+                'blank_header_spacing' => tenant()->blankHeaderSpacing ?? 0,
                 'is_show_firm_name' => tenant()->isShowFirmName ?? true,
                 'is_show_firm_title' => tenant()->isShowFirmTitle ?? true,
                 'is_show_firm_address' => tenant()->isShowFirmAddress ?? true,
                 'is_show_firm_contact' => tenant()->isShowFirmContact ?? true,
                 'is_show_firm_email' => tenant()->isShowFirmEmail ?? true,
-                'is_show_firm_fax' => tenant()->isShowFirmFax ?? true,
+                'is_show_firm_fax' => tenant()->isShowFirmFax ?? false,
                 'is_firm_address_uppercase' => tenant()->isFirmAddressUppercase ?? false,
-                'selected_firm_address_id' => tenant()->selectedAddressId,
+                'selected_firm_address_id' => tenant()->selectedAddressId ?? null,
                 'selected_auditor_license' => null,
             ]);
 

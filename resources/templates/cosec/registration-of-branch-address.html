@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration of Branch Address - Directors' Circular Resolution</title>
+</head>
+<body>
+    <div class="document">
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="title">
+            <h2>DIRECTORS' CIRCULAR RESOLUTION</h2>
+        </div>
+
+        <div class="content">
+            <p class="preamble">We, the undersigned being the Directors of the Company for the time being, do and hereby RESOLVE the following resolutions in writing pursuant to Clause 121 of the Constitution of the Company:</p>
+
+            <div class="resolution-section">
+                <h3>REGISTRATION OF BRANCH ADDRESS</h3>
+                <p>THAT the branch address of the Company be registered at:</p>
+                <div class="address-box new">
+                    <p class="address-text">{{branch_address}}</p>
+                </div>
+                <p>with effect from <strong>{{registration_effective_date}}</strong>.</p>
+            </div>
+
+            <div class="resolution-section">
+                <h3>EXECUTION AND SUBMISSION OF DOCUMENTS</h3>
+                <p>AND THAT the Company Secretaries be authorised to execute, sign and submit all necessary forms with the Companies Commission of Malaysia electronically or otherwise and to do all such acts, deeds and things as may be necessary to give effect to the above transactions and indemnified for any costs incurred by them in respect of any proceedings that relates to the liability for any act or omission in their capacity as an officer and in which judgment is given in their favour or in which they are acquitted or in which they are granted relief under the Companies Act 2016 or where proceedings are discontinued or not pursued.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+        </div>
+
+        <div class="signatures-section">
+            <p class="signature-title">SOLE DIRECTOR / BOARD OF DIRECTOR</p>
+            <div class="signatures-grid three-col">
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_1}}</p>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_2}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_2}}</p>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_3}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_3}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Certified Extract Page -->
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="certified-extract">
+            <p class="extract-intro">Certified Extract of the Directors' Circular Resolution passed pursuant to Clause 121 of the Constitution of the Company:-</p>
+
+            <div class="resolution-section">
+                <h3>REGISTRATION OF BRANCH ADDRESS</h3>
+                <p>THAT the branch address of the Company be registered at:</p>
+                <div class="address-box new">
+                    <p class="address-text">{{branch_address}}</p>
+                </div>
+                <p>with effect from <strong>{{registration_effective_date}}</strong>.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+
+            <p class="certified-label">CERTIFIED TRUE COPY:-</p>
+
+            <div class="certification-signatures">
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_1}}</p>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-area">{{secretary_signature}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Company Secretary</p>
+                    <p class="signer-name">{{secretary_name}}</p>
+                    <p class="signer-license">{{secretary_license}}</p>
+                    <p class="signer-ssm">SSM PC NO. {{secretary_ssm_no}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

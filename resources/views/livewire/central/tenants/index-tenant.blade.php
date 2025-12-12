@@ -15,16 +15,16 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Firm Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Firm Title</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Tenant ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Domain</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-500" scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach ($tenants as $tenant)
                                     <tr>
-                                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $tenant->firmName }}</td>
-                                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $tenant->firmTitle }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $tenant->id }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $tenant->domains->first()?->domain ?? 'No domain' }}</td>
                                         <td class="whitespace-nowrap px-6 py-4 text-end text-sm font-medium">
                                             <button class="text-primary hover:text-sky-700" wire:click="showTenant('{{ $tenant->id }}')">Show</button>
                                             <button class="text-danger hover:text-sky-700" wire:click="deleteTenant('{{ $tenant->id }}')">Delete</button>

@@ -1,0 +1,169 @@
+/* Closure of Branch Address Template Styles */
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 40px;
+    background: #fff;
+}
+
+.document {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    text-transform: uppercase;
+}
+
+.company-no {
+    font-size: 12px;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.incorporated {
+    font-size: 11px;
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.title {
+    text-align: center;
+    margin: 30px 0;
+    padding: 15px 0;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+}
+
+.title h2 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.content {
+    margin: 30px 0;
+}
+
+.preamble {
+    text-align: justify;
+    margin-bottom: 25px;
+    font-size: 12px;
+}
+
+.resolution-section {
+    margin: 25px 0;
+}
+
+.resolution-section h3 {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+
+.resolution-section p {
+    text-align: justify;
+    margin: 10px 0;
+}
+
+.address-box {
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+}
+
+.address-box.closed {
+    border-left: 4px solid #dc3545;
+    background: #fff5f5;
+}
+
+.address-text {
+    margin: 0;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.dated {
+    margin: 30px 0;
+}
+
+.signatures-section {
+    margin-top: 50px;
+}
+
+.signature-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 30px;
+    text-decoration: underline;
+}
+
+.signatures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.signatures-grid.three-col {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 25px;
+}
+
+.signature-block {
+    text-align: center;
+}
+
+.signature-area {
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.signature-area img {
+    max-height: 60px;
+    max-width: 150px;
+}
+
+.signature-line {
+    border-bottom: 1px solid #333;
+    margin-bottom: 8px;
+}
+
+.signer-role {
+    font-size: 10px;
+    margin: 2px 0;
+    color: #666;
+}
+
+.signer-name {
+    font-weight: bold;
+    font-size: 11px;
+    margin: 2px 0;
+}
+
+@media print {
+    body { padding: 0; }
+    .document { border: none; padding: 20px; }
+    .address-box { background: #f5f5f5; }
+}

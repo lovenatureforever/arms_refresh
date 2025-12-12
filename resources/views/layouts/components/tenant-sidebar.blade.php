@@ -1,7 +1,7 @@
 <div class="app-menu">
 
     <!-- Sidenav Brand Logo -->
-    <a class="logo-box" href="{{ route('home') }}">
+    <a class="logo-box" href="/home">
         {{--
         <!-- Light Brand Logo -->
         <div class="logo-light">
@@ -30,41 +30,56 @@
             {{-- <li class="menu-title">Menu</li> --}}
 
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('home') }}">
+                <a class="menu-link" href="/home">
                     <span class="menu-icon"><i class="mgc_dashboard_4_line"></i></span>
                     <span class="menu-text">Dashboard</span>
                 </a>
             </li>
 
-            {{-- <li class="menu-title">Management</li> --}}
-
+            {{-- Admin/Subscriber only menu items --}}
+            @if(auth()->user()->canManageCompanies())
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('auditpartners.index') }}">
+                <a class="menu-link" href="/auditpartners">
                     <span class="menu-icon"><i class="mgc_user_follow_line"></i></span>
                     <span class="menu-text">Audit Partner</span>
                 </a>
             </li>
 
-            {{-- <li class="menu-item">
-                <a class="menu-link" href="{{ route('companies.index') }}">
-                    <span class="menu-icon"><i class="mgc_building_5_line"></i></span>
-                    <span class="menu-text">Company Access</span>
-                </a>
-            </li> --}}
-
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('users.index') }}">
+                <a class="menu-link" href="/users">
                     <span class="menu-icon"><i class="mgc_group_line"></i></span>
                     <span class="menu-text">Users</span>
                 </a>
             </li>
 
             <li class="menu-item">
-                <a class="menu-link" href="{{ route('auditfirm.show') }}">
+                <a class="menu-link" href="/audit-firm">
                     <span class="menu-icon"><i class="mgc_certificate_2_line"></i></span>
                     <span class="menu-text">Audit Firm Info</span>
                 </a>
             </li>
+
+            <li class="menu-item">
+                <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
+                    <span class="menu-icon"><i class="mgc_building_2_line"></i></span>
+                    <span class="menu-text"> Companies </span>
+                    <span class="menu-arrow"></span>
+                </a>
+
+                <ul class="sub-menu hidden" style="height: 0px;">
+                    <li class="menu-item">
+                        <a href="/home" class="menu-link">
+                            <span class="menu-text">All Companies</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/companies/create" class="menu-link">
+                            <span class="menu-text">Create Company</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endif
             {{--
             <li class="menu-item">
                 <a class="menu-link" href="{{ route('data.migration') }}">
@@ -82,7 +97,8 @@
                 </a>
             </li>
             -->
-            @role('internal_admin')
+            {{-- COSEC Menu for Admin and Subscriber (shared permissions) --}}
+            @if(auth()->user()->canManageCompanies())
             <li class="menu-item">
                 <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
                     <span class="menu-icon"><i class="mgc_file_check_line"></i></span>
@@ -98,19 +114,75 @@
                     </li>
                     <li class="menu-item">
                         <a href="{{ route('admin.cosec.credits') }}" class="menu-link">
-                            <span class="menu-text">COSEC Credits</span>
+                            <span class="menu-text">Manage Credits</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('profile.credit-history') }}" class="menu-link">
+                            <span class="menu-text">My Credit History</span>
                         </a>
                     </li>
                     <li class="menu-item">
                         <a href="{{ route('admin.cosec.templates') }}" class="menu-link">
-                            <span class="menu-text">COSEC Templates</span>
+                            <span class="menu-text">Templates</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('admin.cosec.services') }}" class="menu-link">
+                            <span class="menu-text">Services</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            @endrole
+            @endif
 
+            {{-- COSEC Menu for Director --}}
+            @if(auth()->user()->isCosecDirector())
+            @php
+                $directorCompany = \App\Models\Tenant\CompanyDirector::where('user_id', auth()->id())->first();
+                $directorCompanyId = $directorCompany?->company_id;
+            @endphp
             <li class="menu-item">
+                <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
+                    <span class="menu-icon"><i class="mgc_file_check_line"></i></span>
+                    <span class="menu-text"> COSEC </span>
+                    <span class="menu-arrow"></span>
+                </a>
+
+                <ul class="sub-menu hidden" style="height: 0px;">
+                    <li class="menu-item">
+                        <a href="{{ route('director.cosec.dashboard') }}" class="menu-link">
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('director.cosec.place-order') }}" class="menu-link">
+                            <span class="menu-text">Place Order</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('director.cosec.my-orders') }}" class="menu-link">
+                            <span class="menu-text">My Orders</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/profile/credit-history" class="menu-link">
+                            <span class="menu-text">Credit History</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endif
+
+            {{-- Profile Menu - All Users --}}
+            <li class="menu-item">
+                <a class="menu-link" href="/profile">
+                    <span class="menu-icon"><i class="mgc_user_3_line"></i></span>
+                    <span class="menu-text">My Profile</span>
+                </a>
+            </li>
+	    
+	    <li class="menu-item">
                 <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
                     <span class="menu-icon"><i class="mgc_bill_line"></i></span>
                     <span class="menu-text"> LHDN </span>

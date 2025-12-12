@@ -5,13 +5,20 @@ namespace App\Livewire\Tenant\Pages\User;
 use Exception;
 use App\Models\User;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\Locked;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
+use App\Models\Tenant\CompanyDirector;
+use App\Models\Tenant\DirectorSignature;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 
 class ShowUser extends Component
 {
+    use WithFileUploads;
+
     #[Locked]
     public $id;
 
@@ -35,6 +42,7 @@ class ShowUser extends Component
     public $isActive;
 
     public $user;
+    public $signatureFile;
 
     public function mount($id)
     {
@@ -55,9 +63,102 @@ class ShowUser extends Component
     {
         $roles = Role::all();
 
+        // Get director and signature info if user is a director
+        $director = null;
+        $currentSignature = null;
+        if ($this->user->user_type === 'director') {
+            $director = CompanyDirector::where('user_id', $this->user->id)
+                ->where('is_active', true)
+                ->first();
+
+            if ($director) {
+                $currentSignature = DirectorSignature::where('director_id', $director->id)
+                    ->where('is_default', true)
+                    ->first();
+            }
+        }
+
         return view('livewire.tenant.pages.user.show-user', [
-            'roles' => $roles
+            'roles' => $roles,
+            'director' => $director,
+            'currentSignature' => $currentSignature,
         ]);
+    }
+
+    public function uploadSignature()
+    {
+        $this->validate([
+            'signatureFile' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+        ]);
+
+        // Find director linked to this user
+        $director = CompanyDirector::where('user_id', $this->user->id)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$director) {
+            LivewireAlert::withOptions([
+                'position' => 'top-end',
+                'icon' => 'error',
+                'title' => 'Director profile not found for this user',
+                'timer' => 2000
+            ])->show();
+            return;
+        }
+
+        // Remove existing default signature and its file
+        $existingSignature = DirectorSignature::where('director_id', $director->id)
+            ->where('is_default', true)
+            ->first();
+
+        if ($existingSignature) {
+            Storage::disk('public')->delete($existingSignature->signature_path);
+            $existingSignature->delete();
+        }
+
+        // Upload new signature to public disk with signatures folder
+        $path = $this->signatureFile->store('signatures', 'public');
+
+        DirectorSignature::create([
+            'director_id' => $director->id,
+            'signature_path' => $path,
+            'is_default' => true,
+            'uploaded_by' => auth()->id()
+        ]);
+
+        $this->reset('signatureFile');
+
+        LivewireAlert::withOptions([
+            'position' => 'top-end',
+            'icon' => 'success',
+            'title' => 'Signature uploaded successfully!',
+            'timer' => 1500
+        ])->show();
+    }
+
+    public function deleteSignature()
+    {
+        $director = CompanyDirector::where('user_id', $this->user->id)
+            ->where('is_active', true)
+            ->first();
+
+        if ($director) {
+            $signature = DirectorSignature::where('director_id', $director->id)
+                ->where('is_default', true)
+                ->first();
+
+            if ($signature) {
+                Storage::disk('public')->delete($signature->signature_path);
+                $signature->delete();
+
+                LivewireAlert::withOptions([
+                    'position' => 'top-end',
+                    'icon' => 'success',
+                    'title' => 'Signature deleted successfully!',
+                    'timer' => 1500
+                ])->show();
+            }
+        }
     }
 
     public function updatedInternalRoles($value)

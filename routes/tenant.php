@@ -25,6 +25,7 @@ use App\Livewire\Tenant\Pages\Cosec\AdminCosecOrderEdit;
 use App\Livewire\Tenant\Pages\Cosec\CartCosec;
 use App\Livewire\Tenant\Pages\Cosec\DirectorSignatures;
 use App\Livewire\Tenant\Pages\Cosec\IndexCosec;
+use App\Livewire\Tenant\Pages\Cosec\PlaceOrderCosec;
 use App\Livewire\Tenant\Pages\Cosec\OrderCosec;
 use App\Livewire\Tenant\Pages\Cosec\ViewCosec;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,9 @@ use App\Livewire\Tenant\Pages\Report\DataMigration\NtfsDataMigration;
 use App\Livewire\Tenant\Pages\Report\NtfsMigration;
 use App\Livewire\Tenant\Pages\ReportConfig\DirectorReportConfig;
 use App\Livewire\Tenant\Pages\ReportConfig\NtfsConfig;
+use App\Livewire\Tenant\Pages\UserProfile;
+use App\Livewire\Tenant\Pages\UserCreditHistory;
+use App\Livewire\Tenant\Pages\Cosec\AdminCosecCreditHistory;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -83,6 +87,11 @@ Route::middleware([
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/home', Dashboard::class)->name('home');
+
+        // User Profile routes
+        Route::get('/profile', UserProfile::class)->name('profile');
+        Route::get('/profile/credit-history', UserCreditHistory::class)->name('profile.credit-history');
+
         // Route::prefix('users')->group(function () {
         Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
             Route::get('/', IndexUser::class)->name('index');
@@ -101,8 +110,11 @@ Route::middleware([
 
         Route::group(['prefix' => 'companies', 'as' => 'companies.'], function () {
             // Route::get('/', IndexCompany::class)->name('index');
-            Route::get('/create', CreateCompany::class)->name('create');
+            Route::get('/create', CreateCompany::class)->name('create')->middleware('user.type:admin,subscriber');
             Route::get('/{id}', ShowCompany::class)->name('show');
+            Route::get('/{id}/directors', \App\Livewire\Tenant\Pages\Company\DirectorCreate::class)
+                ->name('directors')
+                ->middleware('user.type:admin,subscriber');
 
             // Route::get('/{id}', CorporateInfo::class)->name('corporate');
         });
@@ -149,25 +161,53 @@ Route::middleware([
         Route::get('/reports/{id}', [CompanyReportController::class, 'viewFinancialReport'])->name('financialreport');
 
 
-        Route::prefix('/admin/cosec')->middleware(['is_admin'])->group(function () {
+        // Admin COSEC routes (accessible by admin and subscriber only)
+        Route::prefix('/admin/cosec')->middleware(['user.type:admin,subscriber'])->group(function () {
             Route::get('/', AdminCosecIndex::class)->name('admin.cosec.index');
             // Route::get('/{id}', AdminCosecIndex::class)->name('admin.cosec.show');
             Route::get('/report/{id}', AdminCosecReport::class)->name('admin.cosec.report');
             Route::get('/order/edit/{id}', AdminCosecOrderEdit::class)->name('admin.cosec.order.edit');
             Route::get('/services', AdminCosecService::class)->name('admin.cosec.services');
             Route::get('/templates', AdminCosecTemplate::class)->name('admin.cosec.templates');
+            Route::get('/templates/create', \App\Livewire\Tenant\Pages\Cosec\CreateCosecTemplate::class)->name('admin.cosec.templates.create')->middleware('user.type:admin,subscriber');
+            Route::get('/templates/edit/{id}', \App\Livewire\Tenant\Pages\Cosec\CreateCosecTemplate::class)->name('admin.cosec.templates.edit')->middleware('user.type:admin,subscriber');
             Route::get('/template/preview/{id}', [\App\Http\Controllers\Tenant\CosecTemplateController::class, 'preview'])->name('admin.cosec.template.preview');
-            Route::get('/signatures/{companyId}', AdminCosecSignature::class)->name('admin.cosec.signature');
-            Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits');
+            Route::get('/signatures/{companyId}', AdminCosecSignature::class)->name('admin.cosec.signature')->middleware('user.type:admin,subscriber');
+            Route::get('/credits', AdminCosecCredit::class)->name('admin.cosec.credits')->middleware('user.type:admin,subscriber');
+            Route::get('/credit-history/{userId}', AdminCosecCreditHistory::class)->name('admin.cosec.credit-history')->middleware('user.type:admin,subscriber');
         });
 
-        Route::prefix('/cosec')->group(function () {
-            Route::get('/{id}', IndexCosec::class)->name('cosec.index');
+        // Subscriber COSEC routes (accessible by admin and subscriber)
+        Route::prefix('/subscriber/cosec')->middleware(['user.type:admin,subscriber'])->group(function () {
+            Route::get('/{id}', PlaceOrderCosec::class)->name('subscriber.cosec.index');
+            Route::get('/{id}/cart', CartCosec::class)->name('subscriber.cosec.cart');
+            Route::get('/order/{id}', ViewCosec::class)->name('subscriber.cosec.view');
+            Route::get('/{id}/order', OrderCosec::class)->name('subscriber.cosec.order');
+            Route::get('/print-word/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printWord'])->name('subscriber.cosec.print-word');
+            Route::get('/print-pdf/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printPdf'])->name('subscriber.cosec.print-pdf');
+        });
+
+        // Legacy /cosec routes (accessible by admin, subscriber, and director)
+        Route::prefix('/cosec')->middleware(['user.type:admin,subscriber,director'])->group(function () {
+            // Admin route must come BEFORE /{id} to avoid being caught as a company ID
+            Route::get('/admin', AdminCosecIndex::class)->name('cosec.admin')->middleware('user.type:admin,subscriber');
+            Route::get('/{id}', PlaceOrderCosec::class)->name('cosec.index');
             Route::get('/{id}/cart', CartCosec::class)->name('cosec.cart');
             Route::get('/order/{id}', ViewCosec::class)->name('cosec.view');
             Route::get('/{id}/order', OrderCosec::class)->name('cosec.order');
             Route::get('/print-word/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printWord'])->name('cosec.print-word');
             Route::get('/print-pdf/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printPdf'])->name('cosec.print-pdf');
+        });
+
+        // Director COSEC routes (accessible by directors only)
+        Route::prefix('/director/cosec')->middleware(['user.type:director'])->group(function () {
+            Route::get('/', \App\Livewire\Tenant\Pages\Cosec\DirectorDashboard::class)->name('director.cosec.dashboard');
+            Route::get('/place-order', \App\Livewire\Tenant\Pages\Cosec\DirectorPlaceOrder::class)->name('director.cosec.place-order');
+            Route::get('/my-orders', \App\Livewire\Tenant\Pages\Cosec\DirectorMyOrders::class)->name('director.cosec.my-orders');
+            Route::get('/signatures', \App\Livewire\Tenant\Pages\Cosec\DirectorPendingSignatures::class)->name('director.cosec.signatures');
+            Route::get('/sign/{id}', \App\Livewire\Tenant\Pages\Cosec\DirectorSignOrder::class)->name('director.cosec.sign');
+            Route::get('/my-signatures', \App\Livewire\Tenant\Pages\Cosec\DirectorMySignatures::class)->name('director.cosec.my-signatures');
+            Route::get('/template/preview/{id}', [\App\Http\Controllers\Tenant\CosecTemplateController::class, 'preview'])->name('director.cosec.template.preview');
         });
 
         // Tax/LHDN Routes

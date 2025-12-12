@@ -51,6 +51,18 @@ class SecretaryModal extends ModalComponent
     #[Validate('required')]
     public $secretaryNo;
 
+    public $licenseNo;
+
+    public $ssmNo;
+
+    public $email;
+
+    public $phone;
+
+    public $companyName;
+
+    public $secretaryAddress;
+
     public $effectiveDate;
 
     public $remarks;
@@ -76,6 +88,12 @@ class SecretaryModal extends ModalComponent
             $this->idType = $this->secretary->id_type;
             $this->idNo = $this->secretary->id_no;
             $this->secretaryNo = $this->secretary->secretary_no;
+            $this->licenseNo = $this->secretary->license_no;
+            $this->ssmNo = $this->secretary->ssm_no;
+            $this->email = $this->secretary->email;
+            $this->phone = $this->secretary->phone;
+            $this->companyName = $this->secretary->company_name;
+            $this->secretaryAddress = $this->secretary->address;
             $this->effectiveDate = $this->secretaryChange->effective_date->format('Y-m-d');
             $this->remarks = $this->secretaryChange->remarks;
         }
@@ -108,6 +126,12 @@ class SecretaryModal extends ModalComponent
                     'id_type' => $this->idType,
                     'id_no' => $this->idNo,
                     'secretary_no' => $this->secretaryNo,
+                    'license_no' => $this->licenseNo,
+                    'ssm_no' => $this->ssmNo,
+                    'email' => $this->email,
+                    'phone' => $this->phone,
+                    'company_name' => $this->companyName,
+                    'address' => $this->secretaryAddress,
                 ]);
 
                 $this->selectedSecretary = $this->secretary->id;
@@ -137,6 +161,12 @@ class SecretaryModal extends ModalComponent
                     'id_type' => $this->idType,
                     'id_no' => $this->idNo,
                     'secretary_no' => $this->secretaryNo,
+                    'license_no' => $this->licenseNo,
+                    'ssm_no' => $this->ssmNo,
+                    'email' => $this->email,
+                    'phone' => $this->phone,
+                    'company_name' => $this->companyName,
+                    'address' => $this->secretaryAddress,
                 ]);
             }
             else {

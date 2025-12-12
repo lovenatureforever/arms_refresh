@@ -13,7 +13,8 @@ class TenantRolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = [
+        // Internal workflow roles
+        $internalRoles = [
             'internal_admin',
             'internal_reviewer',
             'internal_executor',
@@ -25,7 +26,16 @@ class TenantRolePermissionSeeder extends Seeder
             'isqm_preparer'
         ];
 
-        foreach ($roles as $role) {
+        // COSEC user type roles
+        $cosecRoles = [
+            'cosec_admin',      // Full access to all COSEC features
+            'cosec_subscriber', // Company Secretary - can manage their companies
+            'cosec_director',   // Director - limited access to their company
+        ];
+
+        $allRoles = array_merge($internalRoles, $cosecRoles);
+
+        foreach ($allRoles as $role) {
             Role::updateOrCreate(
                 ['name' => $role]
             );

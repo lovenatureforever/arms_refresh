@@ -19,7 +19,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Name</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">User Email</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Username</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500 max-w-[400px]" scope="col">Role</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">User Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500 max-w-[400px]" scope="col">Audit Roles</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Credit</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500" scope="col">Status</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-500" scope="col">Action</th>
@@ -32,6 +33,20 @@
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $user->name }}</td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $user->email }}</td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $user->username }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+                                            @php
+                                                $userType = $user->user_type ?? 'none';
+                                            @endphp
+                                            @if($userType === 'admin')
+                                                <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded text-xs font-medium text-white" style="background-color: #ef4444;">Admin</span>
+                                            @elseif($userType === 'subscriber')
+                                                <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded text-xs font-medium text-white" style="background-color: #3b82f6;">Subscriber</span>
+                                            @elseif($userType === 'director')
+                                                <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded text-xs font-medium text-white" style="background-color: #06b6d4;">Director</span>
+                                            @else
+                                                <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded text-xs font-medium text-white" style="background-color: #9ca3af;">Not Set</span>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200 max-w-[400px] break-words">
                                             @php
                                                 $systemRoles = $user->roles()

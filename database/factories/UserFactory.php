@@ -29,7 +29,40 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'credit' => 0,
+            'user_type' => 'subscriber',
+            'is_active' => true,
         ];
+    }
+
+    /**
+     * Configure the user as an admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'user_type' => 'admin',
+        ]);
+    }
+
+    /**
+     * Configure the user as a director.
+     */
+    public function director(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'user_type' => 'director',
+        ]);
+    }
+
+    /**
+     * Configure the user with specific credit amount.
+     */
+    public function withCredit(int $amount): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'credit' => $amount,
+        ]);
     }
 
     /**

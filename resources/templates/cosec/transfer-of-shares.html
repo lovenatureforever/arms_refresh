@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfer of Shares - Director's Circular Resolution</title>
+</head>
+<body>
+    <div class="document">
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="title">
+            <h2>DIRECTOR'S CIRCULAR RESOLUTION</h2>
+        </div>
+
+        <div class="content">
+            <p class="preamble">I, the undersigned being the Sole Director of the Company for the time being, do and hereby RESOLVE the following resolutions in writing pursuant to Paragraph 15 of the Third Schedule of the Companies Act 2016:-</p>
+
+            <div class="resolution-section">
+                <h3>TRANSFER OF SHARES</h3>
+                <p>THAT the following transfer of shares in the Company be and are hereby approved subject to the proper execution of the Forms of Transfer of Securities (Section 105 of Companies Act, 2016):-</p>
+
+                <table class="shares-table">
+                    <thead>
+                        <tr>
+                            <th>Transferor</th>
+                            <th>Transferor NRIC/Passport</th>
+                            <th>Transferee</th>
+                            <th>Transferee NRIC/Passport</th>
+                            <th>No. of Ordinary Shares</th>
+                            <th>Consideration (RM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{transferor_name}}</td>
+                            <td>{{transferor_nric}}</td>
+                            <td>{{transferee_name}}</td>
+                            <td>{{transferee_nric}}</td>
+                            <td>{{number_of_shares}}</td>
+                            <td>{{transfer_consideration}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="transferee-details">
+                    <p><strong>Transferee Address:</strong> {{transferee_address}}</p>
+                    <p><strong>Transferee Nationality:</strong> {{transferee_nationality}}</p>
+                </div>
+
+                <p>THAT authority be and is hereby given to the Company Secretaries to notify the Companies Commission of Malaysia of the changes of the particulars in the Register of Members pursuant to Section 51 of the Companies Act 2016 and to do all such acts and things as may be necessary to give effect to the above transfer of shares.</p>
+
+                <p>AND THAT authority be and is hereby given for the affixation of the Common Seal of the Company onto the new share certificate (if any), to be issued to the transferee in connection with the above in accordance with the provisions of the Companies Act 2016.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+        </div>
+
+        <div class="signatures-section">
+            <p class="signature-title">SOLE DIRECTOR / BOARD OF DIRECTOR</p>
+            <div class="signatures-grid">
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_1}}</p>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_2}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_2}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Certified Extract Page -->
+        <div class="header">
+            <h1>{{company_name}}</h1>
+            <p class="company-no">{{company_no}} ({{company_old_no}})</p>
+            <p class="incorporated">(Incorporated in Malaysia)</p>
+        </div>
+
+        <div class="certified-extract">
+            <p class="extract-intro">Certified Extract of the Director's Circular Resolution passed pursuant to Paragraph 15 of the Third Schedule of the Companies Act 2016:-</p>
+
+            <div class="resolution-section">
+                <h3>TRANSFER OF SHARES</h3>
+                <p>THAT the following transfer of shares in the Company be and are hereby approved subject to the proper execution of the Forms of Transfer of Securities (Section 105 of Companies Act, 2016):-</p>
+
+                <table class="shares-table">
+                    <thead>
+                        <tr>
+                            <th>Transferor</th>
+                            <th>Transferor NRIC/Passport</th>
+                            <th>Transferee</th>
+                            <th>Transferee NRIC/Passport</th>
+                            <th>No. of Ordinary Shares</th>
+                            <th>Consideration (RM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{transferor_name}}</td>
+                            <td>{{transferor_nric}}</td>
+                            <td>{{transferee_name}}</td>
+                            <td>{{transferee_nric}}</td>
+                            <td>{{number_of_shares}}</td>
+                            <td>{{transfer_consideration}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="transferee-details">
+                    <p><strong>Transferee Address:</strong> {{transferee_address}}</p>
+                    <p><strong>Transferee Nationality:</strong> {{transferee_nationality}}</p>
+                </div>
+
+                <p>THAT authority be and is hereby given to the Company Secretaries to notify the Companies Commission of Malaysia of the changes of the particulars in the Register of Members pursuant to Section 51 of the Companies Act 2016 and to do all such acts and things as may be necessary to give effect to the above transfer of shares.</p>
+
+                <p>AND THAT authority be and is hereby given for the affixation of the Common Seal of the Company onto the new share certificate (if any), to be issued to the transferee in connection with the above in accordance with the provisions of the Companies Act 2016.</p>
+            </div>
+
+            <p class="dated">Dated this: <strong>{{resolution_date}}</strong></p>
+
+            <p class="certified-label">CERTIFIED TRUE COPY:-</p>
+
+            <div class="certification-signatures">
+                <div class="signature-block">
+                    <div class="signature-area">{{director_signature_1}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Director</p>
+                    <p class="signer-name">{{director_name_1}}</p>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-area">{{secretary_signature}}</div>
+                    <div class="signature-line"></div>
+                    <p class="signer-role">Company Secretary</p>
+                    <p class="signer-name">{{secretary_name}}</p>
+                    <p class="signer-license">{{secretary_license}}</p>
+                    <p class="signer-ssm">SSM PC NO. {{secretary_ssm_no}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

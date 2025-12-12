@@ -66,6 +66,30 @@
                         <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="secretaryNo">Secretary No.</label>
                         <input class="form-input" id="secretaryNo" type="text" wire:dirty.class="border-amber-500" wire:model="secretaryNo">
                     </div>
+                    <div>
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="licenseNo">License No.</label>
+                        <input class="form-input" id="licenseNo" type="text" wire:dirty.class="border-amber-500" wire:model="licenseNo">
+                    </div>
+                    <div>
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="ssmNo">SSM No.</label>
+                        <input class="form-input" id="ssmNo" type="text" wire:dirty.class="border-amber-500" wire:model="ssmNo">
+                    </div>
+                    <div>
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="email">Email</label>
+                        <input class="form-input" id="email" type="email" wire:dirty.class="border-amber-500" wire:model="email" placeholder="secretary@example.com">
+                    </div>
+                    <div>
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="phone">Phone</label>
+                        <input class="form-input" id="phone" type="text" wire:dirty.class="border-amber-500" wire:model="phone">
+                    </div>
+                    <div>
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="companyName">Company Name</label>
+                        <input class="form-input" id="companyName" type="text" wire:dirty.class="border-amber-500" wire:model="companyName">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="secretaryAddress">Address</label>
+                        <textarea class="form-input" id="secretaryAddress" rows="2" wire:dirty.class="border-amber-500" wire:model="secretaryAddress"></textarea>
+                    </div>
                 @else
                     <div class="col-span-2">
                         <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="selectedSecretary">Select Secretary</label>

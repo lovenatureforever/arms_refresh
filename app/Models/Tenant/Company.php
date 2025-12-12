@@ -2,10 +2,12 @@
 
 namespace App\Models\Tenant;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class Company extends Model
@@ -13,6 +15,7 @@ class Company extends Model
     use HasFactory, SoftDeletes, HasChangeRecords;
 
     protected $fillable = [
+        'name',
         'registration_no',
         'registration_no_old',
         'current_is_first_year',
@@ -30,6 +33,7 @@ class Company extends Model
         'audit_fee',
         'no_business_address',
         'is_active',
+        'created_by',
     ];
 
     protected $casts = [
@@ -177,9 +181,18 @@ class Company extends Model
         return $this->hasOne(CompanyAuditorSetting::class);
     }
 
+    /**
+     * The user who created this company.
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function getNameAttribute()
     {
-        return $this->detailAtLast()->name ?? null;
+        // First try to get name from detail changes, fall back to direct attribute
+        return $this->detailAtLast()->name ?? $this->attributes['name'] ?? null;
     }
 
     public function ordinaryShareCapitalAtStart()

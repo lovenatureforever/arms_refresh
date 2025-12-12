@@ -15,5 +15,6 @@ class TenantDatabaseSeeder extends Seeder
     {
         $this->call(TenantRolePermissionSeeder::class);
         $this->call(CosecServiceSeeder::class);
+        $this->call(CosecTemplateSeeder::class);
     }
 }
