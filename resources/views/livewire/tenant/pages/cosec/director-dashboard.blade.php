@@ -19,7 +19,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-500 uppercase">Credit Balance</p>
-                            <p class="text-lg font-bold text-gray-800">RM {{ number_format(auth()->user()->credit ?? 0, 0) }}</p>
+                            <p class="text-lg font-bold text-gray-800">{{ number_format(auth()->user()->credit ?? 0, 0) }}</p>
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,8 @@ class CosecTemplate extends Model
     ];
 
     // Signature types
-    const SIGNATURE_DEFAULT = 'default';
+    const SIGNATURE_SOLE_DIRECTOR = 'sole_director';
+    const SIGNATURE_TWO_DIRECTORS = 'two_directors';
     const SIGNATURE_ALL_DIRECTORS = 'all_directors';
 
     public function defaultSignatory()
@@ -168,6 +169,14 @@ class CosecTemplate extends Model
             return stripos($p, 'signature') !== false;
         });
         return count($signaturePlaceholders);
+    }
+
+    /**
+     * Get the template content.
+     */
+    public function getTemplateContent(): string
+    {
+        return $this->content ?? '';
     }
 
     /**

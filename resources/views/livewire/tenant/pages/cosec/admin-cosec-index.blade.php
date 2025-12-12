@@ -24,6 +24,7 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Template</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cost</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Approved Date</th>
                             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
@@ -47,7 +48,7 @@
                                 {{ $order->form_name }}
                             </td>
                             <td class="px-4 py-3">
-                                <span class="text-sm font-medium text-gray-900">RM {{ number_format($order->getEffectiveCost(), 0) }}</span>
+                                <span class="text-sm font-medium text-gray-900">{{ number_format($order->getEffectiveCost(), 0) }}</span>
                             </td>
                             <td class="px-4 py-3">
                                 @if($order->status == \App\Models\Tenant\CosecOrder::STATUS_PENDING)
@@ -69,6 +70,14 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3">
+                                @if($order->approved_at)
+                                    <p class="text-sm text-gray-900">{{ $order->approved_at->format('d M Y') }}</p>
+                                    <p class="text-xs text-gray-500">{{ $order->approved_at->format('h:i A') }}</p>
+                                @else
+                                    <span class="text-sm text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3">
                                 <div class="flex items-center justify-center gap-2">
                                     {{-- Edit/Fill Form - show for pending orders --}}
                                     @if($order->status == \App\Models\Tenant\CosecOrder::STATUS_PENDING)
@@ -78,7 +87,7 @@
                                         </a>
                                     @endif
 
-                                    {{-- View/Print for approved orders --}}
+                                    {{-- View/Print for approved orders (no edit allowed) --}}
                                     @if($order->status == \App\Models\Tenant\CosecOrder::STATUS_APPROVED)
                                         <a href="{{ route('admin.cosec.report', $order->id) }}"
                                            class="btn bg-info text-white text-xs px-3 py-1">
@@ -90,8 +99,8 @@
                                         </button>
                                     @endif
 
-                                    {{-- Edit button for non-pending orders (for viewing/editing) --}}
-                                    @if($order->status != \App\Models\Tenant\CosecOrder::STATUS_PENDING)
+                                    {{-- Edit button only for rejected orders (to allow re-processing) --}}
+                                    @if($order->status == \App\Models\Tenant\CosecOrder::STATUS_REJECTED)
                                         <a href="{{ route('admin.cosec.order.edit', $order->id) }}"
                                            class="btn bg-gray-200 text-gray-700 text-xs px-3 py-1">
                                             Edit

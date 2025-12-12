@@ -10,7 +10,7 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500 dark:text-gray-400">Credit Balance</p>
-                    <p class="text-2xl font-bold text-primary">RM {{ number_format(auth()->user()->credit ?? 0, 0) }}</p>
+                    <p class="text-2xl font-bold text-primary">{{ number_format(auth()->user()->credit ?? 0, 0) }}</p>
                 </div>
             </div>
         </div>
@@ -178,7 +178,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="text-sm text-gray-600 dark:text-gray-400">
                         <p>This order will cost <strong class="text-primary">{{ $selectedTemplate->credit_cost }} credits</strong></p>
-                        <p class="text-xs mt-1">Your balance after order: RM {{ number_format((auth()->user()->credit ?? 0) - $selectedTemplate->credit_cost, 0) }}</p>
+                        <p class="text-xs mt-1">Your balance after order: {{ number_format((auth()->user()->credit ?? 0) - $selectedTemplate->credit_cost, 0) }} credits</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
                         <button type="button" onclick="window.printDocument()" class="btn bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto order-2 sm:order-1">

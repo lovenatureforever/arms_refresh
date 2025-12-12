@@ -1,6 +1,16 @@
 <div class="mb-4">
     <div class="card">
         <div class="text-black w-full lg:w-2/3 mx-auto p-6">
+            {{-- Back Button --}}
+            <div class="mb-4">
+                <a href="{{ route('admin.cosec.index') }}" class="inline-flex items-center text-gray-600 hover:text-gray-800">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Back to Orders
+                </a>
+            </div>
+
             <div class="flex items-center justify-between border-b mb-6">
                 <h2 class="text-xl font-semibold py-4">
                     {{ $order->form_name }}

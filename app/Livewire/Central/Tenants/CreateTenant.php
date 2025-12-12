@@ -76,14 +76,21 @@ class CreateTenant extends Component
                 ]
             );
 
+            // Roles are created by TenantRolePermissionSeeder which runs during tenant creation
+            // Create admin user and assign role in tenant context
             $tenant->run(function () use ($tenant) {
                 $user = User::create([
                     'name' => $this->name,
                     'email' => $this->email,
                     'password' => Hash::make($this->password),
                     'username' => $this->username,
-                    'phone_number' => $this->phoneNumber
+                    'phone_number' => $this->phoneNumber,
+                    'user_type' => User::USER_TYPE_ADMIN,
+                    'is_active' => true
                 ]);
+
+                // Assign cosec_admin role to tenant admin user
+                $user->assignRole(User::ROLE_COSEC_ADMIN);
 
                 $tenant->update([
                     'adminId' => $user->id

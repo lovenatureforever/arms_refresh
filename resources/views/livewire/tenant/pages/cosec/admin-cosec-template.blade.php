@@ -21,7 +21,7 @@
                             <tr>
                                 <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Name</th>
                                 <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400 hidden md:table-cell">Description</th>
-                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400 hidden sm:table-cell">Signature</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Signature</th>
                                 <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Cost</th>
                                 <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400 hidden sm:table-cell">Active</th>
                                 <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Actions</th>
@@ -38,15 +38,21 @@
                                     <td class="px-3 py-3 text-sm text-gray-800 dark:text-gray-200 hidden md:table-cell">
                                         <div class="max-w-xs truncate" title="{{ $template->description }}">{{ $template->description ?? '-' }}</div>
                                     </td>
-                                    <td class="px-3 py-3 whitespace-nowrap text-sm hidden sm:table-cell">
-                                        @if($template->signature_type === 'all_directors')
-                                            <span class="inline-flex items-center py-1 px-2 rounded text-xs font-medium text-white" style="background-color: #3b82f6;">All</span>
+                                    <td class="px-3 py-3 whitespace-nowrap text-sm">
+                                        @if($template->signature_type === 'sole_director')
+                                            <span class="inline-flex items-center py-1 px-3 rounded text-xs font-semibold text-white" style="background-color: #22c55e;">Sole Director</span>
+                                        @elseif($template->signature_type === 'two_directors')
+                                            <span class="inline-flex items-center py-1 px-3 rounded text-xs font-semibold text-white" style="background-color: #3b82f6;">Two Directors</span>
+                                        @elseif($template->signature_type === 'all_directors')
+                                            <span class="inline-flex items-center py-1 px-3 rounded text-xs font-semibold text-white" style="background-color: #8b5cf6;">All Directors</span>
+                                        @elseif($template->signature_type === 'default')
+                                            <span class="inline-flex items-center py-1 px-3 rounded text-xs font-semibold text-white" style="background-color: #6b7280;">Default</span>
                                         @else
-                                            <span class="inline-flex items-center py-1 px-2 rounded text-xs font-medium text-white" style="background-color: #22c55e;">Default</span>
+                                            <span class="inline-flex items-center py-1 px-3 rounded text-xs font-semibold text-white" style="background-color: #6b7280;">{{ ucfirst(str_replace('_', ' ', $template->signature_type ?? 'None')) }}</span>
                                         @endif
                                     </td>
                                     <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                        <span class="font-medium">RM {{ number_format($template->credit_cost, 0) }}</span>
+                                        <span class="font-medium">{{ number_format($template->credit_cost, 0) }} Credits</span>
                                     </td>
                                     <td class="px-3 py-3 whitespace-nowrap text-sm hidden sm:table-cell">
                                         @if($template->is_active)

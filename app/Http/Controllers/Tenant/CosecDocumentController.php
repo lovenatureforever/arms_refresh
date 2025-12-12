@@ -219,6 +219,25 @@ class CosecDocumentController extends Controller
         // Convert tenancy asset URLs to absolute file paths for DomPDF
         $content = $this->convertTenancyAssetPaths($content);
 
+        // Remove unfilled placeholders like [Secretary Name], [License No], etc.
+        $content = preg_replace('/\[[^\]]+\]/', '', $content);
+
+        // Strip ALL border-related attributes from tables
+        $content = preg_replace('/<table([^>]*)\s+border=["\']?\d*["\']?([^>]*)>/i', '<table$1$2>', $content);
+        $content = preg_replace('/<table([^>]*)\s+cellspacing=["\']?\d*["\']?([^>]*)>/i', '<table$1$2>', $content);
+        $content = preg_replace('/<table([^>]*)\s+cellpadding=["\']?\d*["\']?([^>]*)>/i', '<table$1$2>', $content);
+        $content = preg_replace('/<table([^>]*)\s+rules=["\']?[^"\']*["\']?([^>]*)>/i', '<table$1$2>', $content);
+        $content = preg_replace('/<table([^>]*)\s+frame=["\']?[^"\']*["\']?([^>]*)>/i', '<table$1$2>', $content);
+
+        // Strip border-related attributes from td and th elements
+        $content = preg_replace('/<(td|th)([^>]*)\s+border=["\']?\d*["\']?([^>]*)>/i', '<$1$2$3>', $content);
+
+        // Strip ALL border-related inline styles (comprehensive approach)
+        $content = preg_replace('/border(-[a-z-]+)?:\s*[^;]+;?/i', '', $content);
+
+        // Clean up empty style attributes
+        $content = preg_replace('/style=["\'][\s;]*["\']/i', '', $content);
+
         return '<!DOCTYPE html>
 <html>
 <head>
@@ -228,7 +247,7 @@ class CosecDocumentController extends Controller
             font-family: "DejaVu Sans", sans-serif;
             font-size: 12px;
             line-height: 1.6;
-            color: #333;
+            color: #000;
             margin: 40px;
         }
         h1, h2, h3, h4, h5, h6 {
@@ -238,18 +257,26 @@ class CosecDocumentController extends Controller
         p {
             margin-bottom: 10px;
         }
+        /* Clean table styling - no borders by default */
         table {
-            width: 100%;
-            border-collapse: collapse;
+            width: 100% !important;
+            border-collapse: collapse !important;
             margin-bottom: 15px;
+            border: none !important;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: none !important;
             padding: 8px;
             text-align: left;
+            vertical-align: top;
         }
-        th {
-            background-color: #f5f5f5;
+        /* Only add borders to tables with explicit border class */
+        table.bordered, table.bordered th, table.bordered td {
+            border: 1px solid #333 !important;
+        }
+        /* Hide hr elements - they create unwanted lines */
+        hr {
+            display: none !important;
         }
         img {
             max-width: 150px;
@@ -302,7 +329,7 @@ class CosecDocumentController extends Controller
             vertical-align: top;
             margin: 0 2%;
         }
-        /* Prevent signature images from causing page breaks */
+        /* Signature images styling */
         img[alt="Signature"], img[alt="Secretary Signature"] {
             max-width: 150px !important;
             max-height: 50px !important;
@@ -322,6 +349,13 @@ class CosecDocumentController extends Controller
         }
         .mt-4 {
             margin-top: 16px;
+        }
+        /* Utility classes */
+        .underline {
+            text-decoration: underline;
+        }
+        .bold {
+            font-weight: bold;
         }
     </style>
 </head>

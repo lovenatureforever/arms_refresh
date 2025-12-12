@@ -1,6 +1,19 @@
 {{-- Shared Order Form Fields Partial --}}
 {{-- Required variables: $customPlaceholders, $formData (wire:model), $requiredSignatures, $selectedDirectors (wire:model), $directors --}}
 
+@php
+    // Fields that should be disabled/readonly for directors
+    $isDirectorUser = auth()->user()->user_type === 'director';
+    $disabledForDirector = [
+        'company_name',
+        'company_no',
+        'company_old_no',
+        'secretary_name',
+        'secretary_license',
+        'secretary_ssm',
+    ];
+@endphp
+
 {{-- Document Details Form --}}
 @if(count($customPlaceholders) > 0)
 <div class="mb-4">
@@ -12,17 +25,23 @@
     </h4>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach($customPlaceholders as $placeholder)
+            @php
+                $isDisabled = $isDirectorUser && in_array($placeholder, $disabledForDirector);
+            @endphp
             <div wire:key="field-{{ $placeholder }}" class="{{ str_contains($placeholder, 'address') || str_contains($placeholder, 'description') ? 'md:col-span-2' : '' }}">
                 <label class="block text-xs font-medium text-gray-700 mb-1">
                     {{ \App\Models\Tenant\CosecTemplate::placeholderToLabel($placeholder) }}
                     <span class="text-red-500">*</span>
+                    @if($isDisabled)
+                        <span class="text-gray-400 text-[10px] ml-1">(Auto-filled)</span>
+                    @endif
                 </label>
                 @if(str_contains($placeholder, 'date'))
-                    <input type="date" wire:model="formData.{{ $placeholder }}" class="form-input w-full text-sm">
+                    <input type="date" wire:model="formData.{{ $placeholder }}" class="form-input w-full text-sm {{ $isDisabled ? 'bg-gray-100 cursor-not-allowed' : '' }}" {{ $isDisabled ? 'disabled' : '' }}>
                 @elseif(str_contains($placeholder, 'address') || str_contains($placeholder, 'description'))
-                    <textarea wire:model="formData.{{ $placeholder }}" rows="2" class="form-input w-full text-sm" placeholder="Enter {{ \App\Models\Tenant\CosecTemplate::placeholderToLabel($placeholder) }}"></textarea>
+                    <textarea wire:model="formData.{{ $placeholder }}" rows="2" class="form-input w-full text-sm {{ $isDisabled ? 'bg-gray-100 cursor-not-allowed' : '' }}" placeholder="Enter {{ \App\Models\Tenant\CosecTemplate::placeholderToLabel($placeholder) }}" {{ $isDisabled ? 'disabled' : '' }}></textarea>
                 @else
-                    <input type="text" wire:model="formData.{{ $placeholder }}" class="form-input w-full text-sm" placeholder="Enter {{ \App\Models\Tenant\CosecTemplate::placeholderToLabel($placeholder) }}">
+                    <input type="text" wire:model="formData.{{ $placeholder }}" class="form-input w-full text-sm {{ $isDisabled ? 'bg-gray-100 cursor-not-allowed' : '' }}" placeholder="Enter {{ \App\Models\Tenant\CosecTemplate::placeholderToLabel($placeholder) }}" {{ $isDisabled ? 'disabled' : '' }}>
                 @endif
                 @error('formData.' . $placeholder)
                     <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
@@ -33,8 +52,8 @@
 </div>
 @endif
 
-{{-- Director Selection --}}
-@if($requiredSignatures > 0)
+{{-- Director Selection - Hidden for directors, only admin can select signatories --}}
+@if($requiredSignatures > 0 && !$isDirectorUser)
 <div class="mb-2">
     <h4 class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
         <svg class="w-4 h-4 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -27,12 +27,14 @@ class CosecOrder extends Model
         'cost',
         'custom_credit_cost',
         'status',
-        'signature_status'
+        'signature_status',
+        'approved_at'
     ];
 
     protected $casts = [
         'data' => 'json',
         'requested_at' => 'datetime',
+        'approved_at' => 'datetime',
         'document_content' => 'string'
     ];
 

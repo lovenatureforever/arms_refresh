@@ -6,6 +6,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 use App\Models\Tenant\Company;
+use App\Models\Tenant\CompanyDirector;
 use App\Models\User;
 
 class ShowCompany extends Component
@@ -25,9 +26,15 @@ class ShowCompany extends Component
         $company = Company::find($id);
         $user = auth()->user();
 
-        // Directors cannot access company dashboard
+        // Directors can only access their own company (the one they're linked to)
         if ($user->user_type === User::USER_TYPE_DIRECTOR) {
-            abort(403, 'Directors cannot access company dashboard.');
+            $director = CompanyDirector::where('user_id', $user->id)
+                ->where('is_active', true)
+                ->first();
+
+            if (!$director || $director->company_id != $id) {
+                abort(403, 'You can only access your own company.');
+            }
         }
 
         // Subscribers can only access their own companies

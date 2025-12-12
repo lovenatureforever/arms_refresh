@@ -42,7 +42,7 @@
                                     {{ $order->form_name }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-700">
-                                    RM {{ number_format($order->cost ?? 0, 0) }}
+                                    {{ number_format($order->cost ?? 0, 0) }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-500">
                                     {{ $order->created_at->format('d M Y') }}

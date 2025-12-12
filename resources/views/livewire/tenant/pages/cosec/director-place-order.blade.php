@@ -23,7 +23,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-xs text-gray-500 uppercase">Your Credit Balance</p>
-                        <p class="text-2xl font-bold text-green-600">RM {{ number_format($userCredit, 0) }}</p>
+                        <p class="text-2xl font-bold text-green-600">{{ number_format($userCredit, 0) }}</p>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                                     </td>
                                     <td class="px-2 py-2 whitespace-nowrap text-center text-gray-800 dark:text-gray-200">
                                         <span class="font-medium {{ $userCredit >= $template->credit_cost ? 'text-green-600' : 'text-red-600' }}">
-                                            RM{{ number_format($template->credit_cost, 0) }}
+                                            {{ number_format($template->credit_cost, 0) }}
                                         </span>
                                     </td>
                                     <td class="px-2 py-2 whitespace-nowrap text-right">
@@ -161,10 +161,10 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-xs font-medium {{ $userCredit >= $selectedTemplate->credit_cost ? 'text-green-800' : 'text-red-800' }}">Order Cost</p>
-                                <p class="text-lg font-bold {{ $userCredit >= $selectedTemplate->credit_cost ? 'text-green-600' : 'text-red-600' }}">RM {{ number_format($selectedTemplate->credit_cost, 0) }}</p>
+                                <p class="text-lg font-bold {{ $userCredit >= $selectedTemplate->credit_cost ? 'text-green-600' : 'text-red-600' }}">{{ number_format($selectedTemplate->credit_cost, 0) }} credits</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs text-gray-600">Balance: RM {{ number_format($userCredit, 0) }}</p>
+                                <p class="text-xs text-gray-600">Balance: {{ number_format($userCredit, 0) }} credits</p>
                                 @if($userCredit < $selectedTemplate->credit_cost)
                                     <p class="text-xs text-red-600">Insufficient credits</p>
                                 @endif
@@ -202,7 +202,7 @@
                         @if($userCredit >= $selectedTemplate->credit_cost)
                         <button
                             wire:click="placeOrder"
-                            wire:confirm="Place order? RM {{ number_format($selectedTemplate->credit_cost, 0) }} will be deducted."
+                            wire:confirm="Place order? {{ number_format($selectedTemplate->credit_cost, 0) }} credits will be deducted."
                             wire:loading.attr="disabled"
                             wire:target="placeOrder"
                             class="px-3 py-2 sm:py-1.5 text-sm rounded text-white inline-flex items-center justify-center w-full sm:w-auto"
@@ -310,7 +310,7 @@
                     @if($userCredit >= $selectedTemplate->credit_cost)
                     <button
                         wire:click="placeOrder"
-                        wire:confirm="Place order for '{{ $selectedTemplate->name }}'? RM {{ number_format($selectedTemplate->credit_cost, 0) }} will be deducted from your credit balance."
+                        wire:confirm="Place order for '{{ $selectedTemplate->name }}'? {{ number_format($selectedTemplate->credit_cost, 0) }} credits will be deducted from your balance."
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 inline-flex items-center justify-center w-full sm:w-auto order-1 sm:order-2"
                     >
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -30,6 +30,11 @@ class AdminCosecOrderEdit extends Component
             abort(404, 'Order not found');
         }
 
+        // Prevent editing approved orders
+        if ($order->status === CosecOrder::STATUS_APPROVED) {
+            abort(403, 'Approved orders cannot be edited. Please use the View or PDF options.');
+        }
+
         // Authorization check: subscribers can only access orders for companies they created
         $user = auth()->user();
         if ($user->isCosecSubscriber()) {
@@ -92,14 +97,14 @@ class AdminCosecOrderEdit extends Component
             return $companyDefaults[$placeholder];
         }
 
-        // Secretary placeholders
+        // Secretary placeholders (without is_active filter to match DirectorPlaceOrder)
         if (str_starts_with($placeholder, 'secretary_')) {
-            $secretary = $company->secretaries()->where('is_active', true)->first();
+            $secretary = $company->secretaries()->first();
             if ($secretary) {
                 $secretaryDefaults = [
                     'secretary_name' => $secretary->name ?? '',
                     'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                    'secretary_ssm_no' => $secretary->ssm_no ?? '',
+                    'secretary_ssm' => $secretary->ssm_no ?? '',
                     'secretary_company' => $secretary->company_name ?? '',
                     'secretary_address' => $secretary->address ?? '',
                     'secretary_email' => $secretary->email ?? '',
@@ -191,31 +196,46 @@ class AdminCosecOrderEdit extends Component
             }
         }
 
-        // Secretary placeholders
+        // Secretary placeholders - use form data values if available, otherwise fetch from DB
         if ($company) {
-            $secretary = $company->secretaries()->where('is_active', true)->first();
-            if ($secretary) {
-                $values['secretary_name'] = $secretary->name ?? '';
-                $values['secretary_license'] = $secretary->license_no ?? $secretary->secretary_no ?? '';
-                $values['secretary_ssm_no'] = $secretary->ssm_no ?? '';
-                $values['secretary_company'] = $secretary->company_name ?? '';
-                $values['secretary_address'] = $secretary->address ?? '';
-                $values['secretary_email'] = $secretary->email ?? '';
+            // First try to get secretary from DB (without is_active filter to match DirectorPlaceOrder)
+            $secretary = $company->secretaries()->first();
 
-                // Secretary signature
-                if (!empty($secretary->signature_path)) {
-                    $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
-                    $values['secretary_signature'] = '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px; width: 150px; height: 50px; object-fit: contain;">';
+            // Secretary text fields - prefer form data, then DB, then empty
+            $secretaryFields = [
+                'secretary_name',
+                'secretary_license',
+                'secretary_ssm',
+                'secretary_company',
+                'secretary_address',
+                'secretary_email',
+            ];
+
+            foreach ($secretaryFields as $field) {
+                // Use form data if it has a value
+                if (!empty($this->formData[$field])) {
+                    $values[$field] = $this->formData[$field];
+                } elseif ($secretary) {
+                    // Otherwise get from secretary record
+                    $values[$field] = match($field) {
+                        'secretary_name' => $secretary->name ?? '',
+                        'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
+                        'secretary_ssm' => $secretary->ssm_no ?? '',
+                        'secretary_company' => $secretary->company_name ?? '',
+                        'secretary_address' => $secretary->address ?? '',
+                        'secretary_email' => $secretary->email ?? '',
+                        default => ''
+                    };
                 } else {
-                    $values['secretary_signature'] = '';
+                    $values[$field] = '';
                 }
+            }
+
+            // Secretary signature - always from DB since it's an image
+            if ($secretary && !empty($secretary->signature_path)) {
+                $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
+                $values['secretary_signature'] = '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px; width: 150px; height: 50px; object-fit: contain;">';
             } else {
-                $values['secretary_name'] = '[Secretary Name]';
-                $values['secretary_license'] = '[License No]';
-                $values['secretary_ssm_no'] = '[SSM No]';
-                $values['secretary_company'] = '[Secretary Company]';
-                $values['secretary_address'] = '[Secretary Address]';
-                $values['secretary_email'] = '[Secretary Email]';
                 $values['secretary_signature'] = '';
             }
         }
@@ -288,6 +308,7 @@ class AdminCosecOrderEdit extends Component
             'document_content' => $filledContent,
             'custom_credit_cost' => $this->customCreditCost,
             'status' => CosecOrder::STATUS_APPROVED,
+            'approved_at' => now(),
         ]);
 
         LivewireAlert::withOptions([

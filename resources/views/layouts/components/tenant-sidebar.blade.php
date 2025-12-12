@@ -39,7 +39,7 @@
             {{-- Admin/Subscriber only menu items --}}
             @if(auth()->user()->canManageCompanies())
             <li class="menu-item">
-                <a class="menu-link" href="/auditpartners">
+                <a class="menu-link" href="/audit-partners">
                     <span class="menu-icon"><i class="mgc_user_follow_line"></i></span>
                     <span class="menu-text">Audit Partner</span>
                 </a>
@@ -155,6 +155,13 @@
                             <span class="menu-text">Dashboard</span>
                         </a>
                     </li>
+                    @if($directorCompanyId)
+                    <li class="menu-item">
+                        <a href="/companies/{{ $directorCompanyId }}" class="menu-link">
+                            <span class="menu-text">My Company</span>
+                        </a>
+                    </li>
+                    @endif
                     <li class="menu-item">
                         <a href="{{ route('director.cosec.place-order') }}" class="menu-link">
                             <span class="menu-text">Place Order</span>

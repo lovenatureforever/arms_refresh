@@ -109,7 +109,7 @@ class DirectorPlaceOrder extends Component
                 $secretaryDefaults = [
                     'secretary_name' => $secretary->name ?? '',
                     'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                    'secretary_ssm_no' => $secretary->ssm_no ?? '',
+                    'secretary_ssm' => $secretary->ssm_no ?? '',
                     'secretary_company' => $secretary->company_name ?? '',
                     'secretary_address' => $secretary->address ?? '',
                     'secretary_email' => $secretary->email ?? '',
@@ -166,10 +166,15 @@ class DirectorPlaceOrder extends Component
 
     public function generateDocumentPreview()
     {
-        // Validate required form fields
+        // Validate required form fields (skip disabled fields for directors)
         $customPlaceholders = $this->customPlaceholders;
+        $disabledForDirector = ['company_name', 'company_no', 'company_old_no', 'secretary_name', 'secretary_license', 'secretary_ssm'];
         $missingFields = [];
         foreach ($customPlaceholders as $placeholder) {
+            // Skip validation for auto-filled fields
+            if (in_array($placeholder, $disabledForDirector)) {
+                continue;
+            }
             if (empty($this->formData[$placeholder])) {
                 $missingFields[] = CosecTemplate::placeholderToLabel($placeholder);
             }
@@ -185,19 +190,8 @@ class DirectorPlaceOrder extends Component
             return;
         }
 
-        // Validate director selection
-        $requiredSignatures = $this->requiredSignatures;
-        for ($i = 0; $i < $requiredSignatures; $i++) {
-            if (empty($this->selectedDirectors[$i])) {
-                LivewireAlert::withOptions([
-                    'position' => 'top-end',
-                    'icon' => 'error',
-                    'title' => 'Please select all required directors',
-                    'timer' => 2000
-                ])->show();
-                return;
-            }
-        }
+        // Directors don't select signatories - admin will do that
+        // Skip director selection validation for directors
 
         $this->documentPreviewContent = $this->buildDocumentContent();
         $this->showDocumentPreview = true;
@@ -253,11 +247,17 @@ class DirectorPlaceOrder extends Component
         if ($secretary) {
             $content = str_replace('{{secretary_name}}', $secretary->name ?? '', $content);
             $content = str_replace('{{secretary_license}}', $secretary->license_no ?? '', $content);
-            $content = str_replace('{{secretary_ssm_no}}', $secretary->ssm_no ?? '', $content);
+            $content = str_replace('{{secretary_ssm}}', $secretary->ssm_no ?? '', $content);
             $content = str_replace('{{secretary_company}}', $secretary->company_name ?? '', $content);
             $content = str_replace('{{secretary_address}}', $secretary->address ?? '', $content);
             $content = str_replace('{{secretary_email}}', $secretary->email ?? '', $content);
-            $content = str_replace('{{secretary_signature}}', '<span style="color: #999;">[Secretary Signature]</span>', $content);
+            // Secretary signature - use image if available
+            if (!empty($secretary->signature_path)) {
+                $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
+                $content = str_replace('{{secretary_signature}}', '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px;">', $content);
+            } else {
+                $content = str_replace('{{secretary_signature}}', '', $content);
+            }
         }
 
         // Replace resolution date with today if not set
@@ -280,10 +280,15 @@ class DirectorPlaceOrder extends Component
             return;
         }
 
-        // Validate required form fields
+        // Validate required form fields (skip disabled fields for directors)
         $customPlaceholders = $this->customPlaceholders;
+        $disabledForDirector = ['company_name', 'company_no', 'company_old_no', 'secretary_name', 'secretary_license', 'secretary_ssm'];
         $missingFields = [];
         foreach ($customPlaceholders as $placeholder) {
+            // Skip validation for auto-filled fields
+            if (in_array($placeholder, $disabledForDirector)) {
+                continue;
+            }
             if (empty($this->formData[$placeholder])) {
                 $missingFields[] = CosecTemplate::placeholderToLabel($placeholder);
             }
@@ -299,19 +304,8 @@ class DirectorPlaceOrder extends Component
             return;
         }
 
-        // Validate director selection
-        $requiredSignatures = $this->requiredSignatures;
-        for ($i = 0; $i < $requiredSignatures; $i++) {
-            if (empty($this->selectedDirectors[$i])) {
-                LivewireAlert::withOptions([
-                    'position' => 'top-end',
-                    'icon' => 'error',
-                    'title' => 'Please select all required directors',
-                    'timer' => 2000
-                ])->show();
-                return;
-            }
-        }
+        // Directors don't select signatories - admin will do that
+        // Skip director selection validation
 
         $user = auth()->user();
         $template = $this->selectedTemplate;
@@ -362,7 +356,7 @@ class DirectorPlaceOrder extends Component
                 $user->id,
                 $creditCost,
                 'Order #' . $order->id . ' - ' . $template->name,
-                CosecOrder::class,
+                CreditTransaction::REF_COSEC_ORDER,
                 $order->id,
                 $user->id
             );

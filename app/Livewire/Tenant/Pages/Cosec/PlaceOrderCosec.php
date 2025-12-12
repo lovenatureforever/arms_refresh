@@ -119,14 +119,14 @@ class PlaceOrderCosec extends Component
             return $companyDefaults[$placeholder];
         }
 
-        // Secretary placeholders
+        // Secretary placeholders (without is_active filter for consistency)
         if (str_starts_with($placeholder, 'secretary_')) {
-            $secretary = $company->secretaries()->where('is_active', true)->first();
+            $secretary = $company->secretaries()->first();
             if ($secretary) {
                 $secretaryDefaults = [
                     'secretary_name' => $secretary->name ?? '',
                     'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                    'secretary_ssm_no' => $secretary->ssm_no ?? '',
+                    'secretary_ssm' => $secretary->ssm_no ?? '',
                     'secretary_company' => $secretary->company_name ?? '',
                     'secretary_address' => $secretary->address ?? '',
                     'secretary_email' => $secretary->email ?? '',
@@ -212,17 +212,29 @@ class PlaceOrderCosec extends Component
 
         // Secretary placeholders (from company secretary if exists)
         if ($company) {
-            $secretary = $company->secretaries()->where('is_active', true)->first();
+            $secretary = $company->secretaries()->first();
             if ($secretary) {
                 $values['secretary_name'] = $secretary->name ?? '';
-                $values['secretary_license'] = $secretary->license_no ?? '';
-                $values['secretary_ssm_no'] = $secretary->ssm_no ?? '';
-                $values['secretary_signature'] = ''; // Can be enhanced later
+                $values['secretary_license'] = $secretary->license_no ?? $secretary->secretary_no ?? '';
+                $values['secretary_ssm'] = $secretary->ssm_no ?? '';
+                $values['secretary_company'] = $secretary->company_name ?? '';
+                $values['secretary_address'] = $secretary->address ?? '';
+                $values['secretary_email'] = $secretary->email ?? '';
+                // Secretary signature
+                if (!empty($secretary->signature_path)) {
+                    $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
+                    $values['secretary_signature'] = '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px; width: 150px; height: 50px; object-fit: contain;">';
+                } else {
+                    $values['secretary_signature'] = '';
+                }
             } else {
-                // Default values when no secretary is assigned
-                $values['secretary_name'] = '[Secretary Name]';
-                $values['secretary_license'] = '[License No]';
-                $values['secretary_ssm_no'] = '[SSM No]';
+                // Empty values when no secretary is assigned
+                $values['secretary_name'] = '';
+                $values['secretary_license'] = '';
+                $values['secretary_ssm'] = '';
+                $values['secretary_company'] = '';
+                $values['secretary_address'] = '';
+                $values['secretary_email'] = '';
                 $values['secretary_signature'] = '';
             }
         }
@@ -306,7 +318,7 @@ class PlaceOrderCosec extends Component
                 $user->id,
                 $creditCost,
                 'Order #' . $order->id . ' - ' . $template->name,
-                CosecOrder::class,
+                CreditTransaction::REF_COSEC_ORDER,
                 $order->id
             );
         }

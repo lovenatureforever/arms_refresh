@@ -27,13 +27,13 @@
         </div>
 
         <!-- Filters -->
-        <div class="card-body border-b dark:border-gray-700">
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-                <div class="md:col-span-2">
+        <div class="card-body p-4 bg-gray-50 dark:bg-gray-800/50 border-b dark:border-gray-700">
+            <div class="flex flex-wrap items-end gap-4">
+                <div class="flex-[2] min-w-[200px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
                     <input type="text" wire:model.live.debounce.300ms="searchQuery" class="form-input w-full text-sm" placeholder="Search by Order ID, Form, User...">
                 </div>
-                <div>
+                <div class="flex-1 min-w-[120px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
                     <select wire:model.live="filterStatus" class="form-select w-full text-sm">
                         <option value="">All Status</option>
@@ -42,16 +42,16 @@
                         <option value="2">Rejected</option>
                     </select>
                 </div>
-                <div>
+                <div class="flex-1 min-w-[140px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date From</label>
                     <input type="date" wire:model.live="filterDateFrom" class="form-input w-full text-sm">
                 </div>
-                <div>
+                <div class="flex-1 min-w-[140px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date To</label>
                     <input type="date" wire:model.live="filterDateTo" class="form-input w-full text-sm">
                 </div>
-                <div class="flex items-end">
-                    <button wire:click="clearFilters" class="btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm w-full">
+                <div>
+                    <button wire:click="clearFilters" class="btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                         Clear
                     </button>
                 </div>
@@ -91,7 +91,7 @@
                                 {{ $order->form_name }}
                             </td>
                             <td class="px-4 py-3 text-sm text-right font-medium text-gray-800 dark:text-gray-200">
-                                RM {{ number_format($order->getEffectiveCost(), 0) }}
+                                {{ number_format($order->getEffectiveCost(), 0) }}
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if($order->status == 0)

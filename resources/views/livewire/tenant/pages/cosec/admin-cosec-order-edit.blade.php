@@ -60,8 +60,8 @@
 
                         {{-- Cost --}}
                         <div>
-                            <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Cost (Paid)</dt>
-                            <dd class="mt-1 text-lg font-bold text-green-600">RM {{ number_format($order->getEffectiveCost(), 0) }}</dd>
+                            <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Credits (Paid)</dt>
+                            <dd class="mt-1 text-lg font-bold text-green-600">{{ number_format($order->getEffectiveCost(), 0) }}</dd>
                         </div>
 
                         {{-- Date --}}
@@ -172,15 +172,15 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Custom Credit Cost (optional)</label>
                         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
                             <div class="flex items-center">
-                                <span class="text-gray-500 mr-2">RM</span>
                                 <input type="number"
                                        class="form-input w-28"
                                        wire:model="customCreditCost"
                                        min="0"
                                        placeholder="{{ $order->template ? $order->template->credit_cost : '0' }}">
+                                <span class="text-gray-500 ml-2">credits</span>
                             </div>
                             <span class="text-sm text-gray-500">
-                                Template default: RM {{ $order->template ? number_format($order->template->credit_cost, 0) : 'N/A' }}
+                                Template default: {{ $order->template ? number_format($order->template->credit_cost, 0) : 'N/A' }} credits
                             </span>
                         </div>
                         @error('customCreditCost') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror

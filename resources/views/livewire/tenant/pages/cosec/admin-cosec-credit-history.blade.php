@@ -1,4 +1,4 @@
-<div class="mb-4 grid grid-cols-1 gap-6">
+<div class="grid grid-cols-1 gap-6">
     <div class="card">
         <div class="card-header">
             <div class="flex items-center justify-between flex-wrap gap-2">
@@ -16,27 +16,27 @@
         </div>
 
         <!-- Summary Cards -->
-        <div class="card-body border-b dark:border-gray-700">
+        <div class="card-body p-4 border-b dark:border-gray-700">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
                     <p class="text-sm text-blue-600 dark:text-blue-400">Current Balance</p>
-                    <p class="text-2xl font-bold text-blue-700 dark:text-blue-300">RM {{ number_format($user->credit ?? 0, 0) }}</p>
+                    <p class="text-2xl font-bold text-blue-700 dark:text-blue-300">{{ number_format($user->credit ?? 0, 0) }}</p>
                 </div>
                 <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
                     <p class="text-sm text-green-600 dark:text-green-400">Total Credits</p>
-                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">+ RM {{ number_format($totalCredits, 0) }}</p>
+                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">+ {{ number_format($totalCredits, 0) }}</p>
                 </div>
                 <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
                     <p class="text-sm text-red-600 dark:text-red-400">Total Debits</p>
-                    <p class="text-2xl font-bold text-red-700 dark:text-red-300">- RM {{ number_format($totalDebits, 0) }}</p>
+                    <p class="text-2xl font-bold text-red-700 dark:text-red-300">- {{ number_format($totalDebits, 0) }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Filters -->
-        <div class="card-body border-b dark:border-gray-700">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
+        <div class="card-body p-4 bg-gray-50 dark:bg-gray-800/50 border-b dark:border-gray-700">
+            <div class="flex flex-wrap items-end gap-4">
+                <div class="flex-1 min-w-[150px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
                     <select wire:model.live="filterType" class="form-select w-full text-sm">
                         <option value="">All Types</option>
@@ -44,15 +44,15 @@
                         <option value="debit">Debit (Deducted)</option>
                     </select>
                 </div>
-                <div>
+                <div class="flex-1 min-w-[150px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date From</label>
                     <input type="date" wire:model.live="filterDateFrom" class="form-input w-full text-sm">
                 </div>
-                <div>
+                <div class="flex-1 min-w-[150px]">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date To</label>
                     <input type="date" wire:model.live="filterDateTo" class="form-input w-full text-sm">
                 </div>
-                <div class="flex items-end">
+                <div>
                     <button wire:click="clearFilters" class="btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                         Clear Filters
                     </button>
@@ -98,15 +98,15 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">
                                     <div>{{ $transaction->description }}</div>
-                                    @if($transaction->reference_type)
+                                    @if($transaction->reference_type && !str_contains($transaction->reference_type, '\\'))
                                         <div class="text-xs text-gray-500">{{ ucfirst(str_replace('_', ' ', $transaction->reference_type)) }}</div>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-sm text-right font-medium {{ $transaction->type === 'credit' ? 'text-green-600' : 'text-red-600' }}">
-                                    {{ $transaction->type === 'credit' ? '+' : '-' }} RM {{ number_format($transaction->amount, 0) }}
+                                    {{ $transaction->type === 'credit' ? '+' : '-' }} {{ number_format($transaction->amount, 0) }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-right text-gray-800 dark:text-gray-200">
-                                    RM {{ number_format($transaction->balance_after, 0) }}
+                                    {{ number_format($transaction->balance_after, 0) }}
                                 </td>
                             </tr>
                         @empty

@@ -5,6 +5,7 @@ namespace App\Livewire\Tenant\Pages\Tax;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\TaxCp204Estimate;
 use App\Services\TaxReminderService;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,7 +42,9 @@ class Cp204Index extends Component
 
     public function render()
     {
-        $estimates = collect();
+        // Use a paginator instance even when no company is selected so the view
+        // can safely call pagination helpers.
+        $estimates = new LengthAwarePaginator([], 0, 10);
         $currentCompany = null;
 
         if ($this->selectedCompany) {

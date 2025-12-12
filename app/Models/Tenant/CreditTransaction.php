@@ -107,6 +107,6 @@ class CreditTransaction extends Model
     public function getFormattedAmountAttribute()
     {
         $sign = $this->type === self::TYPE_CREDIT ? '+' : '-';
-        return $sign . ' RM ' . number_format($this->amount, 0);
+        return $sign . ' ' . number_format($this->amount, 0);
     }
 }

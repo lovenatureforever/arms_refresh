@@ -11,7 +11,7 @@ class CreateCosecTemplate extends Component
     public $name = '';
     public $description = '';
     public $credit_cost = 10;
-    public $signature_type = 'default';
+    public $signature_type = 'sole_director';
     public $is_active = true;
     public $htmlContent = '';
     public $cssContent = '';
@@ -54,7 +54,7 @@ class CreateCosecTemplate extends Component
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
             'credit_cost' => 'required|numeric|min:0',
-            'signature_type' => 'required|in:default,all_directors',
+            'signature_type' => 'required|in:sole_director,two_directors,all_directors',
             'htmlContent' => 'nullable|string',
         ]);
 

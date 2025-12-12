@@ -185,7 +185,7 @@
             </div>
             <div class="card-body p-6 text-center">
                 <div class="py-2">
-                    <div class="text-4xl font-bold text-primary mb-1">RM {{ number_format($user->credit ?? 0, 0) }}</div>
+                    <div class="text-4xl font-bold text-primary mb-1">{{ number_format($user->credit ?? 0, 0) }}</div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Available Credits</p>
                 </div>
                 <a href="{{ route('profile.credit-history') }}" class="btn bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 w-full text-sm mt-4">
@@ -234,7 +234,7 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $transaction->created_at->format('d M Y') }}</p>
                             </div>
                             <span class="text-sm font-semibold whitespace-nowrap {{ $transaction->type === 'credit' ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $transaction->type === 'credit' ? '+' : '-' }} RM {{ number_format($transaction->amount, 0) }}
+                                {{ $transaction->type === 'credit' ? '+' : '-' }} {{ number_format($transaction->amount, 0) }}
                             </span>
                         </div>
                     </div>
