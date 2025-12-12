@@ -110,6 +110,37 @@
             </li>
             @endrole
 
+            <li class="menu-item">
+                <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
+                    <span class="menu-icon"><i class="mgc_bill_line"></i></span>
+                    <span class="menu-text"> LHDN </span>
+                    <span class="menu-arrow"></span>
+                </a>
+
+                <ul class="sub-menu hidden" style="height: 0px;">
+                    <li class="menu-item">
+                        <a href="{{ route('tax.cp204.index') }}" class="menu-link">
+                            <span class="menu-text">CP204 Estimates</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('tax.reminders.index') }}" class="menu-link">
+                            <span class="menu-text">Tax Reminders</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('tax.reminders.logs') }}" class="menu-link">
+                            <span class="menu-text">Reminder Logs</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('tax.settings.index') }}" class="menu-link">
+                            <span class="menu-text">Tax Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
         </ul>
 
         <!-- Help Box Widget -->

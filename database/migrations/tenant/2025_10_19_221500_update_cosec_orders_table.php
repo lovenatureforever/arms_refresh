@@ -12,8 +12,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('cosec_orders', function (Blueprint $table) {
-            $table->longText('document_content')->nullable()->after('data');
-            $table->integer('custom_credit_cost')->nullable()->after('cost');
+            if (!Schema::hasColumn('cosec_orders', 'document_content')) {
+                $table->longText('document_content')->nullable()->after('data');
+            }
+            if (!Schema::hasColumn('cosec_orders', 'custom_credit_cost')) {
+                $table->integer('custom_credit_cost')->nullable()->after('cost');
+            }
         });
     }
 

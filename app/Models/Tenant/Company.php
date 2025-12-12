@@ -192,6 +192,120 @@ class Company extends Model
         return $this->sharecapitalChanges()->where('effective_date', '<=', $this->current_year_from)->where('share_type', 'Preference shares')->latest('effective_date')->first();
     }
 
+    /**
+     * Tax-related relationships
+     */
+    public function taxEstimates()
+    {
+        return $this->hasMany(TaxCp204Estimate::class);
+    }
+
+    public function taxReminders()
+    {
+        return $this->hasMany(TaxReminder::class);
+    }
+
+    public function taxSettings()
+    {
+        return $this->hasOne(CompanyTaxSetting::class);
+    }
+
+    /**
+     * CP204 Helper Methods
+     * These methods use the customizable fiscal year (current_year_from/to)
+     * to calculate CP204 submission deadlines and revision dates
+     */
+
+    /**
+     * Get current year's latest tax estimate
+     */
+    public function currentYearTaxEstimate()
+    {
+        return $this->taxEstimates()
+                    ->where('basis_period_year', $this->current_year)
+                    ->latest('created_at')
+                    ->first();
+    }
+
+    /**
+     * Calculate CP204 submission deadline
+     * CP204 must be filed at least 30 days before basis period begins
+     * Uses customizable fiscal year (current_year_from)
+     */
+    public function cp204SubmissionDeadline()
+    {
+        if (!$this->current_year_from) {
+            return null;
+        }
+
+        return Carbon::parse($this->current_year_from)->subDays(30);
+    }
+
+    /**
+     * Calculate CP204A revision dates (6th, 9th, and 11th month of basis period)
+     * These dates are based on the customizable fiscal year period
+     *
+     * @return array Array with keys: 6th_month, 9th_month, 11th_month
+     */
+    public function cp204aRevisionDates()
+    {
+        if (!$this->current_year_from || !$this->current_year_to) {
+            return [];
+        }
+
+        $from = Carbon::parse($this->current_year_from);
+        $to = Carbon::parse($this->current_year_to);
+
+        $totalMonths = $from->diffInMonths($to);
+
+        // Only provide revision dates if basis period is long enough
+        $revisionDates = [];
+
+        if ($totalMonths >= 6) {
+            $revisionDates['6th_month'] = $from->copy()->addMonths(6);
+        }
+
+        if ($totalMonths >= 9) {
+            $revisionDates['9th_month'] = $from->copy()->addMonths(9);
+        }
+
+        if ($totalMonths >= 11) {
+            $revisionDates['11th_month'] = $from->copy()->addMonths(11);
+        }
+
+        return $revisionDates;
+    }
+
+    /**
+     * Get fiscal year period in readable format
+     * Example: "1 Jan 2024 - 31 Dec 2024" or "1 Apr 2024 - 31 Mar 2025"
+     */
+    public function getFiscalYearPeriodAttribute()
+    {
+        if (!$this->current_year_from || !$this->current_year_to) {
+            return null;
+        }
+
+        return Carbon::parse($this->current_year_from)->format('d M Y') . ' - ' .
+               Carbon::parse($this->current_year_to)->format('d M Y');
+    }
+
+    /**
+     * Check if fiscal year follows standard calendar year (Jan-Dec)
+     */
+    public function isStandardFiscalYear()
+    {
+        if (!$this->current_year_from || !$this->current_year_to) {
+            return false;
+        }
+
+        $from = Carbon::parse($this->current_year_from);
+        $to = Carbon::parse($this->current_year_to);
+
+        return $from->month === 1 && $from->day === 1 &&
+               $to->month === 12 && $to->day === 31;
+    }
+
     /* public function getLatestDetailBefore($date)
     {
         if (!$date) {

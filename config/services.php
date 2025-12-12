@@ -35,4 +35,36 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | WhatsApp Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure WhatsApp notification provider for tax reminders.
+    | Supported providers: fonnte, twilio, whatsapp_api
+    |
+    */
+
+    'whatsapp' => [
+        'provider' => env('WHATSAPP_PROVIDER', 'fonnte'),
+    ],
+
+    // Fonnte (Recommended for Malaysia)
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+    ],
+
+    // Twilio
+    'twilio' => [
+        'account_sid' => env('TWILIO_ACCOUNT_SID'),
+        'auth_token' => env('TWILIO_AUTH_TOKEN'),
+        'whatsapp_number' => env('TWILIO_WHATSAPP_NUMBER'),
+    ],
+
+    // WhatsApp Business API (Official)
+    'whatsapp_api' => [
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+    ],
+
 ];

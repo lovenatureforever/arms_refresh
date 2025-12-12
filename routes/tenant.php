@@ -169,5 +169,13 @@ Route::middleware([
             Route::get('/print-word/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printWord'])->name('cosec.print-word');
             Route::get('/print-pdf/{id}', [\App\Http\Controllers\Tenant\CosecDocumentController::class, 'printPdf'])->name('cosec.print-pdf');
         });
+
+        // Tax/LHDN Routes
+        Route::prefix('/tax')->name('tax.')->group(function () {
+            Route::get('/cp204', \App\Livewire\Tenant\Pages\Tax\Cp204Index::class)->name('cp204.index');
+            Route::get('/reminders', \App\Livewire\Tenant\Pages\Tax\RemindersIndex::class)->name('reminders.index');
+            Route::get('/reminders/logs', \App\Livewire\Tenant\Pages\Tax\ReminderLogs::class)->name('reminders.logs');
+            Route::get('/settings', \App\Livewire\Tenant\Pages\Tax\TaxSettings::class)->name('settings.index');
+        });
     });
 });
