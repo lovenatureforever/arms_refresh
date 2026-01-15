@@ -81,6 +81,146 @@
             @endif
         </div>
 
+        <!-- Secretary Profile Card (Subscribers Only) -->
+        @if($user->user_type === 'subscriber')
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Secretary Profile</h3>
+            </div>
+            <div class="card-body p-6">
+                <form wire:submit="updateSecretaryProfile">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">License No</label>
+                            <input type="text" wire:model="license_no" class="form-input w-full" placeholder="License number">
+                            @error('license_no') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SSM No</label>
+                            <input type="text" wire:model="ssm_no" class="form-input w-full" placeholder="SSM registration number">
+                            @error('ssm_no') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Secretary No</label>
+                            <input type="text" wire:model="secretary_no" class="form-input w-full" placeholder="Secretary number">
+                            @error('secretary_no') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Name</label>
+                            <input type="text" wire:model="secretary_company_name" class="form-input w-full" placeholder="Secretarial practice company name">
+                            @error('secretary_company_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Practice Address</label>
+                            <textarea wire:model="secretary_address" rows="3" class="form-input w-full" placeholder="Full secretarial practice address"></textarea>
+                            @error('secretary_address') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t dark:border-gray-700">
+                        <button type="submit" class="btn bg-primary text-white">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Update Secretary Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Signature Card (Subscribers) -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">My Signature</h3>
+            </div>
+            <div class="card-body p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Current Signature -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Current Signature</label>
+                        @if($user->signature_path)
+                            <div class="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800 text-center">
+                                <img src="/tenancy/assets/{{ $user->signature_path }}" alt="Your Signature" class="max-h-20 mx-auto">
+                            </div>
+                            <button wire:click="deleteSignature" wire:confirm="Are you sure you want to delete your signature?" class="btn bg-red-500 text-white text-sm mt-4 w-full">
+                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                                Delete Signature
+                            </button>
+                        @else
+                            <div class="border dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800 text-center">
+                                <svg class="w-10 h-10 mx-auto text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No signature uploaded</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Upload/Update Signature -->
+                    <div>
+                        <form wire:submit="uploadSignature">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $user->signature_path ? 'Update Signature' : 'Upload Signature' }}</label>
+                                <input type="file" wire:model="signatureFile" accept="image/png,image/jpeg,image/jpg" class="form-input w-full text-sm">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">PNG or JPG, max 2MB</p>
+
+                                <!-- File Upload Loading Indicator -->
+                                <div wire:loading wire:target="signatureFile" class="mt-2">
+                                    <div class="flex items-center text-primary text-sm">
+                                        <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Uploading file...
+                                    </div>
+                                </div>
+
+                                @error('signatureFile') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+
+                            @if($signatureFile)
+                            <div class="mt-4" wire:loading.remove wire:target="signatureFile">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Preview</label>
+                                <div class="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800 text-center">
+                                    <img src="{{ $signatureFile->temporaryUrl() }}" alt="Preview" class="max-h-16 mx-auto">
+                                </div>
+                            </div>
+                            @endif
+
+                            <button type="submit" class="btn bg-primary text-white w-full mt-4" wire:loading.attr="disabled" wire:target="uploadSignature" @if(!$signatureFile) disabled @endif>
+                                <!-- Loading State -->
+                                <span wire:loading wire:target="uploadSignature" class="flex items-center justify-center w-[200px]">
+                                    <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Saving...
+                                </span>
+
+                                <!-- Normal State -->
+                                <span wire:loading.remove wire:target="uploadSignature">
+                                    @if($user->signature_path)
+                                        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                        Update Signature
+                                    @else
+                                        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                        </svg>
+                                        Upload Signature
+                                    @endif
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Signature Card (Directors Only) -->
         @if($user->user_type === 'director')
         <div class="card">
@@ -145,7 +285,7 @@
 
                             <button type="submit" class="btn bg-primary text-white w-full mt-4" wire:loading.attr="disabled" wire:target="uploadSignature" @if(!$signatureFile) disabled @endif>
                                 <!-- Loading State -->
-                                <span wire:loading wire:target="uploadSignature" class="flex items-center justify-center">
+                                <span wire:loading wire:target="uploadSignature" class="flex items-center justify-center w-[200px]">
                                     <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

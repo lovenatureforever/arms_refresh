@@ -79,7 +79,7 @@ class CosecTemplate extends Model
 
         // Secretary placeholders (auto-filled) - prefix patterns
         $secretaryPatterns = [
-            'secretary_signature', 'secretary_name', 'secretary_license', 'secretary_ssm',
+            'secretary_signature', 'secretary_name', 'secretary_license', 'secretary_ssm_no',
             'secretary_company', 'secretary_address', 'secretary_email'
         ];
 
@@ -161,8 +161,27 @@ class CosecTemplate extends Model
 
     /**
      * Get number of director signatures required.
+     * If signature_type is 'all_directors' and company is provided, return count of active directors.
+     * Otherwise return count based on placeholders in template.
      */
-    public function getRequiredDirectorSignatures(): int
+    public function getRequiredDirectorSignatures(?Company $company = null): int
+    {
+        // If signature_type is 'all_directors' and company is provided, use actual director count
+        if ($this->signature_type === self::SIGNATURE_ALL_DIRECTORS && $company) {
+            $directorCount = $company->directors()->where('is_active', true)->count();
+            // Return at least the number of placeholders in template, or actual director count if higher
+            $placeholderCount = $this->getDirectorSignaturePlaceholderCount();
+            return max($directorCount, $placeholderCount);
+        }
+
+        // Otherwise use placeholder count
+        return $this->getDirectorSignaturePlaceholderCount();
+    }
+
+    /**
+     * Get count of director signature placeholders in template.
+     */
+    protected function getDirectorSignaturePlaceholderCount(): int
     {
         $categories = $this->getCategorizedPlaceholders();
         $signaturePlaceholders = array_filter($categories['director'], function($p) {

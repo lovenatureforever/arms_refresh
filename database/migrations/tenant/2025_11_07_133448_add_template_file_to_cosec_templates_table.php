@@ -9,9 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cosec_templates', function (Blueprint $table) {
-            if (!Schema::hasColumn('cosec_templates', 'template_file')) {
-                $table->string('template_file')->nullable()->after('content');
-            }
+            $table->string('template_file')->nullable()->after('content');
         });
     }
 

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\UserType;
+use App\Http\Middleware\EarlyTenantIdentification;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,10 +32,15 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Early tenant identification - runs BEFORE session middleware
+        // This is needed for database sessions in multi-tenant setup
+        $middleware->prepend(EarlyTenantIdentification::class);
+
         $middleware->group('universal', []);
         // $middleware->append(IsAdmin::class); // for global use
         $middleware->alias([
             'is_admin' => IsAdmin::class,
+            'user.type' => UserType::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

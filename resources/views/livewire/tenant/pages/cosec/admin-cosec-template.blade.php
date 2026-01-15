@@ -1,18 +1,24 @@
-<div class="mb-4 grid grid-cols-1 gap-6">
-    <div class="">
+<div>
+    {{-- Header --}}
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h4 class="text-xl font-semibold text-gray-800">Manage Cosec Templates</h4>
+            <p class="text-gray-500 mt-1">Create and manage document templates for company secretarial services.</p>
+        </div>
+        @if(auth()->user()->canManageCompanies())
+        <button wire:click="create" class="btn btn-sm bg-primary text-white inline-flex items-center self-start">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Create Template
+        </button>
+        @endif
+    </div>
+
+    <div>
         <div class="card">
             <div class="card-header">
-                <div class="flex items-center justify-between flex-wrap gap-2">
-                    <h3 class="card-title">Manage Cosec Templates</h3>
-                    @if(auth()->user()->canManageCompanies())
-                    <button wire:click="create" class="btn bg-primary text-white text-sm">
-                        <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Create Template
-                    </button>
-                    @endif
-                </div>
+                <h5 class="card-title">Templates</h5>
             </div>
             <div class="card-body p-0 sm:p-4">
                 <div class="overflow-x-auto">
@@ -109,9 +115,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Preview Modal - Full Screen -->
+        <!-- Preview Modal - Full Screen -->
     @if($showPreviewModal)
     <div class="fixed inset-0 bg-black bg-opacity-75 z-50 flex flex-col">
         <!-- Header -->
@@ -136,4 +141,5 @@
         </div>
     </div>
     @endif
+    </div>
 </div>

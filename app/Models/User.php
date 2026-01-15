@@ -30,7 +30,14 @@ class User extends Authenticatable
         'is_active',
         'is_audit_partner',
         'credit',
-        'user_type'
+        'user_type',
+        'signature_path',
+        // Secretary-specific fields (for subscribers)
+        'license_no',
+        'ssm_no',
+        'secretary_no',
+        'secretary_company_name',
+        'secretary_address',
     ];
 
     /**

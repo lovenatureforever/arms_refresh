@@ -4,6 +4,7 @@ namespace App\Livewire\Tenant\Pages\Cosec;
 
 use Livewire\Component;
 use Livewire\Attributes\Locked;
+use App\Models\User;
 use App\Models\Tenant\CosecTemplate;
 use App\Models\Tenant\CosecOrder;
 use App\Models\Tenant\Company;
@@ -92,7 +93,7 @@ class PlaceOrderCosec extends Component
                 }
 
                 // Initialize director selections based on required signatures
-                $requiredSignatures = $template->getRequiredDirectorSignatures();
+                $requiredSignatures = $template->getRequiredDirectorSignatures($company);
                 for ($i = 0; $i < $requiredSignatures; $i++) {
                     $this->selectedDirectors[$i] = null;
                 }
@@ -126,7 +127,7 @@ class PlaceOrderCosec extends Component
                 $secretaryDefaults = [
                     'secretary_name' => $secretary->name ?? '',
                     'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                    'secretary_ssm' => $secretary->ssm_no ?? '',
+                    'secretary_ssm_no' => $secretary->ssm_no ?? '',
                     'secretary_company' => $secretary->company_name ?? '',
                     'secretary_address' => $secretary->address ?? '',
                     'secretary_email' => $secretary->email ?? '',
@@ -153,7 +154,8 @@ class PlaceOrderCosec extends Component
         }
 
         // Validate director selections
-        $requiredSignatures = $template->getRequiredDirectorSignatures();
+        $company = Company::find($this->companyId);
+        $requiredSignatures = $template->getRequiredDirectorSignatures($company);
         for ($i = 0; $i < $requiredSignatures; $i++) {
             $rules['selectedDirectors.' . $i] = 'required';
         }
@@ -210,28 +212,29 @@ class PlaceOrderCosec extends Component
             }
         }
 
-        // Secretary placeholders (from company secretary if exists)
+        // Secretary placeholders (from subscriber user who created the company)
         if ($company) {
-            $secretary = $company->secretaries()->first();
-            if ($secretary) {
-                $values['secretary_name'] = $secretary->name ?? '';
-                $values['secretary_license'] = $secretary->license_no ?? $secretary->secretary_no ?? '';
-                $values['secretary_ssm'] = $secretary->ssm_no ?? '';
-                $values['secretary_company'] = $secretary->company_name ?? '';
-                $values['secretary_address'] = $secretary->address ?? '';
-                $values['secretary_email'] = $secretary->email ?? '';
+            $subscriber = $company->creator;
+            if ($subscriber && $subscriber->user_type === User::USER_TYPE_SUBSCRIBER) {
+                $values['secretary_name'] = $subscriber->name ?? '';
+                $values['secretary_license'] = $subscriber->license_no ?? '';
+                $values['secretary_ssm_no'] = $subscriber->ssm_no ?? '';
+                $values['secretary_company'] = $subscriber->secretary_company_name ?? '';
+                $values['secretary_address'] = $subscriber->secretary_address ?? '';
+                $values['secretary_email'] = $subscriber->email ?? '';
                 // Secretary signature
-                if (!empty($secretary->signature_path)) {
-                    $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
+                if (!empty($subscriber->signature_path)) {
+                    // All tenant files are served via /tenancy/assets/
+                    $signatureUrl = '/tenancy/assets/' . $subscriber->signature_path;
                     $values['secretary_signature'] = '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px; width: 150px; height: 50px; object-fit: contain;">';
                 } else {
                     $values['secretary_signature'] = '';
                 }
             } else {
-                // Empty values when no secretary is assigned
+                // Empty values when no subscriber/secretary is assigned
                 $values['secretary_name'] = '';
                 $values['secretary_license'] = '';
-                $values['secretary_ssm'] = '';
+                $values['secretary_ssm_no'] = '';
                 $values['secretary_company'] = '';
                 $values['secretary_address'] = '';
                 $values['secretary_email'] = '';
@@ -277,7 +280,7 @@ class PlaceOrderCosec extends Component
         $company = Company::find($this->companyId);
 
         // Get required signatures count
-        $requiredSignatures = $template->getRequiredDirectorSignatures();
+        $requiredSignatures = $template->getRequiredDirectorSignatures($company);
 
         // Create order
         $order = CosecOrder::create([
@@ -354,7 +357,7 @@ class PlaceOrderCosec extends Component
             : [];
 
         $requiredSignatures = $selectedTemplate
-            ? $selectedTemplate->getRequiredDirectorSignatures()
+            ? $selectedTemplate->getRequiredDirectorSignatures($company)
             : 0;
 
         return view('livewire.tenant.pages.cosec.place-order-cosec', [

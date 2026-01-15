@@ -3,6 +3,7 @@
 namespace App\Livewire\Tenant\Pages\Cosec;
 
 use Livewire\Component;
+use App\Models\User;
 use App\Models\Tenant\CosecTemplate;
 use App\Models\Tenant\CosecOrder;
 use App\Models\Tenant\Company;
@@ -102,17 +103,36 @@ class DirectorPlaceOrder extends Component
             return $companyDefaults[$placeholder];
         }
 
-        // Secretary placeholders
+        // Secretary placeholders (from subscriber user who created the company)
         if (str_starts_with($placeholder, 'secretary_')) {
-            $secretary = CompanySecretary::where('company_id', $this->companyId)->first();
-            if ($secretary) {
+            $company = Company::find($this->companyId);
+            $subscriber = $company?->creator;
+
+            // Debug logging
+            \Log::info('DirectorPlaceOrder getDefaultValue - Secretary placeholder debug:', [
+                'placeholder' => $placeholder,
+                'company_id' => $this->companyId,
+                'company_found' => $company ? 'yes' : 'no',
+                'creator_id' => $subscriber?->id,
+                'creator_user_type' => $subscriber?->user_type,
+                'creator_name' => $subscriber?->name,
+                'creator_email' => $subscriber?->email,
+                'license_no' => $subscriber?->license_no,
+                'ssm_no' => $subscriber?->ssm_no,
+                'secretary_no' => $subscriber?->secretary_no,
+                'secretary_company_name' => $subscriber?->secretary_company_name,
+                'secretary_address' => $subscriber?->secretary_address,
+                'signature_path' => $subscriber?->signature_path,
+            ]);
+
+            if ($subscriber && $subscriber->user_type === User::USER_TYPE_SUBSCRIBER) {
                 $secretaryDefaults = [
-                    'secretary_name' => $secretary->name ?? '',
-                    'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                    'secretary_ssm' => $secretary->ssm_no ?? '',
-                    'secretary_company' => $secretary->company_name ?? '',
-                    'secretary_address' => $secretary->address ?? '',
-                    'secretary_email' => $secretary->email ?? '',
+                    'secretary_name' => $subscriber->name ?? '',
+                    'secretary_license' => $subscriber->license_no ?? '',
+                    'secretary_ssm_no' => $subscriber->ssm_no ?? '',
+                    'secretary_company' => $subscriber->secretary_company_name ?? '',
+                    'secretary_address' => $subscriber->secretary_address ?? '',
+                    'secretary_email' => $subscriber->email ?? '',
                 ];
                 return $secretaryDefaults[$placeholder] ?? '';
             }
@@ -137,12 +157,8 @@ class DirectorPlaceOrder extends Component
             return 0;
         }
 
-        return match ($this->selectedTemplate->signature_type) {
-            'sole_director' => 1,
-            'two_directors' => 2,
-            'all_directors' => 3,
-            default => 1,
-        };
+        // Use dynamic director count from template
+        return $this->selectedTemplate->getRequiredDirectorSignatures($this->company);
     }
 
     public function getCustomPlaceholdersProperty()
@@ -168,7 +184,7 @@ class DirectorPlaceOrder extends Component
     {
         // Validate required form fields (skip disabled fields for directors)
         $customPlaceholders = $this->customPlaceholders;
-        $disabledForDirector = ['company_name', 'company_no', 'company_old_no', 'secretary_name', 'secretary_license', 'secretary_ssm'];
+        $disabledForDirector = ['company_name', 'company_no', 'company_old_no', 'secretary_name', 'secretary_license', 'secretary_ssm_no'];
         $missingFields = [];
         foreach ($customPlaceholders as $placeholder) {
             // Skip validation for auto-filled fields
@@ -242,22 +258,51 @@ class DirectorPlaceOrder extends Component
             }
         }
 
-        // Replace secretary placeholders
-        $secretary = CompanySecretary::where('company_id', $this->companyId)->first();
-        if ($secretary) {
-            $content = str_replace('{{secretary_name}}', $secretary->name ?? '', $content);
-            $content = str_replace('{{secretary_license}}', $secretary->license_no ?? '', $content);
-            $content = str_replace('{{secretary_ssm}}', $secretary->ssm_no ?? '', $content);
-            $content = str_replace('{{secretary_company}}', $secretary->company_name ?? '', $content);
-            $content = str_replace('{{secretary_address}}', $secretary->address ?? '', $content);
-            $content = str_replace('{{secretary_email}}', $secretary->email ?? '', $content);
-            // Secretary signature - use image if available
-            if (!empty($secretary->signature_path)) {
-                $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
+        // Replace secretary placeholders (from subscriber user who created the company ONLY)
+        $company = Company::find($this->companyId);
+        $subscriber = $company?->creator;
+
+        // Debug logging
+        \Log::info('DirectorPlaceOrder buildDocumentContent - Secretary data debug:', [
+            'company_id' => $this->companyId,
+            'company_found' => $company ? 'yes' : 'no',
+            'creator_id' => $subscriber?->id,
+            'creator_user_type' => $subscriber?->user_type,
+            'creator_name' => $subscriber?->name,
+            'creator_email' => $subscriber?->email,
+            'license_no' => $subscriber?->license_no,
+            'ssm_no' => $subscriber?->ssm_no,
+            'secretary_no' => $subscriber?->secretary_no,
+            'secretary_company_name' => $subscriber?->secretary_company_name,
+            'secretary_address' => $subscriber?->secretary_address,
+            'signature_path' => $subscriber?->signature_path,
+        ]);
+
+        if ($subscriber && $subscriber->user_type === User::USER_TYPE_SUBSCRIBER) {
+            \Log::info('DirectorPlaceOrder buildDocumentContent - Using subscriber data for secretary fields');
+            $content = str_replace('{{secretary_name}}', $subscriber->name ?? '', $content);
+            $content = str_replace('{{secretary_license}}', $subscriber->license_no ?? '', $content);
+            $content = str_replace('{{secretary_ssm_no}}', $subscriber->ssm_no ?? '', $content);
+            $content = str_replace('{{secretary_company}}', $subscriber->secretary_company_name ?? '', $content);
+            $content = str_replace('{{secretary_address}}', $subscriber->secretary_address ?? '', $content);
+            $content = str_replace('{{secretary_email}}', $subscriber->email ?? '', $content);
+            // Secretary signature
+            if (!empty($subscriber->signature_path)) {
+                $signatureUrl = '/tenancy/assets/' . $subscriber->signature_path;
                 $content = str_replace('{{secretary_signature}}', '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px;">', $content);
             } else {
                 $content = str_replace('{{secretary_signature}}', '', $content);
             }
+        } else {
+            \Log::info('DirectorPlaceOrder buildDocumentContent - No subscriber creator found, leaving secretary fields empty');
+            // No subscriber creator - leave secretary fields empty
+            $content = str_replace('{{secretary_name}}', '', $content);
+            $content = str_replace('{{secretary_license}}', '', $content);
+            $content = str_replace('{{secretary_ssm_no}}', '', $content);
+            $content = str_replace('{{secretary_company}}', '', $content);
+            $content = str_replace('{{secretary_address}}', '', $content);
+            $content = str_replace('{{secretary_email}}', '', $content);
+            $content = str_replace('{{secretary_signature}}', '', $content);
         }
 
         // Replace resolution date with today if not set
@@ -282,7 +327,7 @@ class DirectorPlaceOrder extends Component
 
         // Validate required form fields (skip disabled fields for directors)
         $customPlaceholders = $this->customPlaceholders;
-        $disabledForDirector = ['company_name', 'company_no', 'company_old_no', 'secretary_name', 'secretary_license', 'secretary_ssm'];
+        $disabledForDirector = ['company_name', 'company_no', 'company_old_no', 'secretary_name', 'secretary_license', 'secretary_ssm_no'];
         $missingFields = [];
         foreach ($customPlaceholders as $placeholder) {
             // Skip validation for auto-filled fields

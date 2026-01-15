@@ -76,7 +76,7 @@
     </style>
 </head>
 
-<body>
+<body class="p-[0px !important]">
 
     <div class="wrapper flex">
 

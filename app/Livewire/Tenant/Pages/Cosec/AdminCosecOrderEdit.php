@@ -3,6 +3,7 @@
 namespace App\Livewire\Tenant\Pages\Cosec;
 
 use Livewire\Component;
+use App\Models\User;
 use App\Models\Tenant\CosecOrder;
 use App\Models\Tenant\CosecTemplate;
 use App\Models\Tenant\Company;
@@ -71,7 +72,7 @@ class AdminCosecOrderEdit extends Component
 
         // Initialize director selections
         if ($order->template && empty($this->selectedDirectors)) {
-            $requiredSignatures = $order->template->getRequiredDirectorSignatures();
+            $requiredSignatures = $order->template->getRequiredDirectorSignatures($company);
             for ($i = 0; $i < $requiredSignatures; $i++) {
                 $this->selectedDirectors[$i] = null;
             }
@@ -97,17 +98,17 @@ class AdminCosecOrderEdit extends Component
             return $companyDefaults[$placeholder];
         }
 
-        // Secretary placeholders (without is_active filter to match DirectorPlaceOrder)
+        // Secretary placeholders (from subscriber user who created the company)
         if (str_starts_with($placeholder, 'secretary_')) {
-            $secretary = $company->secretaries()->first();
-            if ($secretary) {
+            $subscriber = $company->creator;
+            if ($subscriber && $subscriber->user_type === User::USER_TYPE_SUBSCRIBER) {
                 $secretaryDefaults = [
-                    'secretary_name' => $secretary->name ?? '',
-                    'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                    'secretary_ssm' => $secretary->ssm_no ?? '',
-                    'secretary_company' => $secretary->company_name ?? '',
-                    'secretary_address' => $secretary->address ?? '',
-                    'secretary_email' => $secretary->email ?? '',
+                    'secretary_name' => $subscriber->name ?? '',
+                    'secretary_license' => $subscriber->license_no ?? '',
+                    'secretary_ssm_no' => $subscriber->ssm_no ?? '',
+                    'secretary_company' => $subscriber->secretary_company_name ?? '',
+                    'secretary_address' => $subscriber->secretary_address ?? '',
+                    'secretary_email' => $subscriber->email ?? '',
                 ];
                 return $secretaryDefaults[$placeholder] ?? '';
             }
@@ -139,7 +140,7 @@ class AdminCosecOrderEdit extends Component
         }
 
         // Validate director selections
-        $requiredSignatures = $template->getRequiredDirectorSignatures();
+        $requiredSignatures = $template->getRequiredDirectorSignatures($order->company);
         for ($i = 0; $i < $requiredSignatures; $i++) {
             $rules['selectedDirectors.' . $i] = 'required';
         }
@@ -184,6 +185,8 @@ class AdminCosecOrderEdit extends Component
             if ($director) {
                 $num = $index + 1;
                 $values["director_name_{$num}"] = $director->name;
+                $values["director_nric_{$num}"] = $director->nric ?? '';
+                $values["director_address_{$num}"] = $director->address ?? '';
                 $values["signer_name_{$num}"] = $director->name;
 
                 $signature = $director->defaultSignature;
@@ -196,16 +199,16 @@ class AdminCosecOrderEdit extends Component
             }
         }
 
-        // Secretary placeholders - use form data values if available, otherwise fetch from DB
+        // Secretary placeholders - use form data values if available, otherwise fetch from subscriber user
         if ($company) {
-            // First try to get secretary from DB (without is_active filter to match DirectorPlaceOrder)
-            $secretary = $company->secretaries()->first();
+            // Get secretary from subscriber user who created the company
+            $subscriber = $company->creator;
 
-            // Secretary text fields - prefer form data, then DB, then empty
+            // Secretary text fields - prefer form data, then subscriber user, then empty
             $secretaryFields = [
                 'secretary_name',
                 'secretary_license',
-                'secretary_ssm',
+                'secretary_ssm_no',
                 'secretary_company',
                 'secretary_address',
                 'secretary_email',
@@ -215,15 +218,15 @@ class AdminCosecOrderEdit extends Component
                 // Use form data if it has a value
                 if (!empty($this->formData[$field])) {
                     $values[$field] = $this->formData[$field];
-                } elseif ($secretary) {
-                    // Otherwise get from secretary record
+                } elseif ($subscriber && $subscriber->user_type === User::USER_TYPE_SUBSCRIBER) {
+                    // Otherwise get from subscriber user
                     $values[$field] = match($field) {
-                        'secretary_name' => $secretary->name ?? '',
-                        'secretary_license' => $secretary->license_no ?? $secretary->secretary_no ?? '',
-                        'secretary_ssm' => $secretary->ssm_no ?? '',
-                        'secretary_company' => $secretary->company_name ?? '',
-                        'secretary_address' => $secretary->address ?? '',
-                        'secretary_email' => $secretary->email ?? '',
+                        'secretary_name' => $subscriber->name ?? '',
+                        'secretary_license' => $subscriber->license_no ?? '',
+                        'secretary_ssm_no' => $subscriber->ssm_no ?? '',
+                        'secretary_company' => $subscriber->secretary_company_name ?? '',
+                        'secretary_address' => $subscriber->secretary_address ?? '',
+                        'secretary_email' => $subscriber->email ?? '',
                         default => ''
                     };
                 } else {
@@ -231,9 +234,10 @@ class AdminCosecOrderEdit extends Component
                 }
             }
 
-            // Secretary signature - always from DB since it's an image
-            if ($secretary && !empty($secretary->signature_path)) {
-                $signatureUrl = '/tenancy/assets/' . $secretary->signature_path;
+            // Secretary signature - always from subscriber user since it's an image
+            if ($subscriber && $subscriber->user_type === User::USER_TYPE_SUBSCRIBER && !empty($subscriber->signature_path)) {
+                // All tenant files are served via /tenancy/assets/
+                $signatureUrl = '/tenancy/assets/' . $subscriber->signature_path;
                 $values['secretary_signature'] = '<img src="' . $signatureUrl . '" alt="Secretary Signature" style="max-width: 150px; max-height: 50px; width: 150px; height: 50px; object-fit: contain;">';
             } else {
                 $values['secretary_signature'] = '';
@@ -359,7 +363,7 @@ class AdminCosecOrderEdit extends Component
             : [];
 
         $requiredSignatures = $order->template
-            ? $order->template->getRequiredDirectorSignatures()
+            ? $order->template->getRequiredDirectorSignatures($company)
             : 0;
 
         return view('livewire.tenant.pages.cosec.admin-cosec-order-edit', [

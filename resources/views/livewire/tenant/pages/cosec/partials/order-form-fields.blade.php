@@ -10,7 +10,7 @@
         'company_old_no',
         'secretary_name',
         'secretary_license',
-        'secretary_ssm',
+        'secretary_ssm_no',
     ];
 @endphp
 

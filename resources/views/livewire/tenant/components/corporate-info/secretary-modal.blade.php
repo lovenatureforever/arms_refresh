@@ -39,6 +39,20 @@
                 @endif
 
                 @if ($changeNature === App\Models\Tenant\CompanySecretaryChange::CHANGE_NATURE_SECRETARY_APPOINTED)
+                    {{-- Subscriber User Selection --}}
+                    <div class="col-span-2 p-3 border border-blue-200 rounded-lg bg-blue-50">
+                        <label class="inline-block mb-2 text-sm font-medium text-blue-800" for="selectedSubscriber">
+                            Link to Existing Subscriber (Optional)
+                        </label>
+                        <select class="form-input" id="selectedSubscriber" wire:model.live="selectedSubscriber">
+                            <option value="">-- Select Subscriber to Auto-Fill Data --</option>
+                            @foreach ($subscribers as $subscriber)
+                                <option value="{{ $subscriber->id }}">{{ $subscriber->name }} ({{ $subscriber->email }})</option>
+                            @endforeach
+                        </select>
+                        <p class="mt-1 text-xs text-blue-600">Select a subscriber to automatically fill their details below</p>
+                    </div>
+
                     <div class="col-span-2">
                         <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="name">Name</label>
                         <input class="form-input" id="name" type="text" wire:dirty.class="border-amber-500" wire:model="name">
@@ -89,6 +103,42 @@
                     <div class="col-span-2">
                         <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="secretaryAddress">Address</label>
                         <textarea class="form-input" id="secretaryAddress" rows="2" wire:dirty.class="border-amber-500" wire:model="secretaryAddress"></textarea>
+                    </div>
+
+                    {{-- Signature Upload --}}
+                    <div class="col-span-2">
+                        <label class="inline-block mb-2 text-sm font-medium text-gray-800" for="signatureFile">Signature</label>
+
+                        {{-- Show existing signature if available --}}
+                        @if ($existingSignaturePath)
+                            <div class="mb-3 p-3 border rounded-lg bg-gray-50">
+                                <p class="text-xs text-gray-500 mb-2">Current Signature:</p>
+                                <img src="/tenancy/assets/{{ $existingSignaturePath }}" alt="Current Signature" class="max-w-[150px] max-h-[50px] object-contain border">
+                            </div>
+                        @endif
+
+                        {{-- Show preview of new signature --}}
+                        @if ($signatureFile)
+                            <div class="mb-3 p-3 border rounded-lg bg-blue-50">
+                                <p class="text-xs text-blue-600 mb-2">New Signature Preview:</p>
+                                <img src="{{ $signatureFile->temporaryUrl() }}" alt="New Signature Preview" class="max-w-[150px] max-h-[50px] object-contain border">
+                            </div>
+                        @endif
+
+                        <input
+                            class="form-input"
+                            id="signatureFile"
+                            type="file"
+                            wire:model="signatureFile"
+                            accept="image/png,image/jpeg,image/jpg"
+                        >
+                        <p class="mt-1 text-xs text-gray-500">Accepted formats: PNG, JPG, JPEG. Max size: 2MB</p>
+                        @error('signatureFile') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                        {{-- Loading indicator --}}
+                        <div wire:loading wire:target="signatureFile" class="mt-2">
+                            <span class="text-sm text-blue-600">Uploading...</span>
+                        </div>
                     </div>
                 @else
                     <div class="col-span-2">

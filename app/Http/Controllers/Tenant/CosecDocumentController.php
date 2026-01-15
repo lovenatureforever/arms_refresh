@@ -248,7 +248,7 @@ class CosecDocumentController extends Controller
             font-size: 12px;
             line-height: 1.6;
             color: #000;
-            margin: 40px;
+            margin: 0px !important;
         }
         h1, h2, h3, h4, h5, h6 {
             margin-top: 20px;
@@ -379,7 +379,7 @@ class CosecDocumentController extends Controller
         // Pattern to match /tenancy/assets/path
         $pattern = '/src=["\']\/tenancy\/assets\/([^"\']+)["\']/i';
 
-        return preg_replace_callback($pattern, function ($matches) use ($tenant) {
+        $content = preg_replace_callback($pattern, function ($matches) use ($tenant) {
             $relativePath = $matches[1];
 
             // Build absolute path to the tenant's storage
@@ -403,5 +403,27 @@ class CosecDocumentController extends Controller
             // Return original if file not found
             return $matches[0];
         }, $content);
+
+        // Pattern to match /storage/path (for new signature format)
+        $storagePattern = '/src=["\']\/storage\/([^"\']+)["\']/i';
+
+        $content = preg_replace_callback($storagePattern, function ($matches) {
+            $relativePath = $matches[1];
+
+            // Build absolute path to public storage
+            $publicPath = storage_path('app/public/' . $relativePath);
+
+            // If file exists, convert to base64 for reliable PDF rendering
+            if (file_exists($publicPath)) {
+                $mimeType = mime_content_type($publicPath);
+                $imageData = base64_encode(file_get_contents($publicPath));
+                return 'src="data:' . $mimeType . ';base64,' . $imageData . '"';
+            }
+
+            // Return original if file not found
+            return $matches[0];
+        }, $content);
+
+        return $content;
     }
 }
