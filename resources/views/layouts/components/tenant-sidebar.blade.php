@@ -220,8 +220,30 @@
                 </ul>
             </li>
 
-        </ul>
+            {{-- E-Confirmation Menu --}}
+            <li class="menu-item">
+                <a href="javascript:void(0);" data-fc-type="collapse" class="menu-link fc-collapse">
+                    <span class="menu-icon"><i class="mgc_bank_line"></i></span>
+                    <span class="menu-text"> E-Confirmation </span>
+                    <span class="menu-arrow"></span>
+                </a>
 
+                <ul class="sub-menu hidden" style="height: 0px;">
+                    <li class="menu-item">
+                        <a href="{{ route('econfirmation.index') }}" class="menu-link">
+                            <span class="menu-text">Requests</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('econfirmation.banks') }}" class="menu-link">
+                            <span class="menu-text">Bank Registry</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+        {{-- e-confirmation --}}
         <!-- Help Box Widget -->
         {{-- <div class="mx-5 my-10">
             <div class="p-6 text-center rounded-md help-box bg-black/5">

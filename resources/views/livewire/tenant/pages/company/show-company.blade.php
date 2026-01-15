@@ -3,11 +3,14 @@
         <div class="lg:col-span-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="card-title">Company Overview</h6>
+                    <div class="flex items-center justify-between">
+                        <h6 class="card-title">Company Overview</h6>
+                        <a class="btn bg-primary text-white" href="{{ route('companies.edit', $id) }}">Edit</a>
+                    </div>
                 </div>
 
                 <div class="p-6">
-                    <div class="grid grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
                             <p class="mb-3 text-sm font-medium uppercase underline">
                                 Company Name
@@ -17,17 +20,45 @@
 
                         <div>
                             <p class="mb-3 text-sm font-medium uppercase underline">
-                                Registration No
+                                Company Group
                             </p>
-                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">New: {{ $registrationNo }}</h5>
-                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">Old: {{ $registrationNoOld }}</h5>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ $companyGroup ?? '-' }}</h5>
                         </div>
 
                         <div>
                             <p class="mb-3 text-sm font-medium uppercase underline">
-                                Current Year
+                                Registration No
                             </p>
-                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ $currentYear }}</h5>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">New: {{ $registrationNo }}</h5>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">Old: {{ $registrationNoOld ?? '-' }}</h5>
+                        </div>
+
+                        <div>
+                            <p class="mb-3 text-sm font-medium uppercase underline">
+                                Tax File No. C
+                            </p>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ $taxFileNo ?? '-' }}</h5>
+                        </div>
+
+                        <div>
+                            <p class="mb-3 text-sm font-medium uppercase underline">
+                                Employer File No. E
+                            </p>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ $employerFileNo ?? '-' }}</h5>
+                        </div>
+
+                        <div>
+                            <p class="mb-3 text-sm font-medium uppercase underline">
+                                SST Registration No.
+                            </p>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ $sstRegistrationNo ?? '-' }}</h5>
+                        </div>
+
+                        <div>
+                            <p class="mb-3 text-sm font-medium uppercase underline">
+                                Year End
+                            </p>
+                            <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ $yearEnd ? \Carbon\Carbon::parse($yearEnd)->format('d M') : '-' }}</h5>
                         </div>
 
                         <div>
@@ -35,9 +66,6 @@
                                 Status
                             </p>
                             <div class="inline-flex items-center gap-1.5 py-1 px-3 rounded text-xs font-medium {{ $is_active ? 'bg-success/90' : 'bg-dark/80' }} text-white">{{ $is_active ? 'Active' : 'Inactive' }}</div>
-                            {{-- <h5 class="text-base font-medium text-gray-700 dark:text-gray-300">
-                                {{ $is_active }}
-                            </h5> --}}
                         </div>
                     </div>
                 </div>

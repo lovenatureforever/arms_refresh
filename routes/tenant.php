@@ -43,7 +43,8 @@ use App\Livewire\Tenant\Pages\AuditPartner\IndexAuditPartner;
 use App\Livewire\Tenant\Pages\AuditPartner\CreateAuditPartner;
 use App\Livewire\Tenant\Pages\AuditPartner\ShowAuditPartner;
 use App\Livewire\Tenant\Pages\AuditFirm\ShowAuditFirm;
-use App\Livewire\Tenant\Pages\Company\CreateCompany;
+use App\Livewire\Tenant\Pages\v2\Company\CreateCompany;
+use App\Livewire\Tenant\Pages\Company\EditCompany;
 use App\Livewire\Tenant\Pages\Company\ShowCompany;
 use App\Livewire\Tenant\Pages\Report\DataImport;
 use App\Http\Controllers\Tenant\CompanyReportController;
@@ -112,6 +113,7 @@ Route::middleware([
             // Route::get('/', IndexCompany::class)->name('index');
             Route::get('/create', CreateCompany::class)->name('create')->middleware('user.type:admin,subscriber');
             Route::get('/{id}', ShowCompany::class)->name('show');
+            Route::get('/{id}/edit', EditCompany::class)->name('edit');
             Route::get('/{id}/directors', \App\Livewire\Tenant\Pages\Company\DirectorCreate::class)
                 ->name('directors')
                 ->middleware('user.type:admin,subscriber');
@@ -216,6 +218,15 @@ Route::middleware([
             Route::get('/reminders', \App\Livewire\Tenant\Pages\Tax\RemindersIndex::class)->name('reminders.index');
             Route::get('/reminders/logs', \App\Livewire\Tenant\Pages\Tax\ReminderLogs::class)->name('reminders.logs');
             Route::get('/settings', \App\Livewire\Tenant\Pages\Tax\TaxSettings::class)->name('settings.index');
+        });
+
+        // E-Confirmation Routes
+        Route::prefix('/e-confirmation')->name('econfirmation.')->group(function () {
+            Route::get('/', \App\Livewire\Tenant\Pages\EConfirmation\RequestsIndex::class)->name('index');
+            Route::get('/create', \App\Livewire\Tenant\Pages\EConfirmation\CreateRequest::class)->name('create');
+            Route::get('/request/{id}', \App\Livewire\Tenant\Pages\EConfirmation\ViewRequest::class)->name('view');
+            Route::get('/banks', \App\Livewire\Tenant\Pages\EConfirmation\BankRegistry::class)->name('banks');
+            Route::get('/sign/{token}', \App\Livewire\Tenant\Pages\EConfirmation\DirectorSigning::class)->name('sign');
         });
     });
 });

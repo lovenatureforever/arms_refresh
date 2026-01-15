@@ -3,7 +3,6 @@
 namespace App\Livewire\Tenant\Pages\Tax;
 
 use App\Models\Tenant\Company;
-use App\Models\Tenant\TaxCp204Estimate;
 use App\Services\TaxReminderService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
@@ -14,148 +13,189 @@ class Cp204Index extends Component
 {
     use WithPagination;
 
-    public $selectedCompany = null;
-    public $companies;
-    public $showCreateModal = false;
-
-    // Form fields
-    public $estimate_type = 'cp204_initial';
-    public $revision_month = null;
-    public $estimated_tax_amount = 0;
-    public $monthly_installment = 0;
-    public $remarks = '';
-
-    protected $rules = [
-        'selectedCompany' => 'required|exists:companies,id',
-        'estimate_type' => 'required|in:cp204_initial,cp204a_revision',
-        'revision_month' => 'nullable|integer|in:6,9,11',
-        'estimated_tax_amount' => 'required|numeric|min:0',
-        'monthly_installment' => 'required|numeric|min:0',
-        'remarks' => 'nullable|string',
-    ];
+    public $selectedYearEnd = null;
+    public $selectedFormType = 'cp204';
+    public $selectedCompanies = [];
+    public $yearEndOptions = [];
+    public $searchName = '';
+    public $searchGroup = '';
+    public $searchRegNo = '';
+    public $showConfirmModal = false;
+    public $confirmationMessage = '';
 
     public function mount()
     {
-        $this->companies = Company::all()->sortBy('name');
-        $this->selectedCompany = $this->companies->first()?->id;
+        // Get unique year_end values from companies
+        $this->yearEndOptions = Company::whereNotNull('year_end')
+            ->distinct()
+            ->pluck('year_end')
+            ->sort()
+            ->values()
+            ->toArray();
+
+        if (count($this->yearEndOptions) > 0) {
+            $this->selectedYearEnd = $this->yearEndOptions[0];
+        }
+    }
+
+    public function updatedSearchName()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSearchGroup()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSearchRegNo()
+    {
+        $this->resetPage();
     }
 
     public function render()
     {
-        // Use a paginator instance even when no company is selected so the view
-        // can safely call pagination helpers.
-        $estimates = new LengthAwarePaginator([], 0, 10);
-        $currentCompany = null;
+        $query = Company::query()
+            ->with(['detailChanges' => function ($q) {
+                $q->orderBy('effective_date', 'desc');
+            }])
+            ->orderBy('id');
 
-        if ($this->selectedCompany) {
-            $currentCompany = Company::find($this->selectedCompany);
-            $estimates = TaxCp204Estimate::where('company_id', $this->selectedCompany)
-                ->with(['submittedBy', 'previousEstimate'])
-                ->orderBy('basis_period_year', 'desc')
-                ->orderBy('created_at', 'desc')
-                ->paginate(10);
+        if ($this->selectedYearEnd) {
+            $query->where('year_end', $this->selectedYearEnd);
         }
+
+        if ($this->searchName) {
+            $query->whereHas('detailChanges', function ($q) {
+                $q->where('name', 'like', '%' . $this->searchName . '%');
+            });
+        }
+
+        if ($this->searchGroup) {
+            $query->where('company_group', 'like', '%' . $this->searchGroup . '%');
+        }
+
+        if ($this->searchRegNo) {
+            $query->where('registration_no', 'like', '%' . $this->searchRegNo . '%');
+        }
+
+        $companies = $query->paginate(10);
 
         return view('livewire.tenant.pages.tax.cp204-index', [
-            'estimates' => $estimates,
-            'currentCompany' => $currentCompany,
+            'companies' => $companies,
         ]);
     }
 
-    public function calculateInstallment()
+    public function toggleSelectAll()
     {
-        if ($this->estimated_tax_amount) {
-            $this->monthly_installment = round($this->estimated_tax_amount / 12, 2);
+        // Get IDs of companies on current page
+        $query = Company::query()
+            ->with(['detailChanges' => function ($q) {
+                $q->orderBy('effective_date', 'desc');
+            }])
+            ->orderBy('id');
+
+        if ($this->selectedYearEnd) {
+            $query->where('year_end', $this->selectedYearEnd);
+        }
+
+        if ($this->searchName) {
+            $query->whereHas('detailChanges', function ($q) {
+                $q->where('name', 'like', '%' . $this->searchName . '%');
+            });
+        }
+
+        if ($this->searchGroup) {
+            $query->where('company_group', 'like', '%' . $this->searchGroup . '%');
+        }
+
+        if ($this->searchRegNo) {
+            $query->where('registration_no', 'like', '%' . $this->searchRegNo . '%');
+        }
+
+        $currentPageCompanies = $query->paginate(10);
+        $currentPageIds = $currentPageCompanies->pluck('id')->toArray();
+
+        // If all current page companies are selected, deselect them
+        // Otherwise, select all on current page
+        if (count(array_intersect($this->selectedCompanies, $currentPageIds)) === count($currentPageIds)) {
+            $this->selectedCompanies = array_diff($this->selectedCompanies, $currentPageIds);
+        } else {
+            $this->selectedCompanies = array_unique(array_merge($this->selectedCompanies, $currentPageIds));
         }
     }
 
-    public function openCreateModal()
+    public function confirmGeneration()
     {
-        $this->resetForm();
-        $this->showCreateModal = true;
-    }
-
-    public function closeCreateModal()
-    {
-        $this->showCreateModal = false;
-        $this->resetForm();
-    }
-
-    public function createEstimate()
-    {
-        $this->validate();
-
-        $company = Company::find($this->selectedCompany);
-
-        $estimate = TaxCp204Estimate::create([
-            'company_id' => $this->selectedCompany,
-            'basis_period_year' => $company->current_year,
-            'basis_period_from' => $company->current_year_from,
-            'basis_period_to' => $company->current_year_to,
-            'estimate_type' => $this->estimate_type,
-            'revision_month' => $this->revision_month,
-            'estimated_tax_amount' => $this->estimated_tax_amount,
-            'monthly_installment' => $this->monthly_installment,
-            'remarks' => $this->remarks,
-            'submission_status' => 'draft',
-            'submitted_by' => auth()->id(),
-        ]);
-
-        // Check 85% compliance if not first year
-        if ($this->estimate_type === 'cp204_initial') {
-            $previousEstimate = TaxCp204Estimate::where('company_id', $this->selectedCompany)
-                ->where('basis_period_year', $company->current_year - 1)
-                ->latest('created_at')
-                ->first();
-
-            if ($previousEstimate) {
-                $estimate->update(['previous_estimate_id' => $previousEstimate->id]);
-                $estimate->check85PercentCompliance();
-            }
-        }
-
-        // Link to reminders
-        $reminderService = app(TaxReminderService::class);
-        $reminderService->linkEstimateToReminders($estimate);
-
-        LivewireAlert::withOptions([
-            "position" => "top-end",
-            "icon" => "success",
-            "title" => "CP204 estimate created successfully",
-            "showConfirmButton" => false,
-            "timer" => 2000
-        ])->show();
-
-        $this->closeCreateModal();
-        $this->resetPage();
-    }
-
-    public function generateReminders()
-    {
-        if (!$this->selectedCompany) {
+        if (empty($this->selectedCompanies)) {
             LivewireAlert::withOptions([
                 "position" => "top-end",
                 "icon" => "error",
-                "title" => "Please select a company",
+                "title" => "Please select at least one company",
                 "showConfirmButton" => false,
                 "timer" => 1500
             ])->show();
             return;
         }
 
-        $company = Company::find($this->selectedCompany);
+        $companyCount = count($this->selectedCompanies);
+
+        // Calculate reminders based on form type
+        $remindersPerCompany = $this->selectedFormType === 'cp204' ? 2 : 6;
+        $totalReminders = $companyCount * $remindersPerCompany;
+
+        $formTypeLabel = $this->selectedFormType === 'cp204' ? 'CP204' : 'CP204A';
+
+        $this->confirmationMessage = "Generate {$totalReminders} {$formTypeLabel} reminders for {$companyCount} " .
+                                     ($companyCount === 1 ? 'company' : 'companies') . "?";
+        $this->showConfirmModal = true;
+    }
+
+    public function cancelGeneration()
+    {
+        $this->showConfirmModal = false;
+    }
+
+    public function generateReminders()
+    {
+        // Close modal first
+        $this->showConfirmModal = false;
+
+        if (empty($this->selectedCompanies)) {
+            LivewireAlert::withOptions([
+                "position" => "top-end",
+                "icon" => "error",
+                "title" => "Please select at least one company",
+                "showConfirmButton" => false,
+                "timer" => 1500
+            ])->show();
+            return;
+        }
+
         $reminderService = app(TaxReminderService::class);
+        $successCount = 0;
 
         try {
-            $reminders = $reminderService->generateAllRemindersForCompany($company);
+            foreach ($this->selectedCompanies as $companyId) {
+                $company = Company::find($companyId);
+                if ($company) {
+                    // Pass the selected form type to the service
+                    $reminderService->generateRemindersByFormType($company, $this->selectedFormType);
+                    $successCount++;
+                }
+            }
+
+            $formTypeLabel = $this->selectedFormType === 'cp204' ? 'CP204' : 'CP204A';
 
             LivewireAlert::withOptions([
                 "position" => "top-end",
                 "icon" => "success",
-                "title" => "Tax reminders generated successfully",
+                "title" => "{$formTypeLabel} reminders generated for {$successCount} companies",
                 "showConfirmButton" => false,
                 "timer" => 2000
             ])->show();
+
+            $this->selectedCompanies = [];
         } catch (\Exception $e) {
             LivewireAlert::withOptions([
                 "position" => "top-end",
@@ -165,15 +205,5 @@ class Cp204Index extends Component
                 "timer" => 3000
             ])->show();
         }
-    }
-
-    private function resetForm()
-    {
-        $this->estimate_type = 'cp204_initial';
-        $this->revision_month = null;
-        $this->estimated_tax_amount = 0;
-        $this->monthly_installment = 0;
-        $this->remarks = '';
-        $this->resetErrorBag();
     }
 }

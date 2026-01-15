@@ -2,7 +2,7 @@
 namespace App\Livewire\Tenant\Components;
 
 use Exception;
-use App\Models\Tenant\Company;
+use App\Models\Tenant\v2\Company;
 use App\Models\Tenant\CompanyDirector;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -31,7 +31,7 @@ class CompanyList extends Component
             $companies = collect();
         }
 
-        return view('livewire.tenant.components.company-list', [
+        return view('livewire.tenant.v2.components.company-list', [
             'companies' => $companies
         ]);
     }

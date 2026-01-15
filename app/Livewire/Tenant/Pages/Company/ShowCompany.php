@@ -12,9 +12,13 @@ use App\Models\User;
 class ShowCompany extends Component
 {
     public $name;
+    public $companyGroup;
     public $registrationNo;
     public $registrationNoOld;
-    public $currentYear;
+    public $taxFileNo;
+    public $employerFileNo;
+    public $sstRegistrationNo;
+    public $yearEnd;
     public $is_active;
 
     #[Locked]
@@ -43,9 +47,13 @@ class ShowCompany extends Component
         }
 
         $this->name = $company->name;
+        $this->companyGroup = $company->company_group;
         $this->registrationNo = $company->registration_no;
         $this->registrationNoOld = $company->registration_no_old;
-        $this->currentYear = $company->current_year;
+        $this->taxFileNo = $company->tax_file_no;
+        $this->employerFileNo = $company->employer_file_no;
+        $this->sstRegistrationNo = $company->sst_registration_no;
+        $this->yearEnd = $company->year_end;
         $this->is_active = $company->is_active;
     }
 

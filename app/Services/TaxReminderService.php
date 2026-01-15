@@ -49,6 +49,40 @@ class TaxReminderService
     }
 
     /**
+     * Generate reminders for a company based on selected form type
+     *
+     * @param Company $company
+     * @param string $formType 'cp204' or 'cp204a'
+     * @return array
+     */
+    public function generateRemindersByFormType(Company $company, string $formType): array
+    {
+        $reminders = [];
+
+        DB::beginTransaction();
+        try {
+            if ($formType === 'cp204') {
+                // Generate only CP204 initial submission reminders (2 reminders)
+                $reminders['cp204_initial'] = $this->createCp204SubmissionReminders($company);
+            } elseif ($formType === 'cp204a') {
+                // Generate only CP204A revision reminders (6 reminders)
+                $reminders['cp204a_revisions'] = $this->createCp204aRevisionReminders($company);
+            }
+
+            DB::commit();
+
+            Log::info("Generated {$formType} reminders for company {$company->id}", $reminders);
+
+            return $reminders;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Failed to generate {$formType} reminders for company {$company->id}: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
      * Create CP204 initial submission reminders (2 reminders)
      *
      * Reminder 1: Middle of the month before the deadline

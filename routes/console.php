@@ -4,6 +4,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 use App\Jobs\ProcessTaxReminders;
+use App\Jobs\ProcessEConfirmationReminders;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -22,5 +23,13 @@ Schedule::job(new ProcessTaxReminders())
     ->dailyAt('14:00')
     ->timezone('Asia/Kuala_Lumpur')
     ->name('process-tax-reminders-afternoon')
+    ->withoutOverlapping()
+    ->onOneServer();
+
+// Schedule e-confirmation reminder processing
+Schedule::job(new ProcessEConfirmationReminders())
+    ->dailyAt('09:00')
+    ->timezone('Asia/Kuala_Lumpur')
+    ->name('process-econfirmation-reminders')
     ->withoutOverlapping()
     ->onOneServer();
